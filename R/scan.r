@@ -354,6 +354,7 @@ tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 		detection$nu1_incorrect <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what == "p->y")
 		detection$nu2_correct <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what == "p->y")
 		detection$nu2_incorrect <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what != "p->y")
+		detection$no_outlier_flag <- tryxscan$simulation$no_outlier_flag
 		analysis$detection <- detection
 	}
 

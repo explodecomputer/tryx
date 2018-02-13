@@ -65,12 +65,21 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 
 	# radialmr(out$dat, 1:2)
 
+	no_outlier_flag <- FALSE
+
 	if(outliers_known)
 	{
 		outliers <- as.character(c(1:nu))
 	} else {
 		radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(out$dat), "NO")
-		outliers <- sort(radial$outliers$SNP)
+		if(radial$outliers[1] == "No significant outliers")
+		{
+			outliers <- as.character(c(1:nu))
+			no_outlier_flag <- TRUE
+		} else {
+			outliers <- as.character(sort(radial$outliers$SNP))
+			message("Number of outliers: ", length(outliers))
+		}
 	}
 	# output$radialmr <- radial
 	nout <- length(outliers)
@@ -83,18 +92,18 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	temp <- list()
 	for(i in 1:nu1)
 	{
-		temp[[i]] <- gwas(u1[,i], gx[,outliers])
+		temp[[i]] <- gwas(u1[,i], gx[,outliers, drop=FALSE])
 		temp[[i]]$SNP <- outliers
 		temp[[i]]$outcome <- paste0("U1_", i)
 	}
 	for(i in 1:nu2)
 	{
-		temp[[i + nu1]] <- gwas(u2[,i], gx[,outliers])
+		temp[[i + nu1]] <- gwas(u2[,i], gx[,outliers, drop=FALSE])
 		temp[[i + nu1]]$SNP <- outliers
 		temp[[i + nu1]]$outcome <- paste0("U2_", i)
 	}
 
-	temp <- dplyr::bind_rows(temp)
+	temp <- bind_rows(temp)
 
 	out$search <- data.frame(SNP=temp$SNP, beta.outcome=temp$bhat, se.outcome=temp$se, pval.outcome=temp$pval, id.outcome=temp$outcome, outcome=temp$outcome, mr_keep=TRUE, effect_allele.outcome="A", other_allele.outcome="G", eaf.outcome=0.5)
 	out$search$sig <- out$search$pval.outcome < 5e-8
@@ -133,11 +142,11 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 
 
 
-	out$candidate_instruments <- subset(rbind(dplyr::bind_rows(u1x), dplyr::bind_rows(u2x)), select=c(
+	out$candidate_instruments <- subset(rbind(bind_rows(u1x), bind_rows(u2x)), select=c(
 		SNP, beta.exposure, se.exposure, id.exposure, exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, pval.exposure
 	))
 	out2 <- subset(out$search, sig)
-	out$candidate_instruments <- dplyr::group_by(out$candidate_instruments, id.exposure) %>%
+	out$candidate_instruments <- group_by(out$candidate_instruments, id.exposure) %>%
 		do({
 			x <- .
 			y <- subset(out2, id.outcome == x$id.exposure[1])
@@ -145,7 +154,7 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 			x
 		})
 
-	out$candidate_outcome <- subset(rbind(dplyr::bind_rows(u1y), dplyr::bind_rows(u2y)), select=c(
+	out$candidate_outcome <- subset(rbind(bind_rows(u1y), bind_rows(u2y)), select=c(
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
@@ -153,7 +162,7 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	out$candidate_outcome_mr <- suppressMessages(mr(out$candidate_outcome_dat, method_list="mr_ivw"))
 
 
-	out$candidate_exposure <- subset(rbind(dplyr::bind_rows(u1x), dplyr::bind_rows(u2x)), select=c(
+	out$candidate_exposure <- subset(rbind(bind_rows(u1x), bind_rows(u2x)), select=c(
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
@@ -161,6 +170,7 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	out$candidate_exposure_mr <- suppressMessages(mr(out$candidate_exposure_dat, method_list="mr_ivw"))
 
 	out$simulation <- list()
+	out$simulation$no_outlier_flag <- no_outlier_flag
 	out$simulation$nu1 <- nu1
 	out$simulation$nu2 <- nu2
 	out$simulation$outliers_known <- outliers_known
