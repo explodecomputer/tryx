@@ -4,12 +4,16 @@ This package will perform MR-TRYX analysis, which entails the following.
 
 In MR analysis a major assumption is that the SNP influences the outcome only through the exposure. If the SNP influences the outcome through some other (candidate) traits, in addition to influencing through the exposure, then the MR estimate can be biased.
 
-Knowing which traits through which SNPs might be acting in a horizontal pleiotropic manner can help us to 
+Knowing which traits through which SNPs might be acting in a horizontal pleiotropic manner allows us to exploit these outliers to:
 
 1. Identify novel candidate traits that influence the outcome (and possibly the exposure also)
 2. Adjust the SNP-outcome / SNP-exposure ratio based on knowledge of the alternative pathways, thereby reducing heterogeneity in the original exposure-outcome effect estimate.
 
 This package uses the MR-Base infrastructure to search for alternative pathways through which instruments might influence the exposure.
+
+---
+
+The package name is taken from the phrase 'TReasure Your Exceptions', a quote from William Bateson. 
 
 --- 
 
