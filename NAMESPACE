@@ -2,6 +2,7 @@
 
 S3method(simulate,tryx)
 export(tryx.adjustment)
+export(tryx.analyse)
 export(tryx.network)
 export(tryx.scan)
 export(tryx.sig)

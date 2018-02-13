@@ -13,6 +13,14 @@ tryx.analyse(tryxscan, plot = TRUE, filter_duplicate_outliers = TRUE)
 
 \item{filter_duplicate_outliers}{Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.}
 }
+\value{
+List of 
+- adj_full: data frame of SNP adjustments for all candidate traits
+- adj: The results from adj_full selected to adjust the exposure-outcome model
+- Q: Heterogeneity stats
+- estimates: Adjusted and unadjested exposure-outcome effects
+- plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
+}
 \description{
 This returns various heterogeneity statistics, IVW estimates for raw, 
 adjusted and outlier removed datasets, and summary of peripheral 

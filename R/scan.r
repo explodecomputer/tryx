@@ -13,7 +13,7 @@
 #' @param search_threshold The p-value threshold for detecting an association between an outlier and a candidate trait. Default is 5e-8
 #' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes()
 #' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
-#' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is strategy1. Can also provide basic MR methods e.g. mr_ivw, mr_weighted_mode etc
+#' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
 #'
 #' @export
 #' @return List
@@ -29,7 +29,7 @@
 #' candidate_exposure   Extracted instrument SNPs from exposure
 #' candidate_exposure_dat  Harmonised candidate - exposure dataset
 #' candidate_exposure_mr  MR analysis of candidates against exposure
-tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="strategy1")
+tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="mr_ivw")
 {
 	# Get outliers
 
@@ -58,7 +58,7 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		{
 			stop("Please install the RadialMR package\ndevtools::install_github('WSpiller/RadialMR')")
 		}
-		radial <- RadialMR::RadialMR(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP, "IVW", "YES", "NO", 0.05/nrow(dat), "NO")
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), 0.05/nrow(dat), summary=FALSE)
 		outliers <- as.character(radial$outliers$SNP)
 		message("Identified ", length(outliers), " outliers")
 		output$radialmr <- radial
@@ -328,6 +328,14 @@ tryx.sig <- function(tryxscan, mr_threshold_method = "fdr", mr_threshold = 0.05)
 #' @param tryxscan Output from \code{tryx.scan}
 #' @param plot Whether to plot or not. Default is TRUE
 #' @param filter_duplicate_outliers Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.
+#' 
+#' @export
+#' @return List of 
+#' - adj_full: data frame of SNP adjustments for all candidate traits
+#' - adj: The results from adj_full selected to adjust the exposure-outcome model
+#' - Q: Heterogeneity stats
+#' - estimates: Adjusted and unadjested exposure-outcome effects
+#' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
 tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 {
 

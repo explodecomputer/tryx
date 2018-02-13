@@ -4,10 +4,10 @@
 \alias{tryx.adjustment}
 \title{Outlier adjustment estimation}
 \usage{
-tryx.adjustment(outlierscan)
+tryx.adjustment(tryxscan)
 }
 \arguments{
-\item{outlierscan}{Output from outlier_scan}
+\item{tryxscan}{Output from \code{tryx.scan}}
 }
 \value{
 data frame of adjusted effect estimates and heterogeneity stats

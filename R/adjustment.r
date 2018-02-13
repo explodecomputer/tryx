@@ -4,10 +4,10 @@
 #' 
 #' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 #' 
-#' @param outlierscan Output from outlier_scan
+#' @param tryxscan Output from \code{tryx.scan}
 #' @export
 #' @return data frame of adjusted effect estimates and heterogeneity stats
-tryx.adjustment <- function(outlierscan)
+tryx.adjustment <- function(tryxscan)
 {
 	# for each outlier find the candidate MR analyses
 	# if only exposure then ignore
@@ -27,17 +27,17 @@ tryx.adjustment <- function(outlierscan)
 	# old.deviation
 	# new.deviation
 
-	if(!any(outlierscan$search$sig))
+	if(!any(tryxscan$search$sig))
 	{
 		return(tibble())
 	}
 
 	l <- list()
-	sig <- subset(outlierscan$search, sig)
-	sige <- subset(outlierscan$candidate_exposure_mr, sig)
-	sigo <- subset(outlierscan$candidate_outcome_mr, sig)
+	sig <- subset(tryxscan$search, sig)
+	sige <- subset(tryxscan$candidate_exposure_mr, sig)
+	sigo <- subset(tryxscan$candidate_outcome_mr, sig)
 
-	dat <- outlierscan$dat
+	dat <- tryxscan$dat
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
 	dat$Q <- sum(dat$qi)
 

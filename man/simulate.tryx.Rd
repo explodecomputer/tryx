@@ -17,6 +17,9 @@
 
 \item{outliers_known}{Assume that all outliers are detected (defaukt = TRUE). If FALSE then Radial MR is used to detect outliers}
 }
+\value{
+Results from simulations and tryx scan
+}
 \description{
 Choose a sample size, number of horizontal pleiotropy paths, and number of confounders. Create summary data for all necessary traits, then perform tryx scan
 }

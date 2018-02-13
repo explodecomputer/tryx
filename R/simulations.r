@@ -9,7 +9,7 @@
 #' @param outliers_known Assume that all outliers are detected (defaukt = TRUE). If FALSE then Radial MR is used to detect outliers
 #' 
 #' @export
-#' @list Results from simulations and tryx scan
+#' @return Results from simulations and tryx scan
 simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 {
 	# scenario 1 - confounder g -> u; u -> x; u -> y
@@ -61,17 +61,13 @@ simulate.tryx <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 
 	out$dat <- get_effs(x, y, gx, "X", "Y")
 	out$dat$mr_keep <- TRUE
-	# radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(out$dat), "NO")
-
-	# radialmr(out$dat, 1:2)
-
 	no_outlier_flag <- FALSE
 
 	if(outliers_known)
 	{
 		outliers <- as.character(c(1:nu))
 	} else {
-		radial <- RadialMR::RadialMR(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP, "IVW", "YES", "NO", 0.05/nrow(out$dat), "NO")
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP), 0.05/nrow(out$dat), summary=FALSE)
 		if(radial$outliers[1] == "No significant outliers")
 		{
 			outliers <- as.character(c(1:nu))
