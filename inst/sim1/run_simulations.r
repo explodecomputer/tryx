@@ -3,12 +3,12 @@ library(parallel)
 library(tidyverse)
 
 param <- expand.grid(
-	nid = c(5000, 10000),
-	bxy = c(-0.5, -0.2, 0.2, 0.5),
+	nid = c(5000),
+	bxy = c(0.2, 0),
 	nu1 = c(1, 5, 10, 14),
 	nu2 = c(1, 5, 10, 14),
-	outliers_known = c(TRUE),
-	simr = c(1:100)
+	outliers_known = c(TRUE, FALSE),
+	simr = c(1:1000)
 )
 param$sim <- 1:nrow(param)
 
@@ -22,4 +22,5 @@ l <- mclapply(1:nrow(param), function(i)
 	return(tryx.analyse(out, plot=FALSE))
 }, mc.cores=16)
 
-save(l, param, file="sim.rdata")
+save(l, param, file="result.rdata")
+
