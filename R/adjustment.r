@@ -92,3 +92,164 @@ tryx.adjustment <- function(tryxscan)
 	return(l)
 }
 
+
+#' Analyse tryx results
+#' 
+#' This returns various heterogeneity statistics, IVW estimates for raw, 
+#' adjusted and outlier removed datasets, and summary of peripheral 
+#' traits detected etc.
+#' 
+#' @param tryxscan Output from \code{tryx.scan}
+#' @param plot Whether to plot or not. Default is TRUE
+#' @param filter_duplicate_outliers Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.
+#' 
+#' @export
+#' @return List of 
+#' - adj_full: data frame of SNP adjustments for all candidate traits
+#' - adj: The results from adj_full selected to adjust the exposure-outcome model
+#' - Q: Heterogeneity stats
+#' - estimates: Adjusted and unadjested exposure-outcome effects
+#' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
+tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
+{
+
+	analysis <- list()
+	adj_full <- tryx.adjustment(tryxscan)
+	if(nrow(adj_full) == 0)
+	{
+		return(NULL)
+	}
+	analysis$adj_full <- adj_full
+	if(filter_duplicate_outliers)
+	{
+		adj <- adj_full %>% arrange(d) %>% filter(!duplicated(SNP))
+	} else {
+		adj <- adj_full
+	}
+	analysis$adj <- adj
+
+	# Detection
+	if("simulation" %in% names(tryxscan))
+	{
+		detection <- list()
+		detection$nu1_correct <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what != "p->y")
+		detection$nu1_incorrect <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what == "p->y")
+		detection$nu2_correct <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what == "p->y")
+		detection$nu2_incorrect <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what != "p->y")
+		detection$no_outlier_flag <- tryxscan$simulation$no_outlier_flag
+		analysis$detection <- detection
+	}
+
+	cpg <- require(ggrepel)
+	if(!cpg)
+	{
+		stop("Please install the ggrepel package\ninstall.packages('ggrepel')")
+	}
+
+	dat <- subset(tryxscan$dat, mr_keep, select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
+	dat$ratio <- dat$beta.outcome / dat$beta.exposure
+	dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
+	dat$ratiow <- dat$ratio * dat$weights
+	dat$what <- "Unadjusted"
+	dat$candidate <- "NA"
+	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+
+	analysis$Q$full_Q <- adj$Q[1]
+	analysis$Q$num_reduced <- sum(adj$adj.qi < adj$qi)
+	analysis$Q$mean_d <- mean(adj$d)
+
+
+	temp <- subset(adj, select=c(SNP, adj.beta.exposure, adj.beta.outcome, adj.se.exposure, adj.se.outcome, candidate))
+	temp$qi <- cochrans_q(temp$adj.beta.outcome / temp$adj.beta.exposure, temp$adj.se.outcome / abs(temp$adj.beta.exposure))
+	ind <- grepl("\\|", temp$candidate)
+	if(any(ind))
+	{
+		temp$candidate[ind] <- sapply(strsplit(temp$candidate[ind], split=" \\|"), function(x) x[[1]])
+	}
+	names(temp) <- gsub("adj.", "", names(temp))
+	temp$what <- "Adjusted"
+	temp$weights <- sqrt(temp$beta.exposure^2 / temp$se.outcome^2)
+	temp$ratio <- temp$beta.outcome / temp$beta.exposure
+	temp$ratiow <- temp$ratio * temp$weights
+
+	dat_adj <- rbind(temp, dat) %>% filter(!duplicated(SNP))
+	dat_adj$qi <- cochrans_q(dat_adj$beta.outcome / dat_adj$beta.exposure, dat_adj$se.outcome / abs(dat_adj$beta.exposure))
+	analysis$Q$adj_Q <- sum(dat_adj$qi)
+
+	analysis
+
+	dat_rem <- subset(dat, !SNP %in% temp$SNP)
+
+	est1 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem))
+	est2 <- summary(lm(ratiow ~ -1 + weights, data=dat))
+	est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
+
+	estimates <- data.frame(
+		est=c("Outliers removed", "Raw", "Outliers adjusted"),
+		b=c(coefficients(est1)[1,1], coefficients(est2)[1,1], coefficients(est3)[1,1]), 
+		se=c(coefficients(est1)[1,2], coefficients(est2)[1,2], coefficients(est3)[1,2]), 
+		pval=c(coefficients(est1)[1,4], coefficients(est2)[1,4], coefficients(est3)[1,4]),
+		nsnp=c(nrow(dat_rem), nrow(dat), nrow(dat_adj)),
+		Q = c(sum(dat_rem$qi), sum(dat$qi), sum(dat_adj$qi)),
+		int=0
+	)
+	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+
+	analysis$estimates <- estimates
+
+	if(plot)
+	{	
+		temp2 <- merge(dat, temp, by="SNP")
+		labs <- rbind(
+			data.frame(label=temp2$SNP, x=temp2$weights.x, y=temp2$weights.x * temp2$ratio.x),
+			data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
+		)
+		p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
+		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
+		geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey50") +
+		geom_point(aes(colour=what)) +
+		geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.01, "npc"))) +
+		labs(colour="") +
+		xlim(c(0, max(dat$weights))) +
+		ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
+		analysis$plot <- p
+	}
+	return(analysis)
+}
+
+
+cochrans_q <- function(b, se)
+{
+	xw <- sum(b / se^2) / sum(1/se^2)
+	qi <- (1/se^2) * (b - xw)^2
+	return(qi)
+}
+
+bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
+{
+	res <- rnorm(nboot, gx, gx.se) - rnorm(nboot, gp, gp.se) * rnorm(nboot, px, px.se)
+	pe <- gx - gp * px
+	return(c(pe, sd(res)))
+}
+
+radialmr <- function(dat, outlier=NULL)
+{
+	library(ggplot2)
+	beta.exposure <- dat$beta.exposure
+	beta.outcome <- dat$beta.outcome
+	se.outcome <- dat$se.outcome
+	w <- sqrt(beta.exposure^2 / se.outcome^2)
+	ratio <- beta.outcome / beta.exposure
+	ratiow <- ratio*w
+	dat <- data.frame(w=w, ratio=ratio, ratiow=ratiow)
+	if(is.null(outlier))
+	{
+		dat2 <- dat
+	} else {
+		dat2 <- dat[-c(outlier), ]
+	}
+	mod <- lm(ratiow ~ -1 + w, dat2)$coefficients[1]
+	ggplot(dat, aes(x=w, y=ratiow)) +
+	geom_point() +
+	geom_abline(slope=mod, intercept=0)
+}
