@@ -13,7 +13,7 @@ This package uses the MR-Base infrastructure to search for alternative pathways 
 
 ---
 
-The package name is taken from the phrase 'TReasure Your Exceptions', a quote from William Bateson. 
+The package name TRYX (pronounced 'tricks') is taken from the phrase 'TReasure Your Exceptions', a quote from William Bateson. 
 
 --- 
 
