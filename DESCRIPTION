@@ -3,7 +3,7 @@ Title: MR-TRYX (treasure your exceptions)
 Version: 0.1.1
 Authors@R: c(person("Gibran", "Hemani", email = "g.hemani@bristol.ac.uk", role = c("aut", "cre")), person("Yoonsu", "Cho", email = "yoonsu.cho@bristol.ac.uk", role = c("aut")))
 Description: Heterogeneity in MR analyses can arise due to horizontal pleiotropy. This package uses MR-Base to identify possible traits that can explain the heterogeneity, with a view to identifying novel putative associations, and adjusting for their influences to reduce heterogeneity and improve power.
-Depends: R (>= 3.4.2), 
+Depends: R (>= 3.2.0), 
          TwoSampleMR, 
          dplyr,
          RadialMR
