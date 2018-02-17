@@ -93,7 +93,7 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 	}
 	output$id_list <- id_list
 
-	output$search <- extract_outcome_data(radial$outliers$SNP, ids$id, proxies=use_proxies)
+	output$search <- extract_outcome_data(outliers, ids$id, proxies=use_proxies)
 	output$search$sig <- output$search$pval.outcome < search_threshold
 	out2 <- subset(output$search, sig)
 	if(nrow(out2) == 0)

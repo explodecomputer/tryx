@@ -72,7 +72,12 @@ This will do the following:
 3. Extract instruments for those 'candidate traits'
 4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
 
-See the `?tryx.scan` for options on the parameters for this analysis.
+See the `?tryx.scan` for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
+
+```r
+x <- as.character(subset(dat, pval.outcome < 5e-8)$SNP)
+tryxscan <- tryx.scan(dat, outliers=x)
+```
 
 The next steps are to determine which of the candidate traits are of interest (e.g. using p-value thresholds), visualise the results, and adjust the exposure-outcome estimates based on knowledge of the 'candidate trait' associations.
 
