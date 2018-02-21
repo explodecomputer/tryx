@@ -179,18 +179,20 @@ tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 	analysis
 
 	dat_rem <- subset(dat, !SNP %in% temp$SNP)
+	dat_rem2 <- subset(dat, !SNP %in% tryxscan$outliers)
 
 	est1 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem))
 	est2 <- summary(lm(ratiow ~ -1 + weights, data=dat))
 	est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
+	est4 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem2))
 
 	estimates <- data.frame(
-		est=c("Outliers removed", "Raw", "Outliers adjusted"),
-		b=c(coefficients(est1)[1,1], coefficients(est2)[1,1], coefficients(est3)[1,1]), 
-		se=c(coefficients(est1)[1,2], coefficients(est2)[1,2], coefficients(est3)[1,2]), 
-		pval=c(coefficients(est1)[1,4], coefficients(est2)[1,4], coefficients(est3)[1,4]),
-		nsnp=c(nrow(dat_rem), nrow(dat), nrow(dat_adj)),
-		Q = c(sum(dat_rem$qi), sum(dat$qi), sum(dat_adj$qi)),
+		est=c("Raw", "Outliers removed (all)", "Outliers removed (candidates)", "Outliers adjusted"),
+		b=c(coefficients(est2)[1,1], coefficients(est1)[1,1], coefficients(est4)[1,1], coefficients(est3)[1,1]), 
+		se=c(coefficients(est2)[1,2], coefficients(est1)[1,2], coefficients(est4)[1,2], coefficients(est3)[1,2]), 
+		pval=c(coefficients(est2)[1,4], coefficients(est1)[1,4], coefficients(est4)[1,4], coefficients(est3)[1,4]),
+		nsnp=c(nrow(dat), nrow(dat_rem), nrow(dat_rem2), nrow(dat_adj)),
+		Q = c(sum(dat$qi), sum(dat_rem$qi), sum(dat_rem2$qi), sum(dat_adj$qi)),
 		int=0
 	)
 	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 

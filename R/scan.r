@@ -87,6 +87,7 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		ids <- subset(ao, priority == 1 & nsnp > 500000 & sample_size > 5000) %>%
 			arrange(desc(sample_size)) %>%
 			filter(!duplicated(trait), mr == 1) %>%
+			filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
 			filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
 		id_list <- ids$id
 		message("Using default list of ", nrow(ids), " traits")
