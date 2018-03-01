@@ -1,4 +1,4 @@
-# Treasure your exceptions (TRYX)
+# Treasure your exceptions! (TRYX)
 
 This package will perform MR-TRYX analysis, which entails the following. 
 
@@ -13,7 +13,7 @@ This package uses the MR-Base infrastructure to search for alternative pathways 
 
 ---
 
-The package name TRYX (pronounced 'tricks') is taken from the phrase 'TReasure Your Exceptions', a quote from William Bateson. 
+The package name TRYX (pronounced 'tricks') is taken from the phrase 'TReasure Your Exceptions', a quote from William Bateson (1908). 
 
 --- 
 
