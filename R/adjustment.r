@@ -187,7 +187,7 @@ tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 	est4 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem2))
 
 	estimates <- data.frame(
-		est=c("Raw", "Outliers removed (all)", "Outliers removed (candidates)", "Outliers adjusted"),
+		est=c("Raw", "Outliers removed (candidates)", "Outliers removed (all)", "Outliers adjusted"),
 		b=c(coefficients(est2)[1,1], coefficients(est1)[1,1], coefficients(est4)[1,1], coefficients(est3)[1,1]), 
 		se=c(coefficients(est2)[1,2], coefficients(est1)[1,2], coefficients(est4)[1,2], coefficients(est3)[1,2]), 
 		pval=c(coefficients(est2)[1,4], coefficients(est1)[1,4], coefficients(est4)[1,4], coefficients(est3)[1,4]),
