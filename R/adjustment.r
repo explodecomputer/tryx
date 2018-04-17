@@ -219,7 +219,14 @@ tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 	return(analysis)
 }
 
-
+#' Cochran's Q statistic
+#' 
+#' @param b vector of effecti 
+#' @param se vector of standard errors
+#' 
+#' @return q values
+#' 
+#' @export
 cochrans_q <- function(b, se)
 {
 	xw <- sum(b / se^2) / sum(1/se^2)
