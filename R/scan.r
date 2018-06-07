@@ -8,7 +8,7 @@
 #' Perform MR of each of those candidate traits with the original exposure and outcome
 #' 
 #' @param dat Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used
-#' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers
+#' @param outliers Default is to use the RadialMR package to identify IVW outliers. It uses a bonferroni corrected p-value of 0.05 to declare a SNP an outlier. Alternatively can provide an array of SNP names that are present in dat$SNP to use as outliers, e.g. by performing RadialMR manually first and choosing SNPs at a different inclusion threshold
 #' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed
 #' @param search_threshold The p-value threshold for detecting an association between an outlier and a candidate trait. Default is 5e-8
 #' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes()
@@ -58,7 +58,7 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		{
 			stop("Please install the RadialMR package\ndevtools::install_github('WSpiller/RadialMR')")
 		}
-		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), 0.05/nrow(dat), summary=FALSE)
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), 0.05/nrow(dat), summary=FALSE, weights=3)
 		outliers <- as.character(radial$outliers$SNP)
 		message("Identified ", length(outliers), " outliers")
 		output$radialmr <- radial
@@ -78,6 +78,7 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		}
 	}
 	output$outliers <- outliers
+	output$non_outliers <- as.character(subset(dat, !SNP %in% outliers)$SNP)
 
 	# Find associations with outliers
 
@@ -104,6 +105,45 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 	}
 	message("Found ", length(unique(out2$id.outcome)), " candidate traits associated with outliers at p < ", search_threshold)
 
+	# message("Checking if non-outlier SNPs associate with these candidate traits")
+
+	nonoutsearch <- extract_outcome_data(output$non_outliers, c(out2$id.outcome, dat$id.exposure[1], dat$id.outcome[1]), proxies=use_proxies)
+
+
+	temp <- subset(nonoutsearch, select=c(outcome, SNP, beta.outcome))
+	temp2 <- spread(temp, key=SNP, value=beta.outcome)
+	rownames(temp2) <- temp2[,1]
+	temp2 <- as.matrix(temp2[,-1])
+
+	temp2dist <- dist(temp2) %>% as.matrix
+
+	temp2dist[rownames(temp2dist) == dat$outcome[1], ] %>% sort %>% rev
+
+
+	temp3 <- temp2
+	for(i in 1:ncol(temp3)){
+		temp3[is.na(temp3[,i]), i] <- mean(temp3[,i], na.rm = TRUE)
+	}
+
+	pc <- princomp(temp3)
+	plot(pc$scores[,1], pc$scores[,2])
+
+	# temp1 <- subset(output$search, id.outcome %in% out2$id.outcome)
+	# temp1$what <- "outlier"
+	# nonoutsearch$what <- "nonoutlier"
+	# nonoutsearch$sig <- nonoutsearch$pval.outcome < search_threshold
+	# temp2 <- rbind(temp1, nonoutsearch)
+
+	# temp3 <- harmonise_data()
+
+	# temp3 <- group_by(temp1, id.outcome)
+
+
+
+
+
+
+
 	message("Finding instruments for candidate traits")
 	output$candidate_instruments <- extract_instruments(unique(out2$id.outcome))
 
@@ -112,6 +152,8 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		message("No instruments available for the candidate traits")
 		return(output)
 	}
+
+	output$candidate_instruments_all <- output$candidate_instruments
 
 	if(!include_outliers)
 	{
@@ -151,6 +193,50 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		message("None of the candidate trait instruments available for ", dat$outcome[1], " after harmonising")
 		return(output)
 	}
+
+	message("Performing MR of ", length(unique(output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
+	if(mr_method == "strategy1")
+	{
+		temp <- strategy1(output$candidate_outcome_dat)
+		output$candidate_outcome_mr <- temp$res
+		output$candidate_outcome_mr_full <- temp
+	} else {
+		output$candidate_outcome_mr <- suppressMessages(mr(output$candidate_outcome_dat, method_list=c("mr_wald_ratio", mr_method)))
+	}
+
+
+	## Do MR of candidates against outcome but include the outlier SNP
+
+	candidate_sig_ids <- subset(output$candidate_outcome_mr, pval < 0.05)$id.exposure
+
+	tempdat <- suppressMessages(harmonise_data(
+		subset(output$candidate_instruments_all, id.exposure %in% candidate_sig_ids), 
+		output$candidate_outcome
+	))
+
+	still_outlier <- group_by(tempdat, id.exposure) %>%
+		do({
+			x <- .
+			# Which SNPs are outliers for this trait?
+			outlier_snps <- subset(out2, id.outcome == x$id.exposure[1])$SNP %>% unique
+			rmrout <- RadialMR::ivw_radial(RadialMR::format_radial(x$beta.exposure, x$beta.outcome, x$se.exposure, x$se.outcome, x$SNP), 0.05, summary=FALSE, weights = 3)
+			still_outlier <- FALSE
+			if(class(rmrout$outlier) == "character")
+			{
+				still_outlier <- FALSE
+			} else {
+				if(any(outlier_snps %in% rmrout$outlier$SNP))
+				{
+					still_outlier <- TRUE
+				} else {
+					still_outlier <- FALSE
+				}
+			}
+			data.frame(still_outlier=still_outlier)
+		})
+
+
+
 
 	message("Performing MR of ", length(unique(output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
 	if(mr_method == "strategy1")

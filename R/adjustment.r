@@ -176,8 +176,6 @@ tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 	dat_adj$qi <- cochrans_q(dat_adj$beta.outcome / dat_adj$beta.exposure, dat_adj$se.outcome / abs(dat_adj$beta.exposure))
 	analysis$Q$adj_Q <- sum(dat_adj$qi)
 
-	analysis
-
 	dat_rem <- subset(dat, !SNP %in% temp$SNP)
 	dat_rem2 <- subset(dat, !SNP %in% tryxscan$outliers)
 
