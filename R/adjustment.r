@@ -123,8 +123,6 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 	sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% id_remove)
 	sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% id_remove)
 
-
-
 	id.exposure <- tryxscan$dat$id.exposure[1]
 	id.outcome <- tryxscan$dat$id.outcome[1]
 
@@ -133,105 +131,51 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 	sigo1 <- subset(sig, id.outcome %in% sigo$id.exposure) %>% group_by(SNP) %>% mutate(snpcount=n()) %>% arrange(desc(snpcount), SNP)
 	snplist <- unique(sigo1$SNP)
 	mvo <- list()
-	for(i in 1:length(snplist))
-	{
-		temp <- subset(sigo1, SNP %in% snplist[i])
-		mvexp <- mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=FALSE)
-		mvout <- extract_outcome_data(mvexp$SNP, id.outcome)
-		mvdat <- mv_harmonise_data(mvexp, mvout)
-		b <- cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
-		c <- coef(b, s = "lambda.min")
-		keeplist <- unique(c(rownames(c)[!c[,1] == 0], tryxscan$dat$exposure[1]))
-		mvexp2 <- subset(mvexp, exposure %in% keeplist)
-		remsnp <- group_by(mvexp2, SNP) %>% summarise(mp = min(pval.exposure)) %>% filter(mp > 5e-8) %$% as.character(SNP)
-		mvexp2 <- subset(mvexp2, !SNP %in% remsnp)
-		mvout2 <- subset(mvout, SNP %in% mvexp2$SNP)
-		mvdat2 <- mv_harmonise_data(mvexp2, mvout2)
-		mvo[[i]] <- mv_multiple(mvdat2)$result
-		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
-		mvo[[i]]$oSNP <- snplist[i]
-	}
-	mvo <- bind_rows(mvo)
-
-
-	sige1 <- subset(sig, id.outcome %in% sigo$id.exposure & id.outcome %in% sige$id.exposure) %>% group_by(SNP) %>% mutate(snpcount=n()) %>% arrange(desc(snpcount), SNP)
-	snplist <- unique(sigo1$SNP)
-	mvo <- list()
-	for(i in 1:length(snplist))
-	{
-		temp <- subset(sigo1, SNP %in% snplist[i])
-		mvexp <- mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=FALSE)
-		mvout <- extract_outcome_data(mvexp$SNP, id.outcome)
-		mvdat <- mv_harmonise_data(mvexp, mvout)
-		b <- cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
-		c <- coef(b, s = "lambda.min")
-		keeplist <- unique(c(rownames(c)[!c[,1] == 0], tryxscan$dat$exposure[1]))
-		mvexp2 <- subset(mvexp, exposure %in% keeplist)
-		remsnp <- group_by(mvexp2, SNP) %>% summarise(mp = min(pval.exposure)) %>% filter(mp > 5e-8) %$% as.character(SNP)
-		mvexp2 <- subset(mvexp2, !SNP %in% remsnp)
-		mvout2 <- subset(mvout, SNP %in% mvexp2$SNP)
-		mvdat2 <- mv_harmonise_data(mvexp2, mvout2)
-		mvo[[i]] <- mv_multiple(mvdat2)$result
-		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
-		mvo[[i]]$oSNP <- snplist[i]
-	}
-
-
 	dat <- tryxscan$dat
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
 	dat$Q <- sum(dat$qi)
-
-
-
-	for(i in 1:nrow(sig))
+	dat$orig.beta.outcome <- dat$beta.outcome
+	dat$orig.se.outcome <- dat$se.outcome
+	dat$orig.qi <- dat$qi
+	for(i in 1:length(snplist))
 	{
-		a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome, qi, Q))
-		if(sig$id.outcome[i] %in% sigo$id.exposure)
-		{
-			a$candidate <- sig$outcome[i]
-			a$i <- i
-			if(sig$id.outcome[i] %in% sige$id.exposure) {
-				message("x<-p->y:  ", a$SNP, "\t- ", sig$outcome[i])
-				a$what <- "p->x; p->y"
-				a$candidate.beta.exposure <- sige$b[sige$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.exposure <- sige$se[sige$id.exposure == sig$id.outcome[i]]
-				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-				b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sige$b[sige$id.exposure == sig$id.outcome[i]], sige$se[sige$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.exposure <- b[1]
-				a$adj.se.exposure <- b[2]
-				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.outcome <- b[1]
-				a$adj.se.outcome <- b[2]
-			} else {
-				message("   p->y:  ", a$SNP, "\t- ", sig$outcome[i])
-				a$what <- "p->y"
-				a$candidate.beta.exposure <- NA
-				a$candidate.se.exposure <- NA
-				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.exposure <- a$beta.exposure
-				a$adj.se.exposure <- a$se.exposure
-				a$adj.beta.outcome <- b[1]
-				a$adj.se.outcome <- b[2]
-			}
-			temp <- dat
-			temp$beta.exposure[temp$SNP == a$SNP] <- a$adj.beta.exposure
-			temp$beta.exposure.se[temp$SNP == a$SNP] <- a$adj.beta.exposure.se
-			temp$beta.outcome[temp$SNP == a$SNP] <- a$adj.beta.outcome
-			temp$beta.outcome.se[temp$SNP == a$SNP] <- a$adj.beta.outcome.se
-			temp$qi <- cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
-			a$adj.qi <- temp$qi[temp$SNP == a$SNP]
-			a$adj.Q <- sum(temp$qi)
-
-			l[[i]] <- a
-		}
-
+		message("Estimating joint effects of the following traits associated with ", snplist[i])
+		temp <- subset(sigo1, SNP %in% snplist[i])
+		message(paste(unique(temp$outcome), collapse="\n"))
+		mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=FALSE))
+		mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
+		mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
+		b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
+		c <- coef(b, s = "lambda.min")
+		keeplist <- unique(c(rownames(c)[!c[,1] == 0], tryxscan$dat$exposure[1]))
+		message("After shrinkage keeping:")
+		message(paste(keeplist, collapse="\n"))
+		mvexp2 <- subset(mvexp, exposure %in% keeplist)
+		remsnp <- group_by(mvexp2, SNP) %>% summarise(mp = min(pval.exposure)) %>% filter(mp > 5e-8) %$% as.character(SNP)
+		mvexp2 <- subset(mvexp2, !SNP %in% remsnp)
+		mvout2 <- subset(mvout, SNP %in% mvexp2$SNP)
+		mvdat2 <- suppressMessages(mv_harmonise_data(mvexp2, mvout2))
+		mvo[[i]] <- mv_multiple(mvdat2)$result
+		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
+		mvo[[i]]$oSNP <- snplist[i]
+		temp2 <- with(temp, data_frame(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
+		mvo[[i]] <- merge(mvo[[i]], temp2, by="exposure")
+		boo <- with(subset(dat, SNP == snplist[i]), 
+			bootstrap_path(
+				beta.outcome,
+				se.outcome,
+				mvo[[i]]$snpeff,
+				mvo[[i]]$snpeff.se,
+				mvo[[i]]$b,
+				mvo[[i]]$se
+			))
+		dat$beta.outcome[dat$SNP == snplist[i]] <- boo[1]
+		dat$se.outcome[dat$SNP == snplist[i]] <- boo[2]
 	}
-	l <- bind_rows(l)
-	l$d <- (l$adj.qi / l$adj.Q) / (l$qi / l$Q)
-	return(l)
+	mvo <- bind_rows(mvo)
+
+	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+	return(list(mvo=mvo, dat=dat))
 }
 
 
@@ -380,12 +324,27 @@ cochrans_q <- function(b, se)
 	return(qi)
 }
 
-bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
+bootstrap_path1 <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
 {
 	res <- rnorm(nboot, gx, gx.se) - rnorm(nboot, gp, gp.se) * rnorm(nboot, px, px.se)
 	pe <- gx - gp * px
 	return(c(pe, sd(res)))
 }
+
+bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
+{
+	nalt <- length(gp)
+	altpath <- data_frame(
+		p = rnorm(nboot * nalt, gp, gp.se) * rnorm(nboot * nalt, px, px.se),
+		b = rep(1:nboot, each=nalt)
+	)
+	altpath <- group_by(altpath, b) %>%
+		summarise(p = sum(p))
+	res <- rnorm(nboot, gx, gx.se) - altpath$p
+	pe <- gx - sum(gp * px)
+	return(c(pe, sd(res)))
+}
+
 
 radialmr <- function(dat, outlier=NULL)
 {
