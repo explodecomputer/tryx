@@ -5,10 +5,22 @@ library(dplyr)
 library(parallel)
 library(ggplot2)
 
-a <- extract_instruments(300)
+ao <- available_outcomes()
+a <- extract_instruments("UKB-a:360")
 b <- extract_outcome_data(a$SNP, 7)
 dat <- harmonise_data(a, b)
-outlierscan <- outlier_scan(dat, mr_method="mr_ivw")
+tryxscan <- tryx.scan(dat, mr_method="mr_ivw")
+save(tryxscan, file="sbp-chd.rdata")
+
+
+ao <- available_outcomes()
+info <- read.csv("../data/info.csv")
+
+
+
+tryxscan <- tryx.sig(tryxscan)
+tryxanalysis <- tryx.analyse(tryxscan)
+
 
 temp <- subset(outlierscan$search, pval.outcome < 5e-8)
 # remove any cholesterol related traits
