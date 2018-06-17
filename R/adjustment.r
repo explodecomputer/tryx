@@ -93,7 +93,7 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 }
 
 
-tryx.adjustment <- function(tryxscan, id_remove=NULL)
+tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
 {
 	# for each outlier find the candidate MR analyses
 	# if only exposure then ignore
@@ -137,12 +137,14 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 	dat$orig.beta.outcome <- dat$beta.outcome
 	dat$orig.se.outcome <- dat$se.outcome
 	dat$orig.qi <- dat$qi
+	dat$outlier <- FALSE
+	dat$outlier[dat$SNP %in% tryxscan$outliers] <- TRUE
 	for(i in 1:length(snplist))
 	{
 		message("Estimating joint effects of the following traits associated with ", snplist[i])
 		temp <- subset(sigo1, SNP %in% snplist[i])
 		message(paste(unique(temp$outcome), collapse="\n"))
-		mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=FALSE))
+		mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=proxies))
 		mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
 		mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
 		b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
@@ -157,7 +159,6 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 		mvdat2 <- suppressMessages(mv_harmonise_data(mvexp2, mvout2))
 		mvo[[i]] <- mv_multiple(mvdat2)$result
 		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
-		mvo[[i]]$oSNP <- snplist[i]
 		temp2 <- with(temp, data_frame(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
 		mvo[[i]] <- merge(mvo[[i]], temp2, by="exposure")
 		boo <- with(subset(dat, SNP == snplist[i]), 
@@ -174,7 +175,7 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 	}
 	mvo <- bind_rows(mvo)
 
-	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+	dat$qi[dat$mr_keep] <- cochrans_q(dat$beta.outcome[dat$mr_keep] / dat$beta.exposure[dat$mr_keep], dat$se.outcome[dat$mr_keep] / abs(dat$beta.exposure[dat$mr_keep]))
 	return(list(mvo=mvo, dat=dat))
 }
 
@@ -202,11 +203,11 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 #' - Q: Heterogeneity stats
 #' - estimates: Adjusted and unadjested exposure-outcome effects
 #' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
-tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
+tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE)
 {
 
 	analysis <- list()
-	adj_full <- tryx.adjustment(tryxscan)
+	adj_full <- tryx.adjustment(tryxscan, id_remove)
 	if(nrow(adj_full) == 0)
 	{
 		return(NULL)
@@ -307,6 +308,76 @@ tryx.analyse <- function(tryxscan, plot=TRUE, filter_duplicate_outliers=TRUE)
 		analysis$plot <- p
 	}
 	return(analysis)
+}
+
+tryx.analyse.mv <- function(tryxscan, plot=TRUE, id_remove=NULL, proxies=FALSE)
+{
+	adj <- tryx.adjustment.mv(tryxscan, id_remove, proxies)
+	dat <- subset(adj$dat, mr_keep)
+	dat$orig.ratio <- dat$orig.beta.outcome / dat$beta.exposure
+	dat$orig.weights <- sqrt(dat$beta.exposure^2 / dat$orig.se.outcome^2)
+	dat$orig.ratiow <- dat$orig.ratio * dat$orig.weights
+	dat$ratio <- dat$beta.outcome / dat$beta.exposure
+	dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
+	dat$ratiow <- dat$ratio * dat$weights
+
+	est_raw <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=dat))
+	est_adj <- summary(lm(ratiow ~ -1 + weights, data=dat))
+	est_out1 <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=subset(dat, !SNP %in% tryxscan$outliers)))
+	est_out2 <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=subset(dat, !SNP %in% adj$mvo$SNP)))
+
+	estimates <- data.frame(
+		est=c("Raw", "Outliers removed (all)", "Outliers removed (candidates)", "Outliers adjusted"),
+		b=c(coefficients(est_raw)[1,1], coefficients(est_out2)[1,1], coefficients(est_out1)[1,1], coefficients(est_adj)[1,1]), 
+		se=c(coefficients(est_raw)[1,2], coefficients(est_out2)[1,2], coefficients(est_out1)[1,2], coefficients(est_adj)[1,2]), 
+		pval=c(coefficients(est_raw)[1,4], coefficients(est_out2)[1,4], coefficients(est_out1)[1,4], coefficients(est_adj)[1,4]),
+		nsnp=c(nrow(dat), nrow(subset(dat, !SNP %in% tryxscan$outliers)), nrow(subset(dat, !SNP %in% adj$mvo$SNP)), nrow(dat)),
+		Q = c(sum(dat$orig.qi), sum(subset(dat, !SNP %in% tryxscan$outliers)$qi), sum(subset(dat, !SNP %in% adj$mvo$SNP)$qi), sum(dat$qi)),
+		int=0
+	)
+	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+
+	analysis <- list(
+		estimates=estimates,
+		mvo=adj$mvo,
+		dat=adj$dat
+	)
+
+	if(plot)
+	{	
+		dato <- subset(dat, SNP %in% tryxscan$outliers)
+		datadj <- subset(dat, SNP %in% adj$mvo$SNP)
+		datadj$x <- datadj$orig.weights
+		datadj$xend <- datadj$weights
+		datadj$y <- datadj$orig.ratiow
+		datadj$yend <- datadj$ratiow
+
+		mvog <- tidyr::separate(adj$mvo, exposure, sep="\\|", c("exposure", "temp", "id"))
+		mvog$exposure <- gsub(" $", "", mvog$exposure)
+		mvog <- group_by(mvog, SNP) %>% summarise(label = paste(exposure, collapse="\n"))
+		datadj <- merge(datadj, mvog, by="SNP")
+
+		labs <- rbind(
+			data_frame(label=dato$SNP, x=dato$orig.weights, y=dato$orig.ratiow, col="grey50"),
+			data_frame(label=datadj$label, x=datadj$weights, y=datadj$ratiow, col="grey100")
+		)
+
+
+		p <- ggplot(dat, aes(y=orig.ratiow, x=orig.weights)) +
+		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
+		geom_label_repel(data=labs, aes(label=label, x=x, y=y, colour=col), size=2, segment.color = "grey50", show.legend = FALSE) +
+		geom_point(data=dato, size=4) +
+		# geom_label_repel(data=labs, aes(label=label, x=weights, y=ratiow), size=2, segment.color = "grey50") +
+		geom_point(data=datadj, aes(x=weights, y=ratiow)) +
+		geom_point(aes(colour=SNP %in% dato$SNP), show.legend=FALSE) +
+		geom_segment(data=datadj, colour="grey50", aes(x=x, xend=xend, y=y, yend=yend), arrow = arrow(length = unit(0.01, "npc"))) +
+		labs(colour=NULL, linetype="Estimate", x="w", y="beta * w")
+		# xlim(c(0, max(dat$weights))) +
+		# ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
+		analysis$plot <- p
+	}
+	return(analysis)
+
 }
 
 #' Cochran's Q statistic

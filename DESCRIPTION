@@ -6,10 +6,13 @@ Description: Heterogeneity in MR analyses can arise due to horizontal pleiotropy
 Depends: R (>= 3.2.0), 
          TwoSampleMR, 
          dplyr,
-         RadialMR
-Suggests: ggplot2, 
-          ggrepel,
-          igraph,
+         RadialMR,
+         magrittr,
+         tidyr,
+         ggplot2,
+         glmnet,
+         ggrepel
+Suggests: igraph,
           simulateGP
 License: GPL-3
 Encoding: UTF-8

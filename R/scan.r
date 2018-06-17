@@ -399,9 +399,20 @@ tryx.sig <- function(tryxscan, mr_threshold_method = "fdr", mr_threshold = 0.05)
 		tryxscan$exposure_candidate_mr$sig <- tryxscan$exposure_candidate_mr$pval < mr_threshold
 	}
 
+	message("* * * *")
 	message("Number of candidate - outcome associations: ", sum(tryxscan$candidate_outcome_mr$sig))
+	message("* * * *")
+	message(paste(subset(tryxscan$candidate_outcome_mr, sig)$exposure, collapse="\n"))
+	message("")
+	message("* * * *")
 	message("Number of candidate - exposure associations: ", sum(tryxscan$candidate_exposure_mr$sig))
+	message("* * * *")
+	message(paste(subset(tryxscan$candidate_exposure_mr, sig)$exposure, collapse="\n"))
+	message("")
+	message("* * * *")
 	message("Number of exposure - candidate associations: ", sum(tryxscan$exposure_candidate_mr$sig))
+	message("* * * *")
+	message(paste(subset(tryxscan$candidate_exposure_mr, sig)$exposure, collapse="\n"))
 	return(tryxscan)
 }
 
