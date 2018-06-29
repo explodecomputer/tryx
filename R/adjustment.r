@@ -1,3 +1,12 @@
+lor_to_rr <- function(dat, prevalence_exp, prevalence_out)
+{
+	if(!is.null(prevalence_exp) & dat$)
+	{
+		stopifnot()
+
+		or <- dat$
+	}
+}
 
 
 #' Outlier adjustment estimation
@@ -7,7 +16,7 @@
 #' @param tryxscan Output from \code{tryx.scan}
 #' @export
 #' @return data frame of adjusted effect estimates and heterogeneity stats
-tryx.adjustment <- function(tryxscan, id_remove=NULL)
+tryx.adjustment <- function(tryxscan, id_remove=NULL, prevalence_exp=NULL, prevalence_out=NULL)
 {
 	# for each outlier find the candidate MR analyses
 	# if only exposure then ignore
@@ -93,7 +102,7 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 }
 
 
-tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
+tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE, prevalence=NULL)
 {
 	# for each outlier find the candidate MR analyses
 	# if only exposure then ignore
