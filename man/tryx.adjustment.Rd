@@ -4,7 +4,7 @@
 \alias{tryx.adjustment}
 \title{Outlier adjustment estimation}
 \usage{
-tryx.adjustment(tryxscan)
+tryx.adjustment(tryxscan, id_remove = NULL)
 }
 \arguments{
 \item{tryxscan}{Output from \code{tryx.scan}}

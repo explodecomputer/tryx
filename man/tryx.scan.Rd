@@ -4,7 +4,9 @@
 \alias{tryx.scan}
 \title{Outlier scan}
 \usage{
-tryx.scan(dat, outliers = "RadialMR", use_proxies = FALSE,
+tryx.scan(dat, outliers = "RadialMR",
+  outlier_threshold = 0.05/sum(subset(dat, id.exposure == id.exposure[1] &
+  id.outcome == id.outcome[1])$mr_keep), use_proxies = FALSE,
   search_threshold = 5e-08, id_list = "default", include_outliers = FALSE,
   mr_method = "mr_ivw")
 }
@@ -12,6 +14,8 @@ tryx.scan(dat, outliers = "RadialMR", use_proxies = FALSE,
 \item{dat}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used}
 
 \item{outliers}{Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers}
+
+\item{outlier_threshold}{The p-value to be used as threshold for detecting outliers, if outliers="RadialMR". Default is 0.05/nsnp.}
 
 \item{use_proxies}{Whether to use proxies when looking up associations. FALSE by default for speed}
 

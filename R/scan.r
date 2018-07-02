@@ -7,6 +7,7 @@
 #' 
 #' @param dat Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used
 #' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers
+#' @param outlier_threshold The p-value to be used as threshold for detecting outliers, if outliers="RadialMR". Default is 0.05/nsnp.
 #' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed
 #' @param search_threshold The p-value threshold for detecting an association between an outlier and a candidate trait. Default is 5e-8
 #' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes()
@@ -27,7 +28,7 @@
 #' candidate_exposure   Extracted instrument SNPs from exposure
 #' candidate_exposure_dat  Harmonised candidate - exposure dataset
 #' candidate_exposure_mr  MR analysis of candidates against exposure
-tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="mr_ivw")
+tryx.scan <- function(dat, outliers="RadialMR", outlier_threshold=0.05/sum(subset(dat, id.exposure==id.exposure[1] & id.outcome==id.outcome[1])$mr_keep), use_proxies=FALSE, search_threshold=5e-8, id_list="default", include_outliers=FALSE, mr_method="mr_ivw")
 {
 	# Get outliers
 
@@ -56,7 +57,13 @@ tryx.scan <- function(dat, outliers="RadialMR", use_proxies=FALSE, search_thresh
 		{
 			stop("Please install the RadialMR package\ndevtools::install_github('WSpiller/RadialMR')")
 		}
-		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), 0.05/nrow(dat), summary=FALSE)
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), alpha=0.05/nrow(dat), weights=3, summary=FALSE)
+		if(radial$outliers[1] == "No significant outliers")
+		{
+			message("No outliers found")
+			message("Try changing the outlier_threshold parameter")
+			return(NULL)
+		}
 		outliers <- as.character(radial$outliers$SNP)
 		message("Identified ", length(outliers), " outliers")
 		output$radialmr <- radial
