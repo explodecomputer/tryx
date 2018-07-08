@@ -57,7 +57,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_threshold=0.05/sum(subse
 		{
 			stop("Please install the RadialMR package\ndevtools::install_github('WSpiller/RadialMR')")
 		}
-		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), alpha=0.05/nrow(dat), weights=3, summary=FALSE)
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), alpha=0.05/nrow(dat), weights=3)
 		if(radial$outliers[1] == "No significant outliers")
 		{
 			message("No outliers found")
