@@ -17,9 +17,15 @@ The package name TRYX (pronounced 'tricks') is taken from the phrase 'TReasure Y
 
 --- 
 
+## Requirements
+
+This software is an R package that depends on various other packages available on CRAN (see DESCRIPTION file). It has only been tested on some R versions >= 3.2.0. The software will run on any standard laptop, desktop or server for which R can be installed.
+
 ## Installation
 
-First install the `TwoSampleMR` and `RadialMR` R package:
+A beta development version can bbe installed directly from this repository.
+
+First install the `TwoSampleMR` and `RadialMR` R packages:
 
 ```r
 devtools::install_github("MRCIEU/TwoSampleMR")
@@ -44,11 +50,15 @@ and a package for simulating genotype-phenotype maps
 devtools::install_github("explodecomputer/simulateGP")
 ```
 
+It should not take more than a few minutes to install all of these packages.
+
 ---
 
 ## Guide
 
 ### Basic analysis
+
+The following analyses should run within 10 minutes, depending on internet speed and the traffic that the MR-Base servers are experiencing.
 
 Begin by choosing an exposure-outcome hypothesis to explore. e.g. LDL cholesterol on coronary heart disease. These data can be extracted from MR-Base:
 
