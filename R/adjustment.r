@@ -29,23 +29,27 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 
 	if(!any(tryxscan$search$sig))
 	{
+		print("jere")
 		return(tibble())
 	}
 
 	l <- list()
 	sig <- subset(tryxscan$search, sig & !id.outcome %in% id_remove)
-	sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% NULL)
-	sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% NULL)
+	sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% id_remove)
+	sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% id_remove)
 
 	dat <- tryxscan$dat
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
 	dat$Q <- sum(dat$qi)
-
+	print(sig$SNP)
 	for(i in 1:nrow(sig))
 	{
 		a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome, qi, Q))
+		print(sig$id.outcome)
+		print(sigo$id.exposure)
 		if(sig$id.outcome[i] %in% sigo$id.exposure)
 		{
+			print(i)
 			a$candidate <- sig$outcome[i]
 			a$i <- i
 			if(sig$id.outcome[i] %in% sige$id.exposure) {

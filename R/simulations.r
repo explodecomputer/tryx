@@ -10,7 +10,7 @@
 #' 
 #' @export
 #' @return Results from simulations and tryx scan
-tryx.simulate <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
+tryx.simulate2 <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=TRUE, debug=FALSE)
 {
 	# scenario 1 - confounder g -> u; u -> x; u -> y
 	# scenario 2 - pleiotropy g -> u -> y
@@ -26,17 +26,21 @@ tryx.simulate <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	ngx <- 30
 	ngu1 <- 30
 	ngu2 <- 30
+	ngu3 <- 30
+	nu3 <- 1
 
 	gx <- make_geno(nid, ngx, 0.5)
-	nu <- nu1 + nu2
+	nu <- nu1 + nu2 + nu3
 
 	# Effect sizes
 	bgu1 <- lapply(1:nu1, function(x) runif(ngu1))
 	bgu2 <- lapply(1:nu2, function(x) runif(ngu2))
+	bgu3 <- runif(ngu3)
 	bgx <- runif(ngx)
 	bu1x <- rnorm(nu1)
 	bu1y <- rnorm(nu1)
 	bu2y <- rnorm(nu2)
+	bu3y <- bu3y
 	bxy <- bxy
 
 	gu1 <- list()
@@ -56,8 +60,10 @@ tryx.simulate <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 
 	ux <- rep(2, nu1)
 	x <- drop(gx %*% bgx + u1 %*% bu1x + rnorm(nid))
-	# u3 <- gu %*% c(0.5, runif(6)) + x * -3 + rnorm(nid, sd=6)
-	y <- drop(x * bxy + u1 %*% bu1y + u2 %*% bu2y + rnorm(nid))
+	
+	gu3 <- list(make_geno(nid, ngu3, 0.5))
+	u3 <- matrix(gu3[[1]] %*% bgu3 + x * bxu3 + rnorm(nid), nid, 1)
+	y <- drop(x * bxy + u1 %*% bu1y + u2 %*% bu2y + u3 * bu3y + rnorm(nid))
 
 	out$dat <- get_effs(x, y, gx, "X", "Y")
 	out$dat$mr_keep <- TRUE
@@ -98,13 +104,76 @@ tryx.simulate <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 		temp[[i + nu1]]$SNP <- outliers
 		temp[[i + nu1]]$outcome <- paste0("U2_", i)
 	}
+	for(i in 1:nu3)
+	{	
+		temp[[i + nu1 + nu2]] <- gwas(u3[,i], gx[,outliers, drop=FALSE])
+		temp[[i + nu1 + nu2]]$SNP <- outliers
+		temp[[i + nu1 + nu2]]$outcome <- paste0("U3_", i)
+	}
 
 	temp <- bind_rows(temp)
 
-	out$search <- data.frame(SNP=temp$SNP, beta.outcome=temp$bhat, se.outcome=temp$se, pval.outcome=temp$pval, id.outcome=temp$outcome, outcome=temp$outcome, mr_keep=TRUE, effect_allele.outcome="A", other_allele.outcome="G", eaf.outcome=0.5)
+	out$search <- tibble::data_frame(SNP=temp$SNP, beta.outcome=temp$bhat, se.outcome=temp$se, pval.outcome=temp$pval, id.outcome=temp$outcome, outcome=temp$outcome, mr_keep=TRUE, effect_allele.outcome="A", other_allele.outcome="G", eaf.outcome=0.5)
 	out$search$sig <- out$search$pval.outcome < 5e-8
 
+	## Multivariable MR
+	# Do mvmr with just the outlier detected traits
 
+	traitlist <- as.character(unique(subset(out$search, sig)$id.outcome))
+	G <- list()
+	PHEN <- list(x)
+	j <- 2
+	if(any(grepl("U1", traitlist)))
+	{
+		u1traits <- gsub("U1_", "", traitlist[grepl("U1", traitlist)]) %>% as.numeric()
+		message("U1 traits: ", paste(u1traits, collapse=","))
+		G[[1]] <- lapply(u1traits, function(x) {
+			return(gu1[[x]][,-1])
+		}) %>% do.call(cbind, .)
+		for(i in u1traits)
+		{
+			PHEN[[j]] <- u1[,i]
+			j <- j + 1
+		}
+	}
+	if(any(grepl("U2", traitlist)))
+	{
+		u2traits <- gsub("U2_", "", traitlist[grepl("U2", traitlist)]) %>% as.numeric()
+		message("U2 traits: ", paste(u2traits, collapse=","))
+		G[[2]] <- lapply(u2traits, function(x) {
+			return(gu2[[x]][,-1])
+		}) %>% do.call(cbind, .)
+		for(i in u2traits)
+		{
+			PHEN[[j]] <- u2[,i]
+			j <- j + 1
+		}
+	}
+	if(any(grepl("U3", traitlist)))
+	{
+		u3traits <- gsub("U3_", "", traitlist[grepl("U3", traitlist)]) %>% as.numeric()
+		message("U3 traits: ", paste(u3traits, collapse=","))
+		G[[3]] <- lapply(u3traits, function(x) {
+			return(gu3[[x]])
+		}) %>% do.call(cbind, .)
+		for(i in u3traits)
+		{
+			PHEN[[j]] <- u3[,i]
+			j <- j + 1
+		}
+	}
+	G[[4]] <- gx
+	G <- do.call(cbind, G)
+	traitlist <- c("X", traitlist)
+	print(str(G))
+	names(PHEN) <- traitlist
+	print(str(PHEN))
+
+	mvdat <- make_mvdat(PHEN, y, G)
+	mvres <- mv_multiple(mvdat)
+	mvres$result$exposure <- traitlist
+	out$mvres <- mvres
+	
 	## get effects
 	u1x <- list()
 	u1y <- list()
@@ -134,6 +203,21 @@ tryx.simulate <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 		u2x[[i]]$other_allele.outcome <- u2y[[i]]$other_allele.outcome <- "G"
 		u2x[[i]]$eaf.exposure <- u2y[[i]]$eaf.exposure <- 0.5
 		u2x[[i]]$eaf.outcome <- u2y[[i]]$eaf.outcome <- 0.5
+	}
+
+	u3x <- list()
+	u3y <- list()
+	for(i in 1:nu3)
+	{
+		u3x[[i]] <- get_effs(u3[,i], x, gu3[[i]], paste0("U3_", i), "X")
+		u3y[[i]] <- get_effs(u3[,i], y, gu3[[i]], paste0("U3_", i), "Y")
+		u3x[[i]]$SNP <- u3y[[i]]$SNP <- c(i+nu1, paste0("u3_",1:(ngu3-1)))
+		u3x[[i]]$effect_allele.exposure <- u3y[[i]]$effect_allele.exposure <- "A"
+		u3x[[i]]$other_allele.exposure <- u3y[[i]]$other_allele.exposure <- "G"
+		u3x[[i]]$effect_allele.outcome <- u3y[[i]]$effect_allele.outcome <- "A"
+		u3x[[i]]$other_allele.outcome <- u3y[[i]]$other_allele.outcome <- "G"
+		u3x[[i]]$eaf.exposure <- u3y[[i]]$eaf.exposure <- 0.5
+		u3x[[i]]$eaf.outcome <- u3y[[i]]$eaf.outcome <- 0.5
 	}
 
 
@@ -169,9 +253,18 @@ tryx.simulate <- function(nid, nu1, nu2, bxy=3, outliers_known=TRUE)
 	out$simulation$no_outlier_flag <- no_outlier_flag
 	out$simulation$nu1 <- nu1
 	out$simulation$nu2 <- nu2
+	out$simulation$nu3 <- nu3
+	out$simulation$bxu3 <- bxu3
+	out$simulation$bu3y <- bu3y
 	out$simulation$outliers_known <- outliers_known
 	out$simulation$bxy <- bxy
 
+	if(debug)
+	{
+		out$phen <- list(
+			y=y, x=x, u1=u1, u2=u2, u3=u3
+		)
+	}
 	return(out)
 }
 
