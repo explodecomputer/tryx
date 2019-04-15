@@ -10,7 +10,7 @@
 #' 
 #' @export
 #' @return Results from simulations and tryx scan
-tryx.simulate2 <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=TRUE, debug=FALSE)
+tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=TRUE, debug=FALSE)
 {
 	# scenario 1 - confounder g -> u; u -> x; u -> y
 	# scenario 2 - pleiotropy g -> u -> y
