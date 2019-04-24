@@ -188,6 +188,7 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 		u1x[[i]]$other_allele.outcome <- u1y[[i]]$other_allele.outcome <- "G"
 		u1x[[i]]$eaf.exposure <- u1y[[i]]$eaf.exposure <- 0.5
 		u1x[[i]]$eaf.outcome <- u1y[[i]]$eaf.outcome <- 0.5
+		print(head(u1x[[i]]))
 	}
 
 	u2x <- list()
@@ -222,9 +223,10 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 
 
 
-	out$candidate_instruments <- subset(rbind(bind_rows(u1x), bind_rows(u2x)), select=c(
+	out$candidate_instruments <- subset(rbind(bind_rows(u1x), bind_rows(u2x), bind_rows(u3x)), select=c(
 		SNP, beta.exposure, se.exposure, id.exposure, exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, pval.exposure
 	))
+	print(table(out$candidate_instruments$id.exposure))
 	out2 <- subset(out$search, sig)
 	out$candidate_instruments <- group_by(out$candidate_instruments, id.exposure) %>%
 		do({
@@ -234,7 +236,7 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 			x
 		})
 
-	out$candidate_outcome <- subset(rbind(bind_rows(u1y), bind_rows(u2y)), select=c(
+	out$candidate_outcome <- subset(rbind(bind_rows(u1y), bind_rows(u2y), bind_rows(u3y)), select=c(
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
@@ -242,7 +244,7 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	out$candidate_outcome_mr <- suppressMessages(mr(out$candidate_outcome_dat, method_list="mr_ivw"))
 
 
-	out$candidate_exposure <- subset(rbind(bind_rows(u1x), bind_rows(u2x)), select=c(
+	out$candidate_exposure <- subset(rbind(bind_rows(u1x), bind_rows(u2x), bind_rows(u3x)), select=c(
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
