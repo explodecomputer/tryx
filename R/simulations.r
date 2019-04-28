@@ -73,7 +73,7 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	{
 		outliers <- as.character(c(1:nu))
 	} else {
-		radial <- RadialMR::ivw_radial(RadialMR::format_radial(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP), 0.05/nrow(out$dat), summary=FALSE)
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP), 0.05/nrow(out$dat))
 		if(radial$outliers[1] == "No significant outliers")
 		{
 			outliers <- as.character(c(1:nu))
@@ -169,11 +169,12 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	names(PHEN) <- traitlist
 	print(str(PHEN))
 
-	mvdat <- make_mvdat(PHEN, y, G)
-	mvres <- mv_multiple(mvdat)
-	mvres$result$exposure <- traitlist
-	out$mvres <- mvres
-	
+	out$mvres <- try({
+		mvdat <- make_mvdat(PHEN, y, G)
+		mvres <- mv_multiple(mvdat)
+		mvres$result$exposure <- traitlist
+		mvres
+	})
 	## get effects
 	u1x <- list()
 	u1y <- list()
