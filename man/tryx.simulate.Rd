@@ -14,6 +14,10 @@ tryx.simulate(nid, nu1, nu2, bxu3 = 0, bu3y = 0, bxy = 3,
 
 \item{nu2}{Number of traits which influence Y}
 
+\item{bxu3}{Effect of x on mediator}
+
+\item{bu3y}{Effect of mediator on y}
+
 \item{bxy}{Causal effect of X on Y}
 
 \item{outliers_known}{Assume that all outliers are detected (defaukt = TRUE). If FALSE then Radial MR is used to detect outliers}

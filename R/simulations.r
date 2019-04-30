@@ -5,6 +5,8 @@
 #' @param nid Sample size to simulate
 #' @param nu1 Number of traits which influence both X and Y
 #' @param nu2 Number of traits which influence Y
+#' @param bxu3 Effect of x on mediator
+#' @param bu3y Effect of mediator on y
 #' @param bxy Causal effect of X on Y
 #' @param outliers_known Assume that all outliers are detected (defaukt = TRUE). If FALSE then Radial MR is used to detect outliers
 #' 
@@ -165,9 +167,7 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	G[[4]] <- gx
 	G <- do.call(cbind, G)
 	traitlist <- c("X", traitlist)
-	print(str(G))
 	names(PHEN) <- traitlist
-	print(str(PHEN))
 
 	out$mvres <- try({
 		mvdat <- make_mvdat(PHEN, y, G)
@@ -189,7 +189,6 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 		u1x[[i]]$other_allele.outcome <- u1y[[i]]$other_allele.outcome <- "G"
 		u1x[[i]]$eaf.exposure <- u1y[[i]]$eaf.exposure <- 0.5
 		u1x[[i]]$eaf.outcome <- u1y[[i]]$eaf.outcome <- 0.5
-		print(head(u1x[[i]]))
 	}
 
 	u2x <- list()
@@ -227,7 +226,6 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	out$candidate_instruments <- subset(rbind(bind_rows(u1x), bind_rows(u2x), bind_rows(u3x)), select=c(
 		SNP, beta.exposure, se.exposure, id.exposure, exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, pval.exposure
 	))
-	print(table(out$candidate_instruments$id.exposure))
 	out2 <- subset(out$search, sig)
 	out$candidate_instruments <- group_by(out$candidate_instruments, id.exposure) %>%
 		do({
