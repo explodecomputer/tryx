@@ -39,12 +39,14 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	bgu2 <- lapply(1:nu2, function(x) runif(ngu2))
 	bgu3 <- runif(ngu3)
 	bgx <- runif(ngx)
-	bu1x <- rnorm(nu1)
-	bu1y <- rnorm(nu1)
-	bu2y <- rnorm(nu2)
-	bu3y <- bu3y
-	bxy <- bxy
+	bu1x <- out$bu1x <- rnorm(nu1)
+	bu1y <- out$bu1y <- rnorm(nu1)
+	bu2y <- out$bu2y <- rnorm(nu2)
+	out$bxu3 <- bxu3
+	bu3y <- out$bu3y <- bu3y
+	bxy <- out$bxy <- bxy
 
+	# create outlier traits
 	gu1 <- list()
 	u1 <- matrix(nid * nu1, nid, nu1)
 	for(i in 1:nu1)
@@ -239,7 +241,8 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
-	out$candidate_outcome_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_outcome))
+	# out$candidate_outcome_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_outcome))
+	out$candidate_outcome_dat <- bind_rows(bind_rows(u1y), bind_rows(u2y), bind_rows(u3y))
 	out$candidate_outcome_mr <- suppressMessages(mr(out$candidate_outcome_dat, method_list="mr_ivw"))
 
 
@@ -247,8 +250,10 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 		SNP, beta.outcome, se.outcome, id.outcome, outcome, effect_allele.outcome, other_allele.outcome, eaf.outcome, pval.outcome
 	))
 
-	out$candidate_exposure_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_exposure))
+	# out$candidate_exposure_dat <- suppressMessages(harmonise_data(out$candidate_instruments, out$candidate_exposure))
+	out$candidate_exposure_dat <- bind_rows(bind_rows(u1x), bind_rows(u2x), bind_rows(u3x))
 	out$candidate_exposure_mr <- suppressMessages(mr(out$candidate_exposure_dat, method_list="mr_ivw"))
+
 
 	out$simulation <- list()
 	out$simulation$no_outlier_flag <- no_outlier_flag

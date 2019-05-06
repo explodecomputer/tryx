@@ -75,9 +75,9 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 			}
 			temp <- dat
 			temp$beta.exposure[temp$SNP == a$SNP] <- a$adj.beta.exposure
-			temp$beta.exposure.se[temp$SNP == a$SNP] <- a$adj.beta.exposure.se
+			temp$se.exposure[temp$SNP == a$SNP] <- a$adj.se.exposure
 			temp$beta.outcome[temp$SNP == a$SNP] <- a$adj.beta.outcome
-			temp$beta.outcome.se[temp$SNP == a$SNP] <- a$adj.beta.outcome.se
+			temp$se.outcome[temp$SNP == a$SNP] <- a$adj.se.outcome
 			temp$qi <- cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
 			a$adj.qi <- temp$qi[temp$SNP == a$SNP]
 			a$adj.Q <- sum(temp$qi)
