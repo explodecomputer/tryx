@@ -8,11 +8,13 @@
 #' @param bxu3 Effect of x on mediator
 #' @param bu3y Effect of mediator on y
 #' @param bxy Causal effect of X on Y
-#' @param outliers_known Assume that all outliers are detected (defaukt = TRUE). If FALSE then Radial MR is used to detect outliers
+#' @param outliers_known Assume that all outliers are detected (default = 'known'). But can also be 'detected', where we use heterogeneity based outlier detection, or 'all' where we try to adjust for every outlier regardless of heterogeneity
+#' @param directional_bias Is the outlier typically in one direction (i.e. unbalanced pleiotropy?)
+#' @param outlier_threshold Either 'nominal' or 'bonferroni'
 #' 
 #' @export
 #' @return Results from simulations and tryx scan
-tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=TRUE, debug=FALSE)
+tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=c("known", "detected", "all")[1], directional_bias=FALSE, outlier_threshold = 'nominal', debug=FALSE)
 {
 	# scenario 1 - confounder g -> u; u -> x; u -> y
 	# scenario 2 - pleiotropy g -> u -> y
@@ -39,9 +41,16 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	bgu2 <- lapply(1:nu2, function(x) runif(ngu2))
 	bgu3 <- runif(ngu3)
 	bgx <- runif(ngx)
+
 	bu1x <- out$bu1x <- rnorm(nu1)
 	bu1y <- out$bu1y <- rnorm(nu1)
 	bu2y <- out$bu2y <- rnorm(nu2)
+	if(directional_bias)
+	{
+		bu1x <- out$bu1x <- abs(bu1x)
+		bu1y <- out$bu1y <- abs(bu1y)
+		bu2y <- out$bu2y <- abs(bu2y)
+	}
 	out$bxu3 <- bxu3
 	bu3y <- out$bu3y <- bu3y
 	bxy <- out$bxy <- bxy
@@ -73,24 +82,34 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=T
 	out$dat$mr_keep <- TRUE
 	no_outlier_flag <- FALSE
 
-	if(outliers_known)
+	if(outliers_known == "known")
 	{
+		message("Assuming knowledge of all outliers")
 		outliers <- as.character(c(1:nu))
-	} else {
-		radial <- RadialMR::ivw_radial(RadialMR::format_radial(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP), 0.05/nrow(out$dat))
+	} else if(outliers_known %in% c("detected", "all")) {
+		message("Detecting outliers")
+		radial <- RadialMR::ivw_radial(RadialMR::format_radial(out$dat$beta.exposure, out$dat$beta.outcome, out$dat$se.exposure, out$dat$se.outcome, out$dat$SNP), ifelse(outlier_threshold == "nominal", 0.05, 0.05/nrow(out$dat)))
 		if(radial$outliers[1] == "No significant outliers")
 		{
+			message("No significant outliers detected")
 			outliers <- as.character(c(1:nu))
 			no_outlier_flag <- TRUE
 		} else {
 			outliers <- as.character(sort(radial$outliers$SNP))
 			message("Number of outliers: ", length(outliers))
 		}
+	} else {
+		stop("outliers_known must be known, detected or all")
 	}
 	# output$radialmr <- radial
 	nout <- length(outliers)
 	outliers <- subset(out$dat, SNP %in% outliers)$SNP
 	out$outliers <- outliers
+	if(outliers_known == "all")
+	{
+		message("Treating all variants as outliers")
+		outliers <- 1:ngx
+	}
 	out$id_list <- c(paste0("U1_", 1:nu1), paste0("U2_", 1:nu2))
 
 	# temp1 <- gwas(u1, gx[,1:2])

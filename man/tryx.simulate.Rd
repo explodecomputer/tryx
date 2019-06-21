@@ -5,7 +5,7 @@
 \title{Simulate data to test tryx}
 \usage{
 tryx.simulate(nid, nu1, nu2, bxu3 = 0, bu3y = 0, bxy = 3,
-  outliers_known = TRUE, debug = FALSE)
+  outliers_known = c("known", "detected", "all")[1], debug = FALSE)
 }
 \arguments{
 \item{nid}{Sample size to simulate}

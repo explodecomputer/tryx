@@ -271,10 +271,16 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	dat_rem <- subset(dat, !SNP %in% temp$SNP)
 	dat_rem2 <- subset(dat, !SNP %in% tryxscan$outliers)
 
+	print(dat_rem2)
+
 	est1 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem))
 	est2 <- summary(lm(ratiow ~ -1 + weights, data=dat))
 	est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
-	est4 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem2))
+	est4 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem2)))
+	if(class(est4) == "try-error")
+	{
+		est4 <- list(coefficients = matrix(NA, 2,4))
+	}
 
 	estimates <- data.frame(
 		est=c("Raw", "Outliers removed (candidates)", "Outliers removed (all)", "Outliers adjusted"),
@@ -297,13 +303,14 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 			data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
 		)
 		p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
-		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
+		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est, colour=est)) +
 		geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey50") +
-		geom_point(aes(colour=what)) +
-		geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.01, "npc"))) +
+		geom_point() +
+		geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.02, "npc"))) +
 		labs(colour="") +
 		xlim(c(0, max(dat$weights))) +
-		ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
+		ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow))) +
+		scale_colour_brewer(type="qual")
 		analysis$plot <- p
 	}
 	return(analysis)

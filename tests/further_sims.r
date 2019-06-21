@@ -7,6 +7,41 @@ tryx.analyse(o)
 glimpse(o)
 o$search
 
+o <- tryx.simulate(10000, 2, 2, 0.5, 0.5, 0, outlier_threshold='nominal') %>% tryx.sig
+o <- tryx.simulate(10000, 2, 2, 0.5, 0.5, 0, outlier_threshold='nominal', outliers_known='detected') %>% tryx.sig
+o <- tryx.simulate(10000, 2, 2, 0.5, 0.5, 0, outlier_threshold='nominal', outliers_known='all') %>% tryx.sig
+
+
+o <- tryx.simulate(10000, 1, 10, 0.5, 0.5, 0, outlier_threshold='nominal', outliers_known='detected', directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o)
+
+
+o <- tryx.simulate(10000, 1, 10, 0.5, 0.5, 0, outlier_threshold='nominal', outliers_known='detected', directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o)
+
+
+o <- tryx.simulate(10000, 1, 10, 0.5, 0.5, 0, outlier_threshold='nominal', outliers_known='all', directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o)
+
+o <- tryx.simulate(10000, 1, 10, 0.5, 0.5, 1, outlier_threshold='nominal', outliers_known='all', directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o)
+
+o <- tryx.simulate(10000, 1, 10, 0.5, 0.5, 0, outlier_threshold='nominal', outliers_known='known', directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o)
+
+
+o <- tryx.simulate(10000, 1, 28, 0, 0.5, 0, outlier_threshold='nominal', outliers_known='detected', directional_bias=FALSE) %>% tryx.sig
+tryx.analyse(o)
+
+o <- tryx.simulate(10000, 1, 28, 0, 0.5, 0, outlier_threshold='nominal', outliers_known='detected', directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o)
+
+
+tryx.adjustment(o)
+glimpse(o)
+o$search
+
+
 o <- tryx.simulate(10000, 2, 2, 0, 0, 3)
 glimpse(o)
 o$search
