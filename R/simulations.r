@@ -11,10 +11,11 @@
 #' @param outliers_known Assume that all outliers are detected (default = 'known'). But can also be 'detected', where we use heterogeneity based outlier detection, or 'all' where we try to adjust for every outlier regardless of heterogeneity
 #' @param directional_bias Is the outlier typically in one direction (i.e. unbalanced pleiotropy?)
 #' @param outlier_threshold Either 'nominal' or 'bonferroni'
+#' @param single_pleiotropy_trait = FALSE
 #' 
 #' @export
 #' @return Results from simulations and tryx scan
-tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=c("known", "detected", "all")[1], directional_bias=FALSE, outlier_threshold = 'nominal', debug=FALSE)
+tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=c("known", "detected", "all")[1], directional_bias=FALSE, outlier_threshold = 'nominal', single_pleiotropy_trait = FALSE, debug=FALSE)
 {
 	# scenario 1 - confounder g -> u; u -> x; u -> y
 	# scenario 2 - pleiotropy g -> u -> y
@@ -35,6 +36,7 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=c
 
 	gx <- make_geno(nid, ngx, 0.5)
 	nu <- nu1 + nu2 + nu3
+	out$true_outliers <- 1:nu
 
 	# Effect sizes
 	bgu1 <- lapply(1:nu1, function(x) runif(ngu1))
@@ -57,18 +59,43 @@ tryx.simulate <- function(nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3, outliers_known=c
 
 	# create outlier traits
 	gu1 <- list()
-	u1 <- matrix(nid * nu1, nid, nu1)
+	u1 <- matrix(0, nid, nu1)
 	for(i in 1:nu1)
 	{
 		gu1[[i]] <- cbind(gx[,i], make_geno(nid, ngu1-1, 0.5))
-		u1[,i] <- gu1[[i]] %*% bgu1[[i]] + rnorm(nid)
+		if(single_pleiotropy_trait)
+		{
+			u1[,1] <- u1[,1] + gu1[[i]] %*% bgu1[[i]]
+		} else {
+			u1[,i] <- gu1[[i]] %*% bgu1[[i]] + rnorm(nid)
+		}
 	}
+	if(single_pleiotropy_trait)
+	{
+		for(i in 1:nu1)
+		{
+			u1[,i] <- u1[,i] + rnorm(nid)
+		}
+	}
+
 	gu2 <- list()
-	u2 <- matrix(nid * nu2, nid, nu2)
+	u2 <- matrix(0, nid, nu2)
 	for(j in 1:nu2)
 	{
 		gu2[[j]] <- cbind(gx[,i+j], make_geno(nid, ngu1-1, 0.5))
-		u2[,j] <- gu2[[j]] %*% bgu2[[j]] + rnorm(nid)
+		if(single_pleiotropy_trait)
+		{
+			u2[,1] <- u2[,1] + gu2[[j]] %*% bgu2[[j]]
+		} else {
+			u2[,j] <- gu2[[j]] %*% bgu2[[j]] + rnorm(nid)
+		}
+	}
+	if(single_pleiotropy_trait)
+	{
+		for(i in 1:nu2)
+		{
+			u2[,i] <- u2[,i] + rnorm(nid)
+		}
 	}
 
 	ux <- rep(2, nu1)

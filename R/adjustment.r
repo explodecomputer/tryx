@@ -293,6 +293,24 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	)
 	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
 
+	if("true_outliers" %in% names(tryxscan))
+	{
+		dat_true <- subset(dat, !SNP %in% tryxscan$true_outliers)
+		est5 <- summary(lm(ratiow ~ -1 + weights, data=dat_true))
+		estimates <- bind_rows(estimates,
+			data.frame(
+				est=c("Oracle"),
+				b=c(coefficients(est5)[1,1]), 
+				se=c(coefficients(est5)[1,2]), 
+				pval=c(coefficients(est5)[1,4]),
+				nsnp=c(nrow(dat_true)),
+				Q = c(sum(dat_true$qi)),
+				int=0
+			)
+		)
+	}
+	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+
 	analysis$estimates <- estimates
 
 	if(plot)
