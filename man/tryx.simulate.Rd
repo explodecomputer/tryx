@@ -4,27 +4,66 @@
 \alias{tryx.simulate}
 \title{Simulate data to test tryx}
 \usage{
-tryx.simulate(nid, nu1, nu2, bxu3 = 0, bu3y = 0, bxy = 3,
-  outliers_known = c("known", "detected", "all")[1], debug = FALSE)
+tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2,
+  ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0,
+  bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2,
+  vu2y = 0.2, mininum_instruments = 10,
+  instrument_threshold = "bonferroni", outlier_threshold = "bonferroni",
+  outliers_known = "detected", directional_bias = FALSE)
 }
 \arguments{
-\item{nid}{Sample size to simulate}
+\item{nid}{= 10000 Number of samples}
 
-\item{nu1}{Number of traits which influence both X and Y}
+\item{ngx}{= 30 Number of direct instruments to x}
 
-\item{nu2}{Number of traits which influence Y}
+\item{ngu1}{= 30 Number of instruments influencing confounder of x and y}
 
-\item{bxu3}{Effect of x on mediator}
+\item{ngu2}{= 30 Number of instruments per mediating}
 
-\item{bu3y}{Effect of mediator on y}
+\item{nu2}{= 2 Number of gx that are pleiotropic}
 
-\item{bxy}{Causal effect of X on Y}
+\item{ngu3}{= 30 Number of instruments for u3 mediator}
 
-\item{outliers_known}{Assume that all outliers are detected (defaukt = TRUE). If FALSE then Radial MR is used to detect outliers}
+\item{vgx}{= 0.2 Variance explained by gx instruments}
+
+\item{vgu1}{= 0.6 Variance explained by u1 instruments}
+
+\item{vgu2}{= 0.2 Variance explained by u2 instruments}
+
+\item{vgu3}{= 0.2 Variance explained by u3 instruments}
+
+\item{bxy}{= 0 Causal effect of x on y}
+
+\item{bu1x}{= 0.6 Effect of u1 on x}
+
+\item{bu1y}{= 0.4 Effect of u1 on y}
+
+\item{bxu3}{= 0.3 Effect of x on u3}
+
+\item{bu3y}{= 0 Effect of u3 on y}
+
+\item{vgxu2}{= 0.2 Variance explained by each gx instrument on each u2 mediator}
+
+\item{vu2y}{= 0.2 Variance explained by all u2 mediators on y}
+
+\item{mininum_instruments}{= 10 Minimum number of instruments required to have been detected to run simulation}
+
+\item{instrument_threshold}{= "bonferroni" Threshold, either numeric or 'bonferroni'}
+
+\item{outlier_threshold}{= "bonferroni" Threshold, either numeric or 'bonferroni'}
+
+\item{outliers_known}{= "detected" Either detected = using radial mr to find heterogeneity outliers; known = adjust for all known invalid instruments; all = adjust for all instruments}
+
+\item{directional_bias}{= FALSE Is the pleiotropic effect randomly centered around 0 (FALSE) or does it have a non-0 mean (TRUE)}
 }
 \value{
-Results from simulations and tryx scan
+list for tryx.analyse
 }
 \description{
-Choose a sample size, number of horizontal pleiotropy paths, and number of confounders. Create summary data for all necessary traits, then perform tryx scan
+# Create data using model here: https://photos.google.com/photo/AF1QipNbxPRZyr7iODKRwuwrEmYALTpxnyudq7xovC7v. Create summary data for all necessary traits, then perform tryx scan
+x = exposure
+y = outcome
+u1 = confounder of x and y
+u2 = mediator of horizontal pleiotropy from gx to y. One for each gx
+u3 = mediator between x and y
 }
