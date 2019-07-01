@@ -1,8 +1,52 @@
 library(devtools)
 load_all()
 
-o <- tryx.simulate(10000, 2, 2, 3, 3, 0) %>% tryx.sig
-tryx.adjustment(o)
+
+o <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = "bonferroni", outliers_known = "all") %>% tryx.sig
+tryx.analyse(o)
+
+
+set.seed(1)
+o1 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = "bonferroni", outliers_known = "all") %>% tryx.sig
+dev.new()
+tryx.analyse(o1)
+
+set.seed(1)
+o2 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = "bonferroni", outliers_known = "detected") %>% tryx.sig
+tryx.analyse(o2)
+
+
+set.seed(1)
+o2 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 25, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = 0.05, outliers_known = "detected", directional_bias=TRUE) %>% tryx.sig
+tryx.analyse(o2)
+
+
+set.seed(1)
+o2 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 25, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0.2, bu1x = 0.6, bu1y = 0, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = 0.05, outliers_known = "detected", directional_bias=FALSE) %>% tryx.sig
+tryx.analyse(o2)
+
+
+
+set.seed(1)
+o2 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 20, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0, bxu3 = 0.3, bu3y = 0.2, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = 0.05, outliers_known = "detected", directional_bias=FALSE) %>% tryx.sig
+tryx.analyse(o2)
+
+
+
+
+
+
+
+## old
+
+
+
+
+
+
+nid, nu1, nu2, bxu3=0, bu3y=0, bxy=3,
+
+o <- tryx.simulate(nid=10000, nu1=0, nu2=2, bxu3=0, bu3y=0, bxy=0, bu4x=0, bu4y=0) %>% tryx.sig
 tryx.analyse(o)
 glimpse(o)
 o$search

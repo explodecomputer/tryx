@@ -221,16 +221,16 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	analysis$adj <- adj
 
 	# Detection
-	if("simulation" %in% names(tryxscan))
-	{
-		detection <- list()
-		detection$nu1_correct <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what != "p->y")
-		detection$nu1_incorrect <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what == "p->y")
-		detection$nu2_correct <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what == "p->y")
-		detection$nu2_incorrect <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what != "p->y")
-		detection$no_outlier_flag <- tryxscan$simulation$no_outlier_flag
-		analysis$detection <- detection
-	}
+	# if("simulation" %in% names(tryxscan))
+	# {
+	# 	detection <- list()
+	# 	detection$nu1_correct <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what != "p->y")
+	# 	detection$nu1_incorrect <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what == "p->y")
+	# 	detection$nu2_correct <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what == "p->y")
+	# 	detection$nu2_incorrect <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what != "p->y")
+	# 	detection$no_outlier_flag <- tryxscan$simulation$no_outlier_flag
+	# 	analysis$detection <- detection
+	# }
 
 	cpg <- require(ggrepel)
 	if(!cpg)
@@ -270,25 +270,26 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 
 	dat_rem <- subset(dat, !SNP %in% temp$SNP)
 	dat_rem2 <- subset(dat, !SNP %in% tryxscan$outliers)
-
-	print(dat_rem2)
+	# adjust everything that's possible remove remaining outliers
+	dat_rem3 <- rbind(temp, dat_rem2) %>% filter(!duplicated(SNP))
 
 	est1 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem))
 	est2 <- summary(lm(ratiow ~ -1 + weights, data=dat))
 	est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
 	est4 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem2)))
+	est5 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem3)))
 	if(class(est4) == "try-error")
 	{
 		est4 <- list(coefficients = matrix(NA, 2,4))
 	}
 
 	estimates <- data.frame(
-		est=c("Raw", "Outliers removed (candidates)", "Outliers removed (all)", "Outliers adjusted"),
-		b=c(coefficients(est2)[1,1], coefficients(est1)[1,1], coefficients(est4)[1,1], coefficients(est3)[1,1]), 
-		se=c(coefficients(est2)[1,2], coefficients(est1)[1,2], coefficients(est4)[1,2], coefficients(est3)[1,2]), 
-		pval=c(coefficients(est2)[1,4], coefficients(est1)[1,4], coefficients(est4)[1,4], coefficients(est3)[1,4]),
-		nsnp=c(nrow(dat), nrow(dat_rem), nrow(dat_rem2), nrow(dat_adj)),
-		Q = c(sum(dat$qi), sum(dat_rem$qi), sum(dat_rem2$qi), sum(dat_adj$qi)),
+		est=c("Raw", "Outliers removed (candidates)", "Outliers removed (all)", "Outliers adjusted", "Mixed", "Multivariable MR"),
+		b=c(coefficients(est2)[1,1], coefficients(est1)[1,1], coefficients(est4)[1,1], coefficients(est3)[1,1], coefficients(est5)[1,1], tryxscan$mvres$result$b[1]), 
+		se=c(coefficients(est2)[1,2], coefficients(est1)[1,2], coefficients(est4)[1,2], coefficients(est3)[1,2], coefficients(est5)[1,2], tryxscan$mvres$result$se[1]), 
+		pval=c(coefficients(est2)[1,4], coefficients(est1)[1,4], coefficients(est4)[1,4], coefficients(est3)[1,4], coefficients(est5)[1,4], tryxscan$mvres$result$pval[1]),
+		nsnp=c(nrow(dat), nrow(dat_rem), nrow(dat_rem2), nrow(dat_adj), nrow(dat_rem3), tryxscan$mvres$result$nsnp[1]),
+		Q = c(sum(dat$qi), sum(dat_rem$qi), sum(dat_rem2$qi), sum(dat_adj$qi), sum(dat_rem3$qi), NA),
 		int=0
 	)
 	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
@@ -296,13 +297,13 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	if("true_outliers" %in% names(tryxscan))
 	{
 		dat_true <- subset(dat, !SNP %in% tryxscan$true_outliers)
-		est5 <- summary(lm(ratiow ~ -1 + weights, data=dat_true))
+		est6 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_true)))
 		estimates <- bind_rows(estimates,
 			data.frame(
 				est=c("Oracle"),
-				b=c(coefficients(est5)[1,1]), 
-				se=c(coefficients(est5)[1,2]), 
-				pval=c(coefficients(est5)[1,4]),
+				b=c(coefficients(est6)[1,1]), 
+				se=c(coefficients(est6)[1,2]), 
+				pval=c(coefficients(est6)[1,4]),
 				nsnp=c(nrow(dat_true)),
 				Q = c(sum(dat_true$qi)),
 				int=0
@@ -321,8 +322,8 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 			data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
 		)
 		p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
-		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est, colour=est)) +
-		geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey50") +
+		geom_abline(data=estimates, aes(slope=b, intercept=0, colour=est)) +
+		geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey10") +
 		geom_point() +
 		geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.02, "npc"))) +
 		labs(colour="") +
