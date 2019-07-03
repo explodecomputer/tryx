@@ -24,6 +24,8 @@
 #' @param bu3y = 0 Effect of u3 on y
 #' @param vgxu2 = 0.2 Variance explained by each gx instrument on each u2 mediator
 #' @param vu2y = 0.2 Variance explained by all u2 mediators on y
+#' @param ngxu3 = 0 Number of gx instruments that pleiotropically associate with u3 mediator
+#' @param vgxu3y = 0 Variance explained by all gx variants directly on u3 mediator
 #' @param mininum_instruments = 10 Minimum number of instruments required to have been detected to run simulation
 #' @param instrument_threshold = "bonferroni" Threshold, either numeric or 'bonferroni'
 #' @param outlier_threshold = "bonferroni" Threshold, either numeric or 'bonferroni'
@@ -32,7 +34,7 @@
 #'
 #' @export
 #' @return list for tryx.analyse
-tryx.simulate <- function(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = "bonferroni", outliers_known = "detected", directional_bias = FALSE)
+tryx.simulate <- function(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, ngxu3 = 0, vgxu3=0, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = "bonferroni", outliers_known = "detected", directional_bias = FALSE)
 {
 	out <- list()
 
@@ -44,7 +46,12 @@ tryx.simulate <- function(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, 
 	gu3 <- make_geno(nid, ngu3, 0.5)
 	u1 <- make_phen(choose_effects(ngu1, vgu1), gu1)
 	x <- make_phen(c(abs(choose_effects(ngx, vgx)), bu1x), cbind(gx, u1))
-	u3 <- make_phen(c(choose_effects(ngu3, vgu3), bxu3), cbind(gu3, x))
+	if(ngxu3 > 0)
+	{
+		u3 <- make_phen(c(choose_effects(ngu3, vgu3), bxu3, choose_effects(ngxu3, vgxu3)), cbind(gu3, x, gx[,sample(1:ngx, ngxu3)]))
+	} else {
+		u3 <- make_phen(c(choose_effects(ngu3, vgu3), bxu3), cbind(gu3, x))
+	}
 
 
 	# Some number of the direct gx SNPs also influence the outcome via a mediator
@@ -314,6 +321,8 @@ tryx.simulate <- function(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, 
 	out$simulation$bu3y <- bu3y
 	out$simulation$vgxu2 <- vgxu2
 	out$simulation$vu2y <- vu2y
+	out$simulation$ngxu3 <- ngxu3
+	out$simulation$vgxu3 <- vgxu3
 	out$simulation$mininum_instruments <- mininum_instruments
 	out$simulation$instrument_threshold <- instrument_threshold
 	out$simulation$outlier_threshold <- outlier_threshold

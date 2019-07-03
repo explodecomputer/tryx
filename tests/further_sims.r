@@ -1,6 +1,6 @@
+library(simulateGP)
 library(devtools)
 load_all()
-
 
 o <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = "bonferroni", outliers_known = "all") %>% tryx.sig
 tryx.analyse(o)
@@ -32,6 +32,27 @@ o2 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 20, ngu3 
 tryx.analyse(o2)
 
 
+
+
+
+o3 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 1, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0.2, bu1x = 0.6, bu1y = 0, bxu3 = 0.3, bu3y = 0.2, vgxu2 = 0.2, vu2y = 0, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = 0.05, outliers_known = "detected", directional_bias=FALSE) %>% tryx.sig
+o3$mvres
+
+
+o3 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 10, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0, bxu3 = 0.3, bu3y = 0.2, vgxu2 = 0.2, vu2y = 0, ngxu3=4, vgxu3=0.2, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = 0.05, outliers_known = "detected", directional_bias=FALSE) %>% tryx.sig
+o3$mvres
+
+
+tryx.analyse(o3)
+
+
+
+o3 <- tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 30, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0, bxu3 = 0.3, bu3y = 0.2, vgxu2 = 0.3, vu2y = 0.4, ngxu3=0, vgxu3=0, mininum_instruments = 10, instrument_threshold = "bonferroni", outlier_threshold = 0.05, outliers_known = "detected", directional_bias=FALSE) %>% tryx.sig
+o3$mvres
+o3$simulation$n_invalid_instruments
+
+
+tryx.analyse(o3)
 
 
 
@@ -136,4 +157,5 @@ mvdat <- make_mvdat(list(a=x1, b=x2), y, g)
 
 # Perform MV MR
 mv_multiple(mvdat)
+
 
