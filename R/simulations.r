@@ -1,6 +1,6 @@
 #' Simulate data to test tryx
 #' 
-#' # Create data using model here: https://photos.google.com/photo/AF1QipNbxPRZyr7iODKRwuwrEmYALTpxnyudq7xovC7v. Create summary data for all necessary traits, then perform tryx scan
+#' # Create data using model here: https://www.draw.io/#G1VqjTd4iH2de7sXI4PhUrxazBnYLduH_w. Create summary data for all necessary traits, then perform tryx scan
 #' x = exposure
 #' y = outcome
 #' u1 = confounder of x and y

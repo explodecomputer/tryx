@@ -5,10 +5,10 @@
 \title{Outlier scan}
 \usage{
 tryx.scan(dat, outliers = "RadialMR",
-  outlier_threshold = 0.05/sum(subset(dat, id.exposure == id.exposure[1] &
-  id.outcome == id.outcome[1])$mr_keep), use_proxies = FALSE,
-  search_threshold = 5e-08, id_list = "default", include_outliers = FALSE,
-  mr_method = "mr_ivw")
+  outlier_threshold = 0.05/sum(subset(dat, id.exposure == id.exposure[1]
+  & id.outcome == id.outcome[1])$mr_keep), use_proxies = FALSE,
+  search_threshold = 5e-08, id_list = "default",
+  include_outliers = FALSE, mr_method = "mr_ivw")
 }
 \arguments{
 \item{dat}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used}

@@ -4,12 +4,13 @@
 \alias{tryx.simulate}
 \title{Simulate data to test tryx}
 \usage{
-tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2,
-  ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2, vgu3 = 0.2, bxy = 0,
-  bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3, bu3y = 0, vgxu2 = 0.2,
-  vu2y = 0.2, mininum_instruments = 10,
-  instrument_threshold = "bonferroni", outlier_threshold = "bonferroni",
-  outliers_known = "detected", directional_bias = FALSE)
+tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30,
+  nu2 = 2, ngu3 = 30, vgx = 0.2, vgu1 = 0.6, vgu2 = 0.2,
+  vgu3 = 0.2, bxy = 0, bu1x = 0.6, bu1y = 0.4, bxu3 = 0.3,
+  bu3y = 0, vgxu2 = 0.2, vu2y = 0.2, ngxu3 = 0, vgxu3 = 0,
+  mininum_instruments = 10, instrument_threshold = "bonferroni",
+  outlier_threshold = "bonferroni", outliers_known = "detected",
+  directional_bias = FALSE)
 }
 \arguments{
 \item{nid}{= 10000 Number of samples}
@@ -46,6 +47,8 @@ tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2,
 
 \item{vu2y}{= 0.2 Variance explained by all u2 mediators on y}
 
+\item{ngxu3}{= 0 Number of gx instruments that pleiotropically associate with u3 mediator}
+
 \item{mininum_instruments}{= 10 Minimum number of instruments required to have been detected to run simulation}
 
 \item{instrument_threshold}{= "bonferroni" Threshold, either numeric or 'bonferroni'}
@@ -55,12 +58,14 @@ tryx.simulate(nid = 10000, ngx = 30, ngu1 = 30, ngu2 = 30, nu2 = 2,
 \item{outliers_known}{= "detected" Either detected = using radial mr to find heterogeneity outliers; known = adjust for all known invalid instruments; all = adjust for all instruments}
 
 \item{directional_bias}{= FALSE Is the pleiotropic effect randomly centered around 0 (FALSE) or does it have a non-0 mean (TRUE)}
+
+\item{vgxu3y}{= 0 Variance explained by all gx variants directly on u3 mediator}
 }
 \value{
 list for tryx.analyse
 }
 \description{
-# Create data using model here: https://photos.google.com/photo/AF1QipNbxPRZyr7iODKRwuwrEmYALTpxnyudq7xovC7v. Create summary data for all necessary traits, then perform tryx scan
+# Create data using model here: https://www.draw.io/#G1VqjTd4iH2de7sXI4PhUrxazBnYLduH_w. Create summary data for all necessary traits, then perform tryx scan
 x = exposure
 y = outcome
 u1 = confounder of x and y
