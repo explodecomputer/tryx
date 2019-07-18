@@ -3,6 +3,7 @@
 export(cochrans_q)
 export(tryx.adjustment)
 export(tryx.analyse)
+export(tryx.analyse.mv)
 export(tryx.network)
 export(tryx.scan)
 export(tryx.sig)
