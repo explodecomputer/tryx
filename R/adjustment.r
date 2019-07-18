@@ -5,6 +5,7 @@
 #' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 #' 
 #' @param tryxscan Output from \code{tryx.scan}
+#' @param id_remove List of traits to exclude from the analysis
 #' @export
 #' @return data frame of adjusted effect estimates and heterogeneity stats
 tryx.adjustment <- function(tryxscan, id_remove=NULL)
@@ -335,6 +336,39 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	return(analysis)
 }
 
+
+
+#' Analyse tryx results
+#' 
+#' This returns various heterogeneity statistics, IVW estimates for raw, 
+#' adjusted and outlier removed datasets, and summary of peripheral 
+#' traits detected etc.
+#' 
+#' @param tryxscan Output from \code{tryx.scan}
+#' @param plot Whether to plot or not. Default is TRUE
+#' @param filter_duplicate_outliers Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.
+#' 
+#' @export
+#' @return List of 
+#' - adj_full: data frame of SNP adjustments for all candidate traits
+#' - adj: The results from adj_full selected to adjust the exposure-outcome model
+#' - Q: Heterogeneity stats
+#' - estimates: Adjusted and unadjested exposure-outcome effects
+#' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
+
+
+
+#' Adjust and analyse the tryx results
+#'
+#' Similar to tryx.analyse, but when there are multiple traits associated with a single variant then we use a LASSO-based multivariable approach 
+#'
+#' @param tryxscan Output from \code{tryx.scan}
+#' @param plot Whether to plot or not. Default is TRUE
+#' @param id_remove=NULL <what param does>
+#' @param proxies=FALSE <what param does>
+#'
+#' @export
+#' @return
 tryx.analyse.mv <- function(tryxscan, plot=TRUE, id_remove=NULL, proxies=FALSE)
 {
 	adj <- tryx.adjustment.mv(tryxscan, id_remove, proxies)
