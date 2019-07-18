@@ -4,10 +4,16 @@
 \alias{tryx.adjustment}
 \title{Outlier adjustment estimation}
 \usage{
-tryx.adjustment(tryxscan, id_remove = NULL)
+tryx.adjustment(tryxscan, id_remove = NULL,
+  duplicate_outliers_method = c("heterogeneity", "none", "mv",
+  "mv_lasso", "lasso_selection", "lasso")[1])
 }
 \arguments{
 \item{tryxscan}{Output from \code{tryx.scan}}
+
+\item{id_remove}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+
+\item{duplicate_outliers_method}{Sometimes more than one trait will associate with a particular outlier. The options are as follows. heterogeneity: For every SNP, adjust for each potential p independently and keep just the best one based on the biggest reduction in heterogeneity. none: For every SNP, adjust for each potential p independently and keep  Now keep all of them. mv: For each SNP, adjust for all potential p jointly by performing multivariable MR to obtain p->y causal estimates. mv_lasso: For each SNP, adjust for all potential p jointly by selecting p based on lasso, and then using multivariable MR on remaining variables to obtain p->y causal estimates. lasso_selection: For each SNP, adjust for all potential p jointly by selecting p based on lasso and using the original estimates. lasso: For each SNP, adjust for all potential p jointly by selecting p based on lasso and using the lasso p->y estimates with the original standard errors. Default is 'heterogeneity'.}
 }
 \value{
 data frame of adjusted effect estimates and heterogeneity stats

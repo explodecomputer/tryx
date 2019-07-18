@@ -5,12 +5,15 @@
 \title{Analyse tryx results}
 \usage{
 tryx.analyse(tryxscan, plot = TRUE, id_remove = NULL,
-  filter_duplicate_outliers = TRUE)
+  duplicate_outliers_method = c("heterogeneity", "none", "mv",
+  "mv_lasso", "lasso_selection", ""))
 }
 \arguments{
 \item{tryxscan}{Output from \code{tryx.scan}}
 
 \item{plot}{Whether to plot or not. Default is TRUE}
+
+\item{id_remove}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
 
 \item{filter_duplicate_outliers}{Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.}
 }

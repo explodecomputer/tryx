@@ -1,151 +1,121 @@
-
-
 #' Outlier adjustment estimation
 #' 
 #' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 #' 
 #' @param tryxscan Output from \code{tryx.scan}
+#' @param id_remove List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
+#' @param duplicate_outliers_method Sometimes more than one trait will associate with a particular outlier. The options are as follows. heterogeneity: For every SNP, adjust for each potential p independently and keep just the best one based on the biggest reduction in heterogeneity. none: For every SNP, adjust for each potential p independently and keep  Now keep all of them. mv: For each SNP, adjust for all potential p jointly by performing multivariable MR to obtain p->y causal estimates. mv_lasso: For each SNP, adjust for all potential p jointly by selecting p based on lasso, and then using multivariable MR on remaining variables to obtain p->y causal estimates. lasso_selection: For each SNP, adjust for all potential p jointly by selecting p based on lasso and using the original estimates. lasso: For each SNP, adjust for all potential p jointly by selecting p based on lasso and using the lasso p->y estimates with the original standard errors. Default is 'heterogeneity'.
+
+#'
 #' @export
 #' @return data frame of adjusted effect estimates and heterogeneity stats
-tryx.adjustment <- function(tryxscan, id_remove=NULL)
+tryx.adjustment <- function(tryxscan, id_remove=NULL, duplicate_outliers_method=c("heterogeneity", "none", "mv", "mv_lasso", "lasso_selection", "lasso")[1])
 {
-	# for each outlier find the candidate MR analyses
-	# if only exposure then ignore
-	# if only outcome then re-estimate the snp-outcome association
-	# if exposure and outcome then re-estimate the snp-exposure and snp-outcome association
-	# outlier
-	# candidate
-	# what 
-	# old.beta.exposure
-	# adj.beta.exposure
-	# old.beta.outcome
-	# adj.beta.outcome
-	# candidate.beta.outcome
-	# candidate.se.outcome
-	# candidate.beta.exposure
-	# candidate.se.exposure
-	# old.deviation
-	# new.deviation
 
 	if(!any(tryxscan$search$sig))
 	{
 		return(tibble())
 	}
 
-	l <- list()
+
+	# Get all CT related to outliers that are significant, and remove any IDs to be removed
 	sig <- subset(tryxscan$search, sig & !id.outcome %in% id_remove)
+
+	# These are exposure MR results that are significant with removed IDs
 	sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% id_remove)
+
+	# These are exposure MR results that are significant with removed IDs
 	sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% id_remove)
 
+	# These original exposure outcome data
 	dat <- tryxscan$dat
+
+	# Add heterogeneity
 	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
 	dat$Q <- sum(dat$qi)
-	for(i in 1:nrow(sig))
-	{
-		a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome, qi, Q))
-		if(sig$id.outcome[i] %in% sigo$id.exposure)
-		{
-			a$candidate <- sig$outcome[i]
-			a$i <- i
-			if(sig$id.outcome[i] %in% sige$id.exposure) {
-				message("x<-p->y:  ", a$SNP, "\t- ", sig$outcome[i])
-				a$what <- "p->x; p->y"
-				a$candidate.beta.exposure <- sige$b[sige$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.exposure <- sige$se[sige$id.exposure == sig$id.outcome[i]]
-				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-				b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sige$b[sige$id.exposure == sig$id.outcome[i]], sige$se[sige$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.exposure <- b[1]
-				a$adj.se.exposure <- b[2]
-				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.outcome <- b[1]
-				a$adj.se.outcome <- b[2]
-			} else {
-				message("   p->y:  ", a$SNP, "\t- ", sig$outcome[i])
-				a$what <- "p->y"
-				a$candidate.beta.exposure <- NA
-				a$candidate.se.exposure <- NA
-				a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
-				a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-				b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
-				a$adj.beta.exposure <- a$beta.exposure
-				a$adj.se.exposure <- a$se.exposure
-				a$adj.beta.outcome <- b[1]
-				a$adj.se.outcome <- b[2]
-			}
-			temp <- dat
-			temp$beta.exposure[temp$SNP == a$SNP] <- a$adj.beta.exposure
-			temp$se.exposure[temp$SNP == a$SNP] <- a$adj.se.exposure
-			temp$beta.outcome[temp$SNP == a$SNP] <- a$adj.beta.outcome
-			temp$se.outcome[temp$SNP == a$SNP] <- a$adj.se.outcome
-			temp$qi <- cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
-			a$adj.qi <- temp$qi[temp$SNP == a$SNP]
-			a$adj.Q <- sum(temp$qi)
 
-			l[[i]] <- a
+
+	# perform adjustment within every SNP
+
+	search_result <- subset(sig, id.outcome %in% sigo$id.exposure) %>%
+		group_by(SNP) %>% 
+		mutate(snpcount=n()) %>% 
+		arrange(desc(snpcount), SNP)
+
+	snplist <- unique(search_result$SNP)
+
+	l <- list()
+	if(duplicate_outliers_method %in% c("none", "heterogeneity"))
+	{
+		for(i in 1:nrow(sig))
+		{
+			l[[i]] <- adjust_each_entry(i, dat, sig, sigo)
 		}
 
+	} else {
+
+		mvo <- perform_mv(search_result, snplist, sig, dat$id.exposure[1], dat$id.outcome[1])
+		return(mvo)
+
+		if(duplicate_outliers_method == "mv")
+		{
+			for(i in 1:length(mvo))
+			{
+				l[[i]] <- adjust_each_entry(i, dat, sig, mvo$mvo[[i]]$sigo_mv)
+			}
+		} else if(duplicate_outliers_method == "mv_lasso") {
+
+			for(i in 1:length(mvo))
+			{
+				l[[i]] <- adjust_each_entry(i, dat, mvo$sig[[i]], mvo$mvo[[i]]$sigo_selected)
+			}
+			adjusted <- bind_rows(l)
+			adjusted$d <- (adjusted$adj.qi / adjusted$adj.Q) / (adjusted$qi / adjusted$Q)
+
+		} else if(duplicate_outliers_method == "lasso_selection") {
+
+			for(i in 1:length(mvo))
+			{
+				l[[i]] <- adjust_each_entry(i, dat, mvo[[i]]$sig, sig)
+			}
+
+		} else if(duplicate_outliers_method == "lasso") {
+
+			for(i in 1:length(mvo))
+			{
+				l[[i]] <- adjust_each_entry(i, dat, mvo[[i]]$sig, mvo[[i]]$mvo$sigo_lasso)
+			}
+		}
 	}
-	l <- bind_rows(l)
-	l$d <- (l$adj.qi / l$adj.Q) / (l$qi / l$Q)
-	return(l)
+
+	adjusted <- bind_rows(l)
+	adjusted$d <- (adjusted$adj.qi / adjusted$adj.Q) / (adjusted$qi / adjusted$Q)
+
+	if(duplicate_outliers_method == "heterogeneity")
+	{
+		adjusted <- adjusted %>% arrange(d) %>% filter(!duplicated(SNP))
+	}
+	return(adjusted)
 }
 
 
-tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
+
+perform_mv <- function(search_result, snplist, sig, id.exposure, id.outcome)
 {
-	# for each outlier find the candidate MR analyses
-	# if only exposure then ignore
-	# if only outcome then re-estimate the snp-outcome association
-	# if exposure and outcome then re-estimate the snp-exposure and snp-outcome association
-	# outlier
-	# candidate
-	# what 
-	# old.beta.exposure
-	# adj.beta.exposure
-	# old.beta.outcome
-	# adj.beta.outcome
-	# candidate.beta.outcome
-	# candidate.se.outcome
-	# candidate.beta.exposure
-	# candidate.se.exposure
-	# old.deviation
-	# new.deviation
-
-	if(!any(tryxscan$search$sig))
-	{
-		return(tibble())
-	}
-
-	l <- list()
-	sig <- subset(tryxscan$search, sig & !id.outcome %in% id_remove)
-	sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% id_remove)
-	sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% id_remove)
-
-	id.exposure <- tryxscan$dat$id.exposure[1]
-	id.outcome <- tryxscan$dat$id.outcome[1]
-
-#	for each outlier SNP find its effects on 
-
-	sigo1 <- subset(sig, id.outcome %in% sigo$id.exposure) %>% group_by(SNP) %>% mutate(snpcount=n()) %>% arrange(desc(snpcount), SNP)
-	snplist <- unique(sigo1$SNP)
 	mvo <- list()
-	dat <- tryxscan$dat
-	dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
-	dat$Q <- sum(dat$qi)
-	dat$orig.beta.outcome <- dat$beta.outcome
-	dat$orig.se.outcome <- dat$se.outcome
-	dat$orig.qi <- dat$qi
-	dat$outlier <- FALSE
-	dat$outlier[dat$SNP %in% tryxscan$outliers] <- TRUE
+	ssig <- list()
 	for(i in 1:length(snplist))
 	{
+		mvo[[i]] <- list()
 		message("Estimating joint effects of the following traits associated with ", snplist[i])
-		temp <- subset(sigo1, SNP %in% snplist[i])
+		temp <- subset(search_result, SNP %in% snplist[i])
 		message(paste(unique(temp$outcome), collapse="\n"))
+		message("Extracting instruments")
 		mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=proxies))
+		message("Extracting outcome data for new instruments")
 		mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
 		mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
+		message("Performing LASSO")
 		b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
 		c <- coef(b, s = "lambda.min")
 		keeplist <- unique(c(rownames(c)[!c[,1] == 0], tryxscan$dat$exposure[1]))
@@ -156,33 +126,77 @@ tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
 		mvexp2 <- subset(mvexp2, !SNP %in% remsnp)
 		mvout2 <- subset(mvout, SNP %in% mvexp2$SNP)
 		mvdat2 <- suppressMessages(mv_harmonise_data(mvexp2, mvout2))
-		mvo[[i]] <- mv_multiple(mvdat2)$result
-		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
-		temp2 <- with(temp, data_frame(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
-		mvo[[i]] <- merge(mvo[[i]], temp2, by="exposure")
-		boo <- with(subset(dat, SNP == snplist[i]), 
-			bootstrap_path(
-				beta.outcome,
-				se.outcome,
-				mvo[[i]]$snpeff,
-				mvo[[i]]$snpeff.se,
-				mvo[[i]]$b,
-				mvo[[i]]$se
-			))
-		dat$beta.outcome[dat$SNP == snplist[i]] <- boo[1]
-		dat$se.outcome[dat$SNP == snplist[i]] <- boo[2]
-	}
-	mvo <- bind_rows(mvo)
 
-	dat$qi[dat$mr_keep] <- cochrans_q(dat$beta.outcome[dat$mr_keep] / dat$beta.exposure[dat$mr_keep], dat$se.outcome[dat$mr_keep] / abs(dat$beta.exposure[dat$mr_keep]))
-	return(list(mvo=mvo, dat=dat))
+		mvo[[i]]$mv_multiple <- mv_multiple(mvdat)$result
+		mvo[[i]]$mv_selection <- mv_multiple(mvdat2)$result
+		mvo[[i]]$lasso <- coef(b) %>% as.matrix %>% {data_frame(exposure=rownames(.), b=.[,1])} %>% filter(exposure != "(Intercept)")
+		remlist <- unique(mvo[[i]]$lasso$exposure[mvo[[i]]$lasso$b == 0])
+
+		# Filter out sig to keep only selected traits per SNP
+		ssig[[i]] <- subset(sig, !(SNP == snplist[i] & outcome %in% remlist))
+
+		# Update sigo with lasso mv betas
+		sigo_selected <- subset(sigo, exposure %in% mvo[[i]]$mv_selection$exposure)
+		index <- match(sigo_selected$exposure, mvo[[i]]$mv_selection$exposure)
+		stopifnot(all(sigo_selected$exposure == mvo[[i]]$mv_selection$exposure[index]))
+		sigo_selected$b <- mvo[[i]]$mv_selection$b[index]
+		sigo_selected$se <- mvo[[i]]$mv_selection$se[index]
+
+		# Update sigo with mv betas
+		sigo_mv <- subset(sigo, exposure %in% mvo[[i]]$mv_multiple$exposure)
+		index <- match(sigo_mv$exposure, mvo[[i]]$mv_multiple$exposure)
+		stopifnot(all(sigo_mv$exposure == mvo[[i]]$mv_multiple$exposure[index]))
+		sigo_mv$b <- mvo[[i]]$mv_multiple$b[index]
+		sigo_mv$se <- mvo[[i]]$mv_multiple$se[index]
+
+		# Update sigo with lasso betas
+		sigo_lasso <- subset(sigo, exposure %in% mvo[[i]]$lasso$exposure)
+		index <- match(sigo_lasso$exposure, mvo[[i]]$lasso$exposure)
+		stopifnot(all(sigo_lasso$exposure == mvo[[i]]$lasso$exposure[index]))
+		sigo_lasso$b <- mvo[[i]]$lasso$b[index]
+
+		# Gather
+		mvo[[i]]$sigo_selected <- sigo_selected
+		mvo[[i]]$sigo_mv <- sigo_mv
+		mvo[[i]]$sigo_lasso <- sigo_lasso
+
+	}
+	return(list(sig=ssig, mvo=mvo))
 }
 
 
+adjust_each_entry <- function(i, dat, sig, sigo)
+{
+	a <- subset(dat, SNP == sig$SNP[i], select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome, qi, Q))
+	if(sig$id.outcome[i] %in% sigo$id.exposure)
+	{
+		a$candidate <- sig$outcome[i]
+		a$i <- i
+		message("   p->y:  ", a$SNP, "\t- ", sig$outcome[i])
+		a$what <- "p->y"
+		a$candidate.beta.exposure <- NA
+		a$candidate.se.exposure <- NA
+		a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
+		a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
+		b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
+		a$adj.beta.exposure <- a$beta.exposure
+		a$adj.se.exposure <- a$se.exposure
+		a$adj.beta.outcome <- b[1]
+		a$adj.se.outcome <- b[2]
+		temp <- dat
+		temp$beta.exposure[temp$SNP == a$SNP] <- a$adj.beta.exposure
+		temp$se.exposure[temp$SNP == a$SNP] <- a$adj.se.exposure
+		temp$beta.outcome[temp$SNP == a$SNP] <- a$adj.beta.outcome
+		temp$se.outcome[temp$SNP == a$SNP] <- a$adj.se.outcome
+		temp$qi <- cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
+		a$adj.qi <- temp$qi[temp$SNP == a$SNP]
+		a$adj.Q <- sum(temp$qi)
 
-
-
-
+		return(a)
+	} else {
+		return(NULL)
+	}
+}
 
 
 #' Analyse tryx results
@@ -193,6 +207,7 @@ tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
 #' 
 #' @param tryxscan Output from \code{tryx.scan}
 #' @param plot Whether to plot or not. Default is TRUE
+#' @param id_remove List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
 #' @param filter_duplicate_outliers Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.
 #' 
 #' @export
@@ -202,41 +217,22 @@ tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
 #' - Q: Heterogeneity stats
 #' - estimates: Adjusted and unadjested exposure-outcome effects
 #' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
-tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE)
+tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, duplicate_outliers_method=c("heterogeneity", "none", "mv", "mv_lasso", "lasso_selection", ""))
 {
-
-	analysis <- list()
-	adj_full <- tryx.adjustment(tryxscan, id_remove)
-	if(nrow(adj_full) == 0)
-	{
-		return(NULL)
-	}
-	analysis$adj_full <- adj_full
-	if(filter_duplicate_outliers)
-	{
-		adj <- adj_full %>% arrange(d) %>% filter(!duplicated(SNP))
-	} else {
-		adj <- adj_full
-	}
-	analysis$adj <- adj
-
-	# Detection
-	# if("simulation" %in% names(tryxscan))
-	# {
-	# 	detection <- list()
-	# 	detection$nu1_correct <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what != "p->y")
-	# 	detection$nu1_incorrect <- sum(adj$SNP %in% 1:tryxscan$simulation$nu1 & adj$what == "p->y")
-	# 	detection$nu2_correct <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what == "p->y")
-	# 	detection$nu2_incorrect <- sum(adj$SNP %in% (1:tryxscan$simulation$nu2 + tryxscan$simulation$nu1) & adj$what != "p->y")
-	# 	detection$no_outlier_flag <- tryxscan$simulation$no_outlier_flag
-	# 	analysis$detection <- detection
-	# }
 
 	cpg <- require(ggrepel)
 	if(!cpg)
 	{
 		stop("Please install the ggrepel package\ninstall.packages('ggrepel')")
 	}
+
+	analysis <- list()
+	adj <- tryx.adjustment(tryxscan, id_remove, duplicate_outliers_method)
+	if(nrow(adj) == 0)
+	{
+		return(NULL)
+	}
+	analysis$adj <- adj
 
 	dat <- subset(tryxscan$dat, mr_keep, select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
 	dat$ratio <- dat$beta.outcome / dat$beta.exposure
@@ -335,75 +331,7 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	return(analysis)
 }
 
-tryx.analyse.mv <- function(tryxscan, plot=TRUE, id_remove=NULL, proxies=FALSE)
-{
-	adj <- tryx.adjustment.mv(tryxscan, id_remove, proxies)
-	dat <- subset(adj$dat, mr_keep)
-	dat$orig.ratio <- dat$orig.beta.outcome / dat$beta.exposure
-	dat$orig.weights <- sqrt(dat$beta.exposure^2 / dat$orig.se.outcome^2)
-	dat$orig.ratiow <- dat$orig.ratio * dat$orig.weights
-	dat$ratio <- dat$beta.outcome / dat$beta.exposure
-	dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
-	dat$ratiow <- dat$ratio * dat$weights
 
-	est_raw <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=dat))
-	est_adj <- summary(lm(ratiow ~ -1 + weights, data=dat))
-	est_out1 <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=subset(dat, !SNP %in% tryxscan$outliers)))
-	est_out2 <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=subset(dat, !SNP %in% adj$mvo$SNP)))
-
-	estimates <- data.frame(
-		est=c("Raw", "Outliers removed (all)", "Outliers removed (candidates)", "Outliers adjusted"),
-		b=c(coefficients(est_raw)[1,1], coefficients(est_out2)[1,1], coefficients(est_out1)[1,1], coefficients(est_adj)[1,1]), 
-		se=c(coefficients(est_raw)[1,2], coefficients(est_out2)[1,2], coefficients(est_out1)[1,2], coefficients(est_adj)[1,2]), 
-		pval=c(coefficients(est_raw)[1,4], coefficients(est_out2)[1,4], coefficients(est_out1)[1,4], coefficients(est_adj)[1,4]),
-		nsnp=c(nrow(dat), nrow(subset(dat, !SNP %in% tryxscan$outliers)), nrow(subset(dat, !SNP %in% adj$mvo$SNP)), nrow(dat)),
-		Q = c(sum(dat$orig.qi), sum(subset(dat, !SNP %in% tryxscan$outliers)$qi), sum(subset(dat, !SNP %in% adj$mvo$SNP)$qi), sum(dat$qi)),
-		int=0
-	)
-	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
-
-	analysis <- list(
-		estimates=estimates,
-		mvo=adj$mvo,
-		dat=adj$dat
-	)
-
-	if(plot)
-	{	
-		dato <- subset(dat, SNP %in% tryxscan$outliers)
-		datadj <- subset(dat, SNP %in% adj$mvo$SNP)
-		datadj$x <- datadj$orig.weights
-		datadj$xend <- datadj$weights
-		datadj$y <- datadj$orig.ratiow
-		datadj$yend <- datadj$ratiow
-
-		mvog <- tidyr::separate(adj$mvo, exposure, sep="\\|", c("exposure", "temp", "id"))
-		mvog$exposure <- gsub(" $", "", mvog$exposure)
-		mvog <- group_by(mvog, SNP) %>% summarise(label = paste(exposure, collapse="\n"))
-		datadj <- merge(datadj, mvog, by="SNP")
-
-		labs <- rbind(
-			data_frame(label=dato$SNP, x=dato$orig.weights, y=dato$orig.ratiow, col="grey50"),
-			data_frame(label=datadj$label, x=datadj$weights, y=datadj$ratiow, col="grey100")
-		)
-
-
-		p <- ggplot(dat, aes(y=orig.ratiow, x=orig.weights)) +
-		geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
-		geom_label_repel(data=labs, aes(label=label, x=x, y=y, colour=col), size=2, segment.color = "grey50", show.legend = FALSE) +
-		geom_point(data=dato, size=4) +
-		# geom_label_repel(data=labs, aes(label=label, x=weights, y=ratiow), size=2, segment.color = "grey50") +
-		geom_point(data=datadj, aes(x=weights, y=ratiow)) +
-		geom_point(aes(colour=SNP %in% dato$SNP), show.legend=FALSE) +
-		geom_segment(data=datadj, colour="grey50", aes(x=x, xend=xend, y=y, yend=yend), arrow = arrow(length = unit(0.01, "npc"))) +
-		labs(colour=NULL, linetype="Estimate", x="w", y="beta * w")
-		# xlim(c(0, max(dat$weights))) +
-		# ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
-		analysis$plot <- p
-	}
-	return(analysis)
-
-}
 
 #' Cochran's Q statistic
 #' 
@@ -463,3 +391,5 @@ radialmr <- function(dat, outlier=NULL)
 	geom_point() +
 	geom_abline(slope=mod, intercept=0)
 }
+
+
