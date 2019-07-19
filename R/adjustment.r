@@ -160,7 +160,7 @@ tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
 		mvdat2 <- suppressMessages(mv_harmonise_data(mvexp2, mvout2))
 		mvo[[i]] <- mv_multiple(mvdat2)$result
 		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
-		temp2 <- with(temp, data_frame(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
+		temp2 <- with(temp, tibble(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
 		mvo[[i]] <- merge(mvo[[i]], temp2, by="exposure")
 		boo <- with(subset(dat, SNP == snplist[i]), 
 			bootstrap_path(
@@ -276,46 +276,146 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 	# adjust everything that's possible remove remaining outliers
 	dat_rem3 <- rbind(temp, dat_rem2) %>% filter(!duplicated(SNP))
 
-	est1 <- summary(lm(ratiow ~ -1 + weights, data=dat_rem))
-	est2 <- summary(lm(ratiow ~ -1 + weights, data=dat))
-	est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
-	est4 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem2)))
-	est5 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem3)))
-	if(class(est4) == "try-error")
-	{
-		est4 <- list(coefficients = matrix(NA, 2,4))
-	}
 
-	estimates <- data.frame(
-		est=c("Raw", "Outliers removed (candidates)", "Outliers removed (all)", "Outliers adjusted", "Mixed", "Multivariable MR"),
-		b=c(coefficients(est2)[1,1], coefficients(est1)[1,1], coefficients(est4)[1,1], coefficients(est3)[1,1], coefficients(est5)[1,1], tryxscan$mvres$result$b[1]), 
-		se=c(coefficients(est2)[1,2], coefficients(est1)[1,2], coefficients(est4)[1,2], coefficients(est3)[1,2], coefficients(est5)[1,2], tryxscan$mvres$result$se[1]), 
-		pval=c(coefficients(est2)[1,4], coefficients(est1)[1,4], coefficients(est4)[1,4], coefficients(est3)[1,4], coefficients(est5)[1,4], tryxscan$mvres$result$pval[1]),
-		nsnp=c(nrow(dat), nrow(dat_rem), nrow(dat_rem2), nrow(dat_adj), nrow(dat_rem3), tryxscan$mvres$result$nsnp[1]),
-		Q = c(sum(dat$qi), sum(dat_rem$qi), sum(dat_rem2$qi), sum(dat_adj$qi), sum(dat_rem3$qi), NA),
-		int=0
+
+	estimates <- tibble()
+
+	
+	# Raw IVW
+	tt <- dat
+	mod <- summary(lm(ratiow ~ -1 + weights, data=tt))
+	estimates <- bind_rows(estimates, 
+		tibble(
+			est="Raw",
+			b=coefficients(mod)[1,1], 
+			se = coefficients(mod)[1,2],
+			pval=coefficients(mod)[1,4],
+			nsnp = nrow(tt),
+			Q = sum(tt$qi),
+			int = 0
+		)
 	)
-	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
 
-	if("true_outliers" %in% names(tryxscan))
+	# Outliers removed (all)
+	tt <- subset(dat, !SNP %in% tryxscan$outliers)
+	mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+	if(class(mod) != "try-error")
 	{
-		dat_true <- subset(dat, !SNP %in% tryxscan$true_outliers)
-		est6 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_true)))
-		estimates <- bind_rows(estimates,
-			data.frame(
-				est=c("Oracle"),
-				b=c(coefficients(est6)[1,1]), 
-				se=c(coefficients(est6)[1,2]), 
-				pval=c(coefficients(est6)[1,4]),
-				nsnp=c(nrow(dat_true)),
-				Q = c(sum(dat_true$qi)),
-				int=0
+		estimates <- bind_rows(estimates, 
+			tibble(
+				est="Outliers removed (all)",
+				b=coefficients(mod)[1,1], 
+				se = coefficients(mod)[1,2],
+				pval=coefficients(mod)[1,4],
+				nsnp = nrow(tt),
+				Q = sum(tt$qi),
+				int = 0
 			)
 		)
 	}
+
+	# Outliers removed (candidates)
+	tt <- subset(dat, !SNP %in% temp$SNP)
+	mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+	if(class(mod) != "try-error")
+	{
+		estimates <- bind_rows(estimates, 
+			tibble(
+				est="Outliers removed (candidates)",
+				b=coefficients(mod)[1,1], 
+				se = coefficients(mod)[1,2],
+				pval=coefficients(mod)[1,4],
+				nsnp = nrow(tt),
+				Q = sum(tt$qi),
+				int = 0
+			)
+		)
+	}
+
+	# Outliers adjusted
+	tt <- rbind(temp, dat) %>% filter(!duplicated(SNP))
+	tt$qi <- cochrans_q(tt$beta.outcome / tt$beta.exposure, tt$se.outcome / abs(tt$beta.exposure))
+	analysis$Q$adj_Q <- sum(tt$qi)
+	mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+	if(class(mod) != "try-error")
+	{
+		estimates <- bind_rows(estimates, 
+			tibble(
+				est="Outliers adjusted",
+				b=coefficients(mod)[1,1], 
+				se = coefficients(mod)[1,2],
+				pval=coefficients(mod)[1,4],
+				nsnp = nrow(tt),
+				Q = sum(tt$qi),
+				int = 0
+			)
+		)
+	}
+
+	if("mvres" %in% names(tryxscan))
+	{
+		estimates <- bind_rows(estimates, 
+			tibble(
+				est="Multivariable MR",
+				b=tryxscan$mvres$result$b[1], 
+				se = tryxscan$mvres$result$se[1],
+				pval = tryxscan$mvres$result$pval[1],
+				nsnp = tryxscan$mvres$result$nsnp[1],
+				Q = NA,
+				int = 0
+			)
+		)
+	}
+
+	if("true_outliers" %in% names(tryxscan))
+	{
+		tt <- subset(dat, !SNP %in% tryxscan$true_outliers)
+		mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+		if(class(mod) != "try-error")
+		{
+			estimates <- bind_rows(estimates,
+				tibble(
+					est=c("Oracle"),
+					b=c(coefficients(mod)[1,1]), 
+					se=c(coefficients(mod)[1,2]), 
+					pval=c(coefficients(mod)[1,4]),
+					nsnp=c(nrow(tt)),
+					Q = c(sum(tt$qi)),
+					int=0
+				)
+			)
+		}
+	}
+
+
+	estimates <- bind_rows(estimates)
 	estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
 
 	analysis$estimates <- estimates
+
+
+	# est3 <- summary(lm(ratiow ~ -1 + weights, data=dat_adj))
+	# est4 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem2)))
+	# est5 <- try(summary(lm(ratiow ~ -1 + weights, data=dat_rem3)))
+	# if(class(est4) == "try-error")
+	# {
+	# 	est4 <- list(coefficients = matrix(NA, 2,4))
+	# }
+
+	# estimates <- data.frame(
+	# 	est=c("Raw", "Outliers removed (candidates)", "Outliers removed (all)", "Outliers adjusted", "Mixed", "Multivariable MR"),
+	# 	b=c(coefficients(est2)[1,1], coefficients(est1)[1,1], coefficients(est4)[1,1], coefficients(est3)[1,1], coefficients(est5)[1,1], tryxscan$mvres$result$b[1]), 
+	# 	se=c(coefficients(est2)[1,2], coefficients(est1)[1,2], coefficients(est4)[1,2], coefficients(est3)[1,2], coefficients(est5)[1,2], tryxscan$mvres$result$se[1]), 
+	# 	pval=c(coefficients(est2)[1,4], coefficients(est1)[1,4], coefficients(est4)[1,4], coefficients(est3)[1,4], coefficients(est5)[1,4], tryxscan$mvres$result$pval[1]),
+	# 	nsnp=c(nrow(dat), nrow(dat_rem), nrow(dat_rem2), nrow(dat_adj), nrow(dat_rem3), tryxscan$mvres$result$nsnp[1]),
+	# 	Q = c(sum(dat$qi), sum(dat_rem$qi), sum(dat_rem2$qi), sum(dat_adj$qi), sum(dat_rem3$qi), NA),
+	# 	int=0
+	# )
+	# estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+
+	# estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+
+	# analysis$estimates <- estimates
 
 	if(plot)
 	{	
@@ -424,8 +524,8 @@ tryx.analyse.mv <- function(tryxscan, plot=TRUE, id_remove=NULL, proxies=FALSE)
 		datadj <- merge(datadj, mvog, by="SNP")
 
 		labs <- rbind(
-			data_frame(label=dato$SNP, x=dato$orig.weights, y=dato$orig.ratiow, col="grey50"),
-			data_frame(label=datadj$label, x=datadj$weights, y=datadj$ratiow, col="grey100")
+			tibble(label=dato$SNP, x=dato$orig.weights, y=dato$orig.ratiow, col="grey50"),
+			tibble(label=datadj$label, x=datadj$weights, y=datadj$ratiow, col="grey100")
 		)
 
 
@@ -471,7 +571,7 @@ bootstrap_path1 <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
 bootstrap_path <- function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000)
 {
 	nalt <- length(gp)
-	altpath <- data_frame(
+	altpath <- tibble(
 		p = rnorm(nboot * nalt, gp, gp.se) * rnorm(nboot * nalt, px, px.se),
 		b = rep(1:nboot, each=nalt)
 	)
