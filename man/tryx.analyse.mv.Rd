@@ -4,11 +4,13 @@
 \alias{tryx.analyse.mv}
 \title{Analyse tryx results}
 \usage{
-tryx.analyse.mv(tryxscan, plot = TRUE, id_remove = NULL,
-  proxies = FALSE)
+tryx.analyse.mv(tryxscan, lasso = TRUE, plot = TRUE,
+  id_remove = NULL, proxies = FALSE)
 }
 \arguments{
 \item{tryxscan}{Output from \code{tryx.scan}}
+
+\item{lasso}{Whether to shrink the estimates of each trait within SNP. Default=TRUE.}
 
 \item{plot}{Whether to plot or not. Default is TRUE}
 

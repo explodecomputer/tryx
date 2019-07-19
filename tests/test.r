@@ -12,6 +12,9 @@ dat <- harmonise_data(a, b)
 tryxscan <- tryx.scan(dat, mr_method="mr_ivw")
 save(tryxscan, file="sbp-chd.rdata")
 
+load("../data/sbp-chd.rdata")
+ls()
+
 
 ao <- available_outcomes()
 info <- read.csv("../data/info.csv")
@@ -19,7 +22,16 @@ info <- read.csv("../data/info.csv")
 
 
 tryxscan <- tryx.sig(tryxscan)
-tryxanalysis <- tryx.analyse(tryxscan)
+out <- tryx.analyse(tryxscan)
+out
+
+tryxanalysis <- tryx.analyse.mv(tryxscan)
+
+a1 <- tryx.adjustment(tryxscan)
+a2 <- tryx.adjustment(tryxscan, duplicate_outliers_method = "none")
+a3 <- tryx.adjustment(tryxscan, duplicate_outliers_method = "mv")
+a4 <- tryx.adjustment(tryxscan, duplicate_outliers_method = "mv_lasso")
+
 
 
 temp <- subset(outlierscan$search, pval.outcome < 5e-8)

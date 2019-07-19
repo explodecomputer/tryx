@@ -94,7 +94,7 @@ tryx.adjustment <- function(tryxscan, id_remove=NULL)
 }
 
 
-tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
+tryx.adjustment.mv <- function(tryxscan, lasso=TRUE, id_remove=NULL, proxies=FALSE)
 {
 	# for each outlier find the candidate MR analyses
 	# if only exposure then ignore
@@ -148,17 +148,23 @@ tryx.adjustment.mv <- function(tryxscan, id_remove=NULL, proxies=FALSE)
 		mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=proxies))
 		mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
 		mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
-		b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
-		c <- coef(b, s = "lambda.min")
-		keeplist <- unique(c(rownames(c)[!c[,1] == 0], tryxscan$dat$exposure[1]))
-		message("After shrinkage keeping:")
-		message(paste(keeplist, collapse="\n"))
-		mvexp2 <- subset(mvexp, exposure %in% keeplist)
-		remsnp <- group_by(mvexp2, SNP) %>% summarise(mp = min(pval.exposure)) %>% filter(mp > 5e-8) %$% as.character(SNP)
-		mvexp2 <- subset(mvexp2, !SNP %in% remsnp)
-		mvout2 <- subset(mvout, SNP %in% mvexp2$SNP)
-		mvdat2 <- suppressMessages(mv_harmonise_data(mvexp2, mvout2))
-		mvo[[i]] <- mv_multiple(mvdat2)$result
+		if(lasso)
+		{
+			message("Performing shrinkage")		
+			b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
+			c <- coef(b, s = "lambda.min")
+			keeplist <- unique(c(rownames(c)[!c[,1] == 0], tryxscan$dat$exposure[1]))
+			message("After shrinkage keeping:")
+			message(paste(keeplist, collapse="\n"))
+			mvexp2 <- subset(mvexp, exposure %in% keeplist)
+			remsnp <- group_by(mvexp2, SNP) %>% summarise(mp = min(pval.exposure)) %>% filter(mp > 5e-8) %$% as.character(SNP)
+			mvexp2 <- subset(mvexp2, !SNP %in% remsnp)
+			mvout2 <- subset(mvout, SNP %in% mvexp2$SNP)
+			mvdat2 <- suppressMessages(mv_harmonise_data(mvexp2, mvout2))
+			mvo[[i]] <- mv_multiple(mvdat2)$result
+		} else {
+			mvo[[i]] <- mv_multiple(mvdat)$result
+		}
 		mvo[[i]] <- subset(mvo[[i]], !exposure %in% tryxscan$dat$exposure[1])
 		temp2 <- with(temp, tibble(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
 		mvo[[i]] <- merge(mvo[[i]], temp2, by="exposure")
@@ -465,6 +471,7 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 #' Similar to tryx.analyse, but when there are multiple traits associated with a single variant then we use a LASSO-based multivariable approach 
 #'
 #' @param tryxscan Output from \code{tryx.scan}
+#' @param lasso Whether to shrink the estimates of each trait within SNP. Default=TRUE.
 #' @param plot Whether to plot or not. Default is TRUE
 #' @param id_remove List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
 #' @param proxies Look for proxies in the MVMR methods. Default = FALSE.
@@ -476,7 +483,7 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 #' - Q: Heterogeneity stats
 #' - estimates: Adjusted and unadjested exposure-outcome effects
 #' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
-tryx.analyse.mv <- function(tryxscan, plot=TRUE, id_remove=NULL, proxies=FALSE)
+tryx.analyse.mv <- function(tryxscan, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE)
 {
 	adj <- tryx.adjustment.mv(tryxscan, id_remove, proxies)
 	dat <- subset(adj$dat, mr_keep)
