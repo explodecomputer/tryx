@@ -485,7 +485,7 @@ tryx.analyse <- function(tryxscan, plot=TRUE, id_remove=NULL, filter_duplicate_o
 #' - plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
 tryx.analyse.mv <- function(tryxscan, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE)
 {
-	adj <- tryx.adjustment.mv(tryxscan, id_remove, proxies)
+	adj <- tryx.adjustment.mv(tryxscan, lasso=lasso, id_remove=id_remove, proxies=proxies)
 	dat <- subset(adj$dat, mr_keep)
 	dat$orig.ratio <- dat$orig.beta.outcome / dat$beta.exposure
 	dat$orig.weights <- sqrt(dat$beta.exposure^2 / dat$orig.se.outcome^2)
