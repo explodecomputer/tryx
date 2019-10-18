@@ -142,13 +142,18 @@ tryx.adjustment.mv <- function(tryxscan, lasso=TRUE, id_remove=NULL, proxies=FAL
 	dat$outlier[dat$SNP %in% tryxscan$outliers] <- TRUE
 	for(i in 1:length(snplist))
 	{
-		message("Estimating joint effects of the following traits associated with ", snplist[i])
+		message("Estimating joint effects of the following trait(s) associated with ", snplist[i])
 		temp <- subset(sigo1, SNP %in% snplist[i])
-		message(paste(unique(temp$outcome), collapse="\n"))
+		candidates <- unique(temp$outcome)
+		message(paste(candidates, collapse="\n"))
+		if(lasso & length(candidates) == 1)
+		{
+			message("Only one candidate trait for SNP ", snplist[i], " so performing standard MVMR instead of LASSO")
+		}
 		mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, temp$id.outcome), find_proxies=proxies))
 		mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
 		mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
-		if(lasso)
+		if(lasso & length(candidates) > 1)
 		{
 			message("Performing shrinkage")		
 			b <- glmnet::cv.glmnet(x=mvdat$exposure_beta, y=mvdat$outcome_beta, weight=1/mvdat$outcome_se^2, intercept=0)
