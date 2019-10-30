@@ -5,13 +5,14 @@
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome
 #' 
-#' @param dat Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used
-#' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers
-#' @param outlier_threshold The p-value to be used as threshold for detecting outliers, if outliers="RadialMR". Default is 0.05/nsnp.
-#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed
+#' @param dat Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
+#' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
+#' @param outlier_correction Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
+#' @param outlier_threshold If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
 #' @param search_correction Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
-#' @param search_threshold If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05
-#' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes()
+#' @param search_threshold If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.
+#' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().
 #' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
 #' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
 #'
