@@ -29,7 +29,7 @@
 #' candidate_exposure   Extracted instrument SNPs from exposure
 #' candidate_exposure_dat  Harmonised candidate - exposure dataset
 #' candidate_exposure_mr  MR analysis of candidates against exposure
-tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="bonferroni", outlier_threshold=0.05, use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), id_list="default", include_outliers=FALSE, mr_method="mr_ivw")
+tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), id_list="default", include_outliers=FALSE, mr_method="mr_ivw")
 {
 
 	stopifnot(search_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
@@ -67,10 +67,16 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="bonferroni",
 		}
 
 
-
 		# radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), alpha=0.05/nrow(dat), weights=3)
 
-		radial <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), alpha=1, weights=3)
+		radialor <- RadialMR::ivw_radial(RadialMR::format_radial(dat$beta.exposure, dat$beta.outcome, dat$se.exposure, dat$se.outcome, dat$SNP), alpha=1, weights=3)
+
+		# apply outlier_correction method with outlier_threshold to radial SNP-Q statistics
+		radialor$data$rdpadj <- p.adjust(radialor$data$Qj_Chi, outlier_correction)
+		radial <- radialor
+		radial$outliers <- subset(radialor$data, radialor$data$rdpadj < outlier_threshold, select=c(SNP, Qj, Qj_Chi, rdpadj))
+		colnames(radial$outliers) = c("SNP", "Q_statistic", "p.value", "adj.p.value")
+		rownames(radial$outliers) <- 1:nrow(radial$outliers)
 
 		# apply outlier_correction method with outlier_threshold to radial SNP-Q statistics
 
