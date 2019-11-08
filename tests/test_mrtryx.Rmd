@@ -1,0 +1,49 @@
+---
+title: "Test file for MR-TRYX"
+author: "Yoonsu Cho"
+date: "7 November 2019"
+output: html_document
+---
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, dev="png", cache=TRUE)
+```
+
+
+Test commands for each function
+
+
+```{r}
+library(TwoSampleMR)
+library(MRInstruments)
+library(RadialMR)
+library(tryx)
+```
+
+
+Data preparation
+
+Example: systolic blood pressure and coronary artery disease
+
+
+```{r}
+ao <- available_outcomes()
+sbp <- extract_instruments(outcomes='UKB-a:360')
+chd <-  extract_outcome_data(snps=sbp$SNP, outcomes = 7)
+dat <- harmonise_data(sbp, chd)
+```
+
+
+
+Scan
+
+test tryx.scan
+```{r}
+load("~/tryx/tests/test_mrtryx.RData")
+```
+
+test tryx.sig
+```{r}
+scan_sbp <- tryx.sig(scan_sbp)
+```
