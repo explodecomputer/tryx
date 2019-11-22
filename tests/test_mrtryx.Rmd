@@ -29,21 +29,49 @@ Example: systolic blood pressure and coronary artery disease
 
 ```{r}
 ao <- available_outcomes()
-sbp <- extract_instruments(outcomes='UKB-a:360')
-chd <-  extract_outcome_data(snps=sbp$SNP, outcomes = 7)
-dat <- harmonise_data(sbp, chd)
+bmi <- extract_instruments(outcomes = 2)
+sbp <-  extract_outcome_data(snps=bmi$SNP, outcomes = "UKB-a:360")
+dat <- harmonise_data(bmi, sbp)
 ```
 
 
 
 Scan
 
-test tryx.scan
+ a. Test "tryx.scan"
 ```{r}
+#scan_bmi <- tryx.scan(dat)
 load("~/tryx/tests/test_mrtryx.RData")
 ```
 
-test tryx.sig
+
+ b. Test "tryx.sig""
 ```{r}
-scan_sbp <- tryx.sig(scan_sbp)
+scan_bmi <- tryx.sig(scan_bmi)
+```
+
+
+  c. Test "tryx.adjustment"
+```{r}
+id_remove <- c(2, 72, 89, 90, "UKB-a:35", "UKB-a:359", "UKB-a:61", 1096, 85, 91, 93, 999)
+
+ad <- tryx.adjustment(scan_bmi, id_remove = id_remove)
+```
+
+
+  d. Test "tryx.adjustment.mv"
+```{r}
+ad.mv <- tryx.adjustment.mv(scan_bmi, id_remove = id_remove)
+```
+
+
+ e. Test "tryx.analyse"
+```{r}
+an <- tryx.analyse(scan_bmi, id_remove = id_remove)
+```
+
+
+  f. Test "tryx.analyse.mv"
+```{r}
+an.mv <- tryx.analyse.mv(scan_bmi, id_remove = id_remove)
 ```
