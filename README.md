@@ -54,6 +54,37 @@ It should not take more than a few minutes to install all of these packages.
 
 ---
 
+
+## Implementing R6
+
+```
+a <- extract_instruments(300)
+b <- extract_outcome_data(a$SNP, 7, access_token=NULL)
+dat <- harmonise_data(a,b)
+
+load_all()
+x <- Tryx$new()
+x$input(dat)
+x$test()
+x$get_outliers()
+
+
+# to do:
+x$set_candidate_traits()
+x$scan_candidate_traits()
+x$candidate_instruments()
+x$extact_exposure()
+x$extact_outcome()
+x$perform_mr()
+
+x$scan()
+
+x$plots...
+x$adjustments...
+
+```
+
+
 ## Guide
 
 ### Basic analysis
@@ -65,10 +96,10 @@ Begin by choosing an exposure-outcome hypothesis to explore. e.g. LDL cholestero
 ```r
 library(tryx)
 a <- extract_instruments(300)
-b <- extract_outcome_data(a$SNP, 7)
+b <- extract_outcome_data(a$SNP, 7, access_token=NULL)
 dat <- harmonise_data(a,b)
 ```
-
+    
 We can now perform the analysis:
 
 ```r

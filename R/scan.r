@@ -15,6 +15,7 @@
 #' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().
 #' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
 #' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
+#' @param access_token Provide an access token for non-public datasets in the database. By default=NULL
 #'
 #' @export
 #' @return List
@@ -30,9 +31,8 @@
 #' candidate_exposure   Extracted instrument SNPs from exposure
 #' candidate_exposure_dat  Harmonised candidate - exposure dataset
 #' candidate_exposure_mr  MR analysis of candidates against exposure
-tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), id_list="default", include_outliers=FALSE, mr_method="mr_ivw")
+tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), id_list="default", include_outliers=FALSE, mr_method="mr_ivw", access_token=NULL)
 {
-
 	stopifnot(search_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
 	stopifnot(search_threshold > 0 & search_threshold < 1)
 
@@ -112,7 +112,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 
 	if(id_list[1] == "default")
 	{
-		ao <- suppressMessages(available_outcomes())
+		ao <- suppressMessages(available_outcomes(access_token=access_token))
 		ids <- subset(ao, priority == 1 & nsnp > 500000 & sample_size > 5000) %>%
 			arrange(desc(sample_size)) %>%
 			filter(!duplicated(trait), mr == 1) %>%
@@ -124,7 +124,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 	}
 	output$id_list <- id_list
 
-	output$search <- extract_outcome_data(outliers, output$id_list, proxies=use_proxies)
+	output$search <- extract_outcome_data(outliers, output$id_list, proxies=use_proxies, access_token=access_token)
 	padj <- p.adjust(output$search$pval.outcome, search_correction)
 	output$search$sig <- padj < search_threshold
 	out2 <- subset(output$search, sig)
@@ -136,7 +136,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 	message("Found ", length(unique(out2$id.outcome)), " candidate traits associated with outliers at p < ", search_threshold)
 
 	message("Finding instruments for candidate traits")
-	output$candidate_instruments <- extract_instruments(unique(out2$id.outcome))
+	output$candidate_instruments <- extract_instruments(unique(out2$id.outcome), access_token=access_token)
 
 	if(nrow(output$candidate_instruments) == 0)
 	{
@@ -163,11 +163,12 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 	}
 
 	message(length(unique(output$candidate_instruments$id.exposure)), " traits with at least one instrument")
+	message(length(unique(output$candidate_instruments$SNP)), " unique variants")
 
 ######
 
 	message("Looking up candidate trait instruments for ", dat$outcome[1])
-	output$candidate_outcome <- extract_outcome_data(unique(output$candidate_instruments$SNP), dat$id.outcome[1], proxies=use_proxies)
+	output$candidate_outcome <- extract_outcome_data(unique(output$candidate_instruments$SNP), dat$id.outcome[1], proxies=use_proxies, access_token=access_token)
 	if(is.null(output$candidate_outcome))
 	{
 		message("None of the candidate trait instruments available for ", dat$outcome[1])
@@ -197,7 +198,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 ######
 
 	message("Looking up candidate trait instruments for ", dat$exposure[1])
-	output$candidate_exposure <- extract_outcome_data(unique(output$candidate_instruments$SNP), dat$id.exposure[1], proxies=use_proxies)
+	output$candidate_exposure <- extract_outcome_data(unique(output$candidate_instruments$SNP), dat$id.exposure[1], proxies=use_proxies, access_token=access_token)
 	if(is.null(output$candidate_exposure))
 	{
 		message("None of the candidate trait instruments available for ", dat$exposure[1])
@@ -226,7 +227,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 #####
 
 	message("Looking up exposure instruments for ", length(unique(out2$id.outcome)), " candidate traits")
-	output$exposure_candidate <- extract_outcome_data(unique(output$dat$SNP), unique(out2$id.outcome), proxies=use_proxies)
+	output$exposure_candidate <- extract_outcome_data(unique(output$dat$SNP), unique(out2$id.outcome), proxies=use_proxies, access_token=access_token)
 	if(is.null(output$exposure_candidate))
 	{
 		message("None of the candidate trait instruments available for ", dat$exposure[1])
