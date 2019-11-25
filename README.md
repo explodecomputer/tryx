@@ -1,3 +1,6 @@
+*Note: Apologies if the scan function times out sometimes - there are changes being made to the underlying database which will be resolved soon. We will also be releasing a major update to this package in the next few days that will make it more resilient to timeouts*
+
+
 # Treasure your exceptions! (TRYX)
 
 This package will perform MR-TRYX analysis, which entails the following. 
