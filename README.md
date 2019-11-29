@@ -58,19 +58,20 @@ It should not take more than a few minutes to install all of these packages.
 ## Implementing R6
 
 ```
-a <- extract_instruments(300)
-b <- extract_outcome_data(a$SNP, 7, access_token=NULL)
+library(devtools)
+install_github("mrcieu/TwoSampleMR@ieugwasr")
+load_all()
+a <- extract_instruments("ieu-a-300")
+b <- extract_outcome_data(a$SNP, "ieu-a-7", access_token=NULL)
 dat <- harmonise_data(a,b)
 
-load_all()
 x <- Tryx$new()
 x$input(dat)
 x$test()
 x$get_outliers()
-
+x$set_candidate_traits()
 
 # to do:
-x$set_candidate_traits()
 x$scan_candidate_traits()
 x$candidate_instruments()
 x$extact_exposure()
