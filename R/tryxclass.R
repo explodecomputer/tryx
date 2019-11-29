@@ -69,6 +69,21 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
 	}
 	self$output$outliers <- outliers
 	invisible(self$output$outliers)
-}
-
+},
+  # Find associations with outliers
+  set_candidate_traits = function() {
+        ao <- suppressMessages(TwoSampleMR::available_outcomes())
+        ids <- subset(ao, priority == 1 & nsnp > 500000 & sample_size > 5000) %>%
+               arrange(desc(sample_size)) %>%
+               filter(!duplicated(trait), mr == 1) %>%
+               filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
+               filter(!grepl("UKB-b", id)) %>%
+               filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
+        id_list <- ids$id
+        message("Using default list of ", nrow(ids), " traits")
+        return(self$output)
+    self$output$idlist <- id_list
+    invisible(self$output$idlist)
+  }
 ))
+  
