@@ -69,7 +69,7 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
 	}
 	self$output$outliers <- outliers
 	invisible(self$output$outliers)
-},
+	},
   # Find associations with outliers
   set_candidate_traits = function() {
         ao <- suppressMessages(TwoSampleMR::available_outcomes())
