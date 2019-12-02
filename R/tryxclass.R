@@ -128,8 +128,8 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
                                         })
                  }
   	       }
+	    message(length(unique(self$output$candidate_instruments$id.exposure)), " traits with at least one instrument")
   	    invisible(self$output$candidate_instruments)
-  	    message(length(unique(self$output$candidate_instruments$id.exposure)), " traits with at least one instrument")
-  	 }
+  	    }
 ))
   
