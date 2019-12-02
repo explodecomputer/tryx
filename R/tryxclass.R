@@ -83,9 +83,53 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
                filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
         id_list <- ids$id
         message("Using default list of ", nrow(ids), " traits")
-    }
-    self$output$idlist <- id_list
-    invisible(self$output$idlist)
-  }
+   	 }
+  	self$output$idlist <- id_list
+    	invisible(self$output$idlist)
+ 	},
+  #Search for candidate traits associated with outliers
+  scan_candidate_traits = function(dat=self$output$dat, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), use_proxies=FALSE) {
+	    stopifnot(search_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
+ 	    stopifnot(search_threshold > 0 & search_threshold < 1)
+ 	    self$output$search <- extract_outcome_data(self$output$outliers, self$output$id_list, proxies=use_proxies)
+ 	    self$output$search$padj <- p.adjust(self$output$search$pval.outcome, search_correction)
+    	    out2 <- subset(self$output$search, padj < search_threshold)
+   	 if(nrow(out2) == 0)
+         {
+     	  message("Outliers do not associate with any other traits. Try relaxing the search_threshold")
+   	  return(self$output)
+     	  }
+    	    message("Found ", length(unique(out2$id.outcome)), " candidate traits associated with outliers at p < ", search_threshold)
+            invisible(self$output$search)
+    	    self$output$sig_search <- out2
+    	    invisible(self$output$sig_search)
+  	},
+  #Obtain instruments for the candidate traits
+  candidate_instruments = function(candidate_instruments = NULL, include_outliers = FALSE) {
+  	    message("Finding instruments for candidate traits")
+  	    if(is.null(candidate_instruments))
+  	    {
+         	candidate_instruments <- extract_instruments(unique(self$output$sig_search$id.outcome))
+         	self$output$candidate_instruments <- candidate_instruments
+         	if(nrow(candidate_instruments) == 0)
+         	{
+            	message("No instruments available for the candidate traits")
+            	return(self$output)
+         	}
+                if(!include_outliers)
+       	        {
+           	message("Removing outlier SNPs from candidate trait instrument lists")
+            	candidate_instruments <- group_by(candidate_instruments, id.exposure) %>%
+                                      do({
+                                          z <- .
+                                          y <- subset(self$output$sig_search, id.outcome == z$id.exposure[1])
+                                          z <- subset(z, !SNP %in% y$SNP)
+                                          z
+                                        })
+                 }
+  	       }
+  	    invisible(self$output$candidate_instruments)
+  	    message(length(unique(self$output$candidate_instruments$id.exposure)), " traits with at least one instrument")
+  	 }
 ))
   
