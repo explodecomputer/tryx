@@ -70,12 +70,17 @@ x$input(dat)
 x$test()
 x$get_outliers()
 x$set_candidate_traits()
-
-# to do:
 x$scan_candidate_traits()
 x$candidate_instruments()
-x$extact_exposure()
-x$extact_outcome()
+x$outcome_instruments()
+x$candidate_outcome_dat()
+x$exposure_instruments()
+x$candidate_exposure_dat()
+
+
+# to do:
+x$exposure_candidate_instruments()
+x$exposure_candidate_dat()
 x$perform_mr()
 
 x$scan()
