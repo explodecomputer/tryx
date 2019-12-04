@@ -132,7 +132,7 @@ Tryx <- R6::R6Class("Tryx", list(
   message(length(unique(self$output$candidate_instruments$id.exposure)), " traits with at least one instrument")
   invisible(self$output$candidate_instruments)
   },
-  #extract instrument for the original outcome   
+  #extract instrument for candidate trait instruments for the original outcome
   outcome_instruments = function(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE) {
     message("Looking up candidate trait instruments for ", dat$outcome[1])
     candidate_outcome <- extract_outcome_data(unique(self$output$candidate_instruments$SNP), dat$id.outcome[1], proxies=use_proxies)
@@ -157,7 +157,7 @@ Tryx <- R6::R6Class("Tryx", list(
     self$output$candidate_outcome_dat <- candidate_outcome_dat
     invisible(self$output$candidate_outcome_dat)
   },
-  #extract instrument for the original exposure
+  #extract instrument for candidate trait instruments for the original exposure
   exposure_instruments = function(candidate_exposure = NULL, dat = self$output$dat, use_proxies=FALSE) {
     message("Looking up candidate trait instruments for ", dat$exposure[1])
     candidate_exposure <- extract_outcome_data(unique(self$output$candidate_instruments$SNP), dat$id.exposure[1], proxies=use_proxies)
@@ -170,7 +170,7 @@ Tryx <- R6::R6Class("Tryx", list(
     message(nrow(self$output$candidate_exposure), " instruments extracted for ", dat$exposure[1])
     invisible(self$output$candidate_exposure)
   },
-  #make a dataset for the candidate traits and the original outcome
+  #make a dataset for the candidate traits and the original exposure
   candidate_exposure_dat = function(dat = self$output$dat){
     candidate_exposure_dat <- suppressMessages(harmonise_data(self$output$candidate_instruments, self$output$candidate_exposure))
     candidate_exposure_dat <- subset(candidate_exposure_dat, mr_keep)
@@ -180,7 +180,85 @@ Tryx <- R6::R6Class("Tryx", list(
       message("None of the candidate trait instruments available for ", dat$exposure[1], " after harmonising")
       return(self$output)
     }
+  },
+  #extract instrument for the original exposure for candidate traits
+  exposure_candidate_instruments = function(exposure_candidate = NULL, dat = self$output$dat, use_proxies = FALSE, include_outliers = FALSE) {
+    message("Looking up exposure instruments for ", length(unique(self$output$sig_search$id.outcome)), " candidate traits")
+    exposure_candidate <- extract_outcome_data(unique(dat$SNP), unique(self$output$sig_search$id.outcome), proxies=use_proxies)
+    self$output$exposure_candidate <- exposure_candidate
+    if(is.null(exposure_candidate))
+    {
+      message("None of the candidate trait instruments available for ", dat$exposure[1])
+      return(self$output)
+    }
+    message(nrow(self$output$candidate_exposure), " instruments extracted")
+    temp <- subset(dat, select=c(SNP, beta.exposure, se.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, id.exposure, exposure))
+    if(!include_outliers)
+    {
+      message("Removing outlier SNPs from candidate trait outcome lists")
+      n1 <- nrow(self$output$exposure_candidate)
+      self$output$exposure_candidate <- group_by(self$output$exposure_candidate, id.outcome) %>%
+      do({
+        z <- .
+        y <- subset(self$output$sig_search, id.outcome == z$id.outcome[1])
+        z <- subset(z, !SNP %in% y$SNP)
+        z
+      })
+      message("Removed ", n1 - nrow(self$output$exposure_candidate), " outlier SNPs")
+    }
+    invisible(self$output$exposure_candidate)
+    self$output$temp <- temp
+    invisible(self$output$temp)
+  },
+  #make a dataset for the original exposure and the candidate traits
+  exposure_candidate_dat = function(dat = self$output$dat){
+     exposure_candidate_dat <- suppressMessages(harmonise_data(self$output$temp, self$output$exposure_candidate))
+     exposure_candidate_dat <- subset(exposure_candidate_dat, mr_keep)
+     self$output$exposure_candidate_dat <- exposure_candidate_dat
+     if(nrow(exposure_candidate_dat) == 0)
+     {
+        message("None of the candidate traits have the ", dat$exposure[1], " instruments after harmonising")
+        return(self$output)
+     }
+     invisible(self$output$exposure_candidate_dat)
+  },
+  #Performing MR of 1) candidate traits-outcome 2) candidate traits-exposure 3) exposure-candidate traits
+  perform_mr = function(dat = self$output$dat, mr_method="mr_ivw") {
+    message("Performing MR of ", length(unique(self$output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
+    if(mr_method == "strategy1")
+    {
+      temp <- tryx::strategy1(self$output$candidate_outcome_dat)
+      self$output$candidate_outcome_mr <- temp$res
+      self$output$candidate_outcome_mr_full <- temp
+    } else {
+      self$output$candidate_outcome_mr <- suppressMessages(mr(self$output$candidate_outcome_dat, method_list=c("mr_wald_ratio", mr_method)))
+    }
+    invisible(self$output$candidate_outcome_mr)
+    invisible(self$output$candidate_outcome_mr_full)
+
+    message("Performing MR of ", length(unique(self$output$candidate_exposure_dat$id.exposure)), " candidate traits against ", dat$exposure[1])
+    if(mr_method == "strategy1")
+    {
+      temp <- tryx::strategy1(self$output$candidate_exposure_dat)
+      self$output$candidate_exposure_mr <- temp$res
+      self$output$candidate_exposure_mr_full <- temp
+    } else {
+      self$output$candidate_exposure_mr <- suppressMessages(mr(self$output$candidate_exposure_dat, method_list=c("mr_wald_ratio", mr_method)))
+    }
+    invisible(self$output$candidate_exposure_mr)
+    invisible(self$output$candidate_exposure_mr_full)
+    
+    message("Performing MR of ", dat$exposure[1], " against ", length(unique(self$output$exposure_candidate_dat$id.outcome)), " candidate traits")
+    if(mr_method == "strategy1")
+    {
+      temp <- tryx::strategy1(self$output$exposure_candidate_dat)
+      self$output$exposure_candidate_mr <- temp$res
+      self$output$exposure_candidate_mr_full <- temp
+    } else {
+      self$output$exposure_candidate_mr <- suppressMessages(mr(self$output$exposure_candidate_dat, method_list=c("mr_wald_ratio", mr_method)))
+    }
+    invisible(self$output$exposure_candidate_mr)
+    invisible(self$output$exposure_candidate_mr_full)
   }
-))
-      
-   
+  ))
+ 
