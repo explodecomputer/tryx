@@ -259,6 +259,16 @@ Tryx <- R6::R6Class("Tryx", list(
     }
     invisible(self$output$exposure_candidate_mr)
     invisible(self$output$exposure_candidate_mr_full)
+  },
+
+  # GIB BROKE THIS
+
+  scan = function(mr_method="mr_ivw") {
+    self$
+    self$
+    self$perform_mr(mr_method=mr_method)
   }
-  ))
+
+
+))
  

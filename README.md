@@ -57,6 +57,25 @@ It should not take more than a few minutes to install all of these packages.
 
 ## Implementing R6
 
+1. specify data
+2. find outliers
+3. do all scans
+
+OR
+
+3. scan candidates
+4. get instruments for candidates
+5. get candidate instruments for outcome
+6. get candidate instruments for exposure
+7. get exposure instruments for candidates
+
+
+8. harmonise all data
+9. mr
+
+
+GIB BROKE THIS
+
 ```
 library(devtools)
 install_github("mrcieu/TwoSampleMR@ieugwasr")
@@ -67,26 +86,78 @@ dat <- harmonise_data(a,b)
 
 x <- Tryx$new()
 x$input(dat)
-x$test()
 x$get_outliers()
 x$set_candidate_traits()
-x$scan_candidate_traits()
-x$candidate_instruments()
-x$outcome_instruments()
-x$candidate_outcome_dat()
-x$exposure_instruments()
-x$candidate_exposure_dat()
+
+x$scan_candidate_traits() rename this to:
+x$scan()
+
+x$extractions(arg1,arg2,arg3,arg4) does these:
+x$candidate_instruments(arg1)
+x$outcome_instruments(arg2, arg3)
+x$exposure_instruments(arg4)
 x$exposure_candidate_instruments()
+
+x$harmonise() does these:
+x$candidate_outcome_dat()
+x$candidate_exposure_dat()
 x$exposure_candidate_dat()
-x$perform_mr()
+
+x$perform_mr() rename this to:
+x$mr()
 
 # to do:
 x$scan()
 
 x$plots...
 x$adjustments...
+```
+
+
+EXAMPLE OF CALLING A FUNCTION
 
 ```
+Test <- R6::R6Class("test", list(
+  output = 0
+))
+
+Test$set("public", "add", function(x) {
+    self$output <- self$output + x
+})
+
+
+Test$set("public", "calladd", function(x) {
+    self$add(x)
+})
+
+Test$set("public", "subt", function(x) self$output <- self$output - x)
+
+test <- Test$new()
+
+test$output
+test$add(1)
+test$calladd(1)
+```
+
+
+LAYOUT?
+
+```
+Tryx$dat        # input data
+Tryx$output     # this is scan result
+Tryx$output$outliers
+           $candidate
+           $mr_...
+
+
+Tryx$adjustment
+               $estimates
+               $plot
+
+
+
+```
+
 
 
 ## Guide
@@ -195,3 +266,5 @@ The `tryxanalysis$estimates` show the adjusted effect estimates. A plot is gener
 ### Analysis
 
 - Simulate improvement in multiple testing correction when filtering by outlier associations
+
+

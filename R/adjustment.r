@@ -9,6 +9,14 @@
 #'
 #' @export
 #' @return data frame of adjusted effect estimates and heterogeneity stats
+
+
+# GIB BROKE THIS
+
+Tryx$set("public", "adjustment", function(tryxscan=self$output, id_remove=NULL) {
+
+	})
+
 tryx.adjustment <- function(tryxscan, id_remove=NULL)
 {
 	# for each outlier find the candidate MR analyses
