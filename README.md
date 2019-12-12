@@ -87,17 +87,16 @@ This will do the following:
 2. Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
 3. Extract instruments for those 'candidate traits'
 4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
-See the ?tryx.scan for options on the parameters for this analysis.
 
 ```r
-#Find outliers
+#Find outlier SNPs in the exposure-outcome analysis
 x$get_outliers()
 x$set_candidate_traits()
 
-#Scan candidates
+#Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
 x$scan()
 
-#Get instruments for MR analysis of the candidate traits and the exposure / outcome
+#Extract instruments for those 'candidate traits'
 x$extractions() does these:
   x$candidate_instruments()
   x$outcome_instruments()
@@ -110,15 +109,18 @@ x$harmonise() does these:
   x$candidate_exposure_dat()
   x$exposure_candidate_dat()
 
-#MR analysis
+#Perform MR of each of those 'candidate traits' against the exposure and the outcomes
 x$mr()
 ```
 
 
-e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
+See the ?tryx.scan for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
+
 ```r
-x <- as.character(subset(dat, pval.outcome < 5e-8)$SNP)
-tryxscan <- tryx.scan(dat, outliers=x)
+a <- as.character(subset(dat, pval.outcome < 5e-8)$SNP)
+x <- Tryx$new()
+x$input(dat)
+x$mrtryx(outliers=x)
 ```
 
 The next steps are to determine which of the candidate traits are of interest (e.g. using p-value thresholds), visualise the results, and adjust the exposure-outcome estimates based on knowledge of the 'candidate trait' associations.
