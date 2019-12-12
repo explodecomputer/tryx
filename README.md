@@ -55,141 +55,67 @@ It should not take more than a few minutes to install all of these packages.
 ---
 
 
-## Implementing R6
-
-1. specify data
-2. find outliers
-3. do all scans
-
-OR
-
-3. scan candidates
-4. get instruments for candidates
-5. get candidate instruments for outcome
-6. get candidate instruments for exposure
-7. get exposure instruments for candidates
-
-
-8. harmonise all data
-9. mr
-
-
-GIB BROKE THIS
-
-```
-library(devtools)
-install_github("mrcieu/TwoSampleMR@ieugwasr")
-load_all()
-a <- extract_instruments("ieu-a-300")
-b <- extract_outcome_data(a$SNP, "ieu-a-7", access_token=NULL)
-dat <- harmonise_data(a,b)
-
-x <- Tryx$new()
-x$input(dat)
-x$get_outliers()
-x$set_candidate_traits()
-
-x$scan_candidate_traits() rename this to:
-x$scan()
-
-x$extractions(arg1,arg2,arg3,arg4) does these:
-x$candidate_instruments(arg1)
-x$outcome_instruments(arg2, arg3)
-x$exposure_instruments(arg4)
-x$exposure_candidate_instruments()
-
-x$harmonise() does these:
-x$candidate_outcome_dat()
-x$candidate_exposure_dat()
-x$exposure_candidate_dat()
-
-x$perform_mr() rename this to:
-x$mr()
-
-# to do:
-x$scan()
-
-x$plots...
-x$adjustments...
-```
-
-
-EXAMPLE OF CALLING A FUNCTION
-
-```
-Test <- R6::R6Class("test", list(
-  output = 0
-))
-
-Test$set("public", "add", function(x) {
-    self$output <- self$output + x
-})
-
-
-Test$set("public", "calladd", function(x) {
-    self$add(x)
-})
-
-Test$set("public", "subt", function(x) self$output <- self$output - x)
-
-test <- Test$new()
-
-test$output
-test$add(1)
-test$calladd(1)
-```
-
-
-LAYOUT?
-
-```
-Tryx$dat        # input data
-Tryx$output     # this is scan result
-Tryx$output$outliers
-           $candidate
-           $mr_...
-
-
-Tryx$adjustment
-               $estimates
-               $plot
-
-
-
-```
-
-
-
 ## Guide
 
-### Basic analysis
+### Basic analysis (Implemented in R6)
 
 The following analyses should run within 10 minutes, depending on internet speed and the traffic that the MR-Base servers are experiencing.
 
 Begin by choosing an exposure-outcome hypothesis to explore. e.g. LDL cholesterol on coronary heart disease. These data can be extracted from MR-Base:
 
+
 ```r
+library(devtools)
+install_github("mrcieu/TwoSampleMR@ieugwasr")
 library(tryx)
-a <- extract_instruments(300)
-b <- extract_outcome_data(a$SNP, 7, access_token=NULL)
+a <- extract_instruments("ieu-a-300")
+b <- extract_outcome_data(a$SNP, "ieu-a-7", access_token=NULL)
 dat <- harmonise_data(a,b)
 ```
-    
+
 We can now perform the analysis:
 
 ```r
-tryxscan <- tryx.scan(dat)
+x <- Tryx$new()
+x$input(dat)
+x$mrtryx()
 ```
 
 This will do the following:
 
-1. Find outlier SNPs in the exposure-outcome analysis
-2. Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
-3. Extract instruments for those 'candidate traits'
-4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
+Find outlier SNPs in the exposure-outcome analysis
+Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
+Extract instruments for those 'candidate traits'
+Perform MR of each of those 'candidate traits' against the exposure and the outcome
+See the ?tryx.scan for options on the parameters for this analysis.
 
-See the `?tryx.scan` for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
+```r
+#Find outliers
+x$get_outliers()
+x$set_candidate_traits()
 
+#Scan candidates
+x$scan()
+
+#Get instruments for MR analysis of the candidate traits and the exposure / outcome
+x$extractions() does these:
+  x$candidate_instruments()
+  x$outcome_instruments()
+  x$exposure_instruments()
+  x$exposure_candidate_instruments()
+
+#Make datasets for MR analysis
+x$harmonise() does these:
+  x$candidate_outcome_dat()
+  x$candidate_exposure_dat()
+  x$exposure_candidate_dat()
+
+#MR analysis
+x$mr()
+```
+
+
+e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
 ```r
 x <- as.character(subset(dat, pval.outcome < 5e-8)$SNP)
 tryxscan <- tryx.scan(dat, outliers=x)
@@ -244,27 +170,3 @@ By default, this adjusts for the trait that has the largest impact for a particu
 The `tryxanalysis$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `tryxanalysis$plot`.
 
 ---
-
-
-## To Do
-
-### Plot
-
-- categorise traits
-- print SNP names or gene names
-- option to have no names
-
-### Scan
-
-- Implement cooks distance as option for finding outliers
-- Implement MR PRESSO as option for finding outliers
-
-### Scan output
-
-- calculate significant associations (currently in plot function - should remove from here)
-
-### Analysis
-
-- Simulate improvement in multiple testing correction when filtering by outlier associations
-
-
