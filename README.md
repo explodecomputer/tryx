@@ -83,10 +83,10 @@ x$mrtryx()
 
 This will do the following:
 
-Find outlier SNPs in the exposure-outcome analysis
-Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
-Extract instruments for those 'candidate traits'
-Perform MR of each of those 'candidate traits' against the exposure and the outcome
+1. Find outlier SNPs in the exposure-outcome analysis
+2. Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
+3. Extract instruments for those 'candidate traits'
+4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
 See the ?tryx.scan for options on the parameters for this analysis.
 
 ```r
