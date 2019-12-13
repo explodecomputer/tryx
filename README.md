@@ -130,7 +130,7 @@ The next steps are to determine which of the candidate traits are of interest (e
 One can determine which of the putative associations might be 'interesting' in different ways. We have provided a simple convenience function to apply different multiple testing corrections. e.g.
 
 ```r
-x$tryx.sig
+x$tryx.sig()
 ```
 
 Will by default use FDR of 5%. See `?tryx.sig` for more options.
