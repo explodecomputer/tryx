@@ -316,6 +316,50 @@ Tryx <- R6::R6Class("Tryx", list(
     x$exposure_candidate_dat(dat = self$output$dat)
     x$mr(dat = self$output$dat, mr_method="mr_ivw")
     invisible(self$output)
+  },
+  
+  ##########################################################################################################################################################################
+  #tryx-sig
+  tryx.sig = function(mr_threshold_method = "fdr", mr_threshold = 0.05){
+
+    stopifnot("candidate_outcome_mr" %in% names(self$output))
+    stopifnot("candidate_exposure_mr" %in% names(self$output))
+    
+    # Use threshold to retain causal relationships
+    stopifnot(length(mr_threshold_method) == 1)
+    if(mr_threshold_method != "unadjusted")
+    {
+      message("Adjusting p-value")
+      self$output$candidate_outcome_mr$pval_adj <- p.adjust(self$output$candidate_outcome_mr$pval, mr_threshold_method)
+      self$output$candidate_outcome_mr$sig <- self$output$candidate_outcome_mr$pval_adj < mr_threshold
+      self$output$candidate_exposure_mr$pval_adj <- p.adjust(self$output$candidate_exposure_mr$pval, mr_threshold_method)
+      self$output$candidate_exposure_mr$sig <- self$output$candidate_exposure_mr$pval_adj < mr_threshold
+      self$output$exposure_candidate_mr$pval_adj <- p.adjust(self$output$exposure_candidate_mr$pval, mr_threshold_method)
+      self$output$exposure_candidate_mr$sig <- self$output$exposure_candidate_mr$pval_adj < mr_threshold
+    } else {
+      self$output$candidate_outcome_mr$sig <- self$output$candidate_outcome_mr$pval < mr_threshold
+      self$output$candidate_exposure_mr$sig <- self$output$candidate_exposure_mr$pval < mr_threshold
+      self$output$exposure_candidate_mr$sig <- self$output$exposure_candidate_mr$pval < mr_threshold
+    }
+    invisible(self$output)
+    
+    message("* * * *")
+    message("Number of candidate - outcome associations: ", sum(self$output$candidate_outcome_mr$sig))
+    message("* * * *")
+    message(paste(subset(self$output$candidate_outcome_mr, sig)$exposure, collapse="\n"))
+    message("")
+    message("* * * *")
+    message("Number of candidate - exposure associations: ", sum(self$output$candidate_exposure_mr$sig))
+    message("* * * *")
+    message(paste(subset(self$output$candidate_exposure_mr, sig)$exposure, collapse="\n"))
+    message("")
+    message("* * * *")
+    message("Number of exposure - candidate associations: ", sum(self$output$exposure_candidate_mr$sig))
+    message("* * * *")
+    message(paste(subset(self$output$candidate_exposure_mr, sig)$exposure, collapse="\n"))
+    return(self$output)
+    invisible(self$output)
   }
+  
   
   ))
