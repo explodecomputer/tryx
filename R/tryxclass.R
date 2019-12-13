@@ -86,11 +86,11 @@ Tryx <- R6::R6Class("Tryx", list(
     {
       ao <- suppressMessages(TwoSampleMR::available_outcomes())
       ids <- subset(ao, priority == 1 & nsnp > 500000 & sample_size > 50000) %>% 
-        arrange(desc(sample_size)) %>%
-        filter(!duplicated(trait), mr == 1) %>%
-        filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
-        filter(!grepl("ukb-b", id)) %>%
-        filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
+             arrange(desc(sample_size)) %>%
+             filter(!duplicated(trait), mr == 1) %>%
+             filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
+             filter(!grepl("ukb-b", id)) %>%
+             filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
       id_list <- ids$id
       message("Using default list of ", nrow(ids), " traits")
     }
@@ -104,15 +104,16 @@ Tryx <- R6::R6Class("Tryx", list(
   scan = function(dat=self$output$dat, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), use_proxies=FALSE) {
     stopifnot(search_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
     stopifnot(search_threshold > 0 & search_threshold < 1)
-    self$output$search <- extract_outcome_data(self$output$outliers, self$output$id_list, proxies=use_proxies)
-    self$output$search$padj <- p.adjust(self$output$search$pval.outcome, search_correction)
-    out2 <- subset(self$output$search, padj < search_threshold)
+    search <- extract_outcome_data(self$output$outliers, self$output$id_list, proxies=use_proxies)
+    search$padj <- p.adjust(search$pval.outcome, search_correction)
+    out2 <- subset(search, padj < search_threshold)
     if(nrow(out2) == 0)
     {
       message("Outliers do not associate with any other traits. Try relaxing the search_threshold")
       return(self$output)
     }
     message("Found ", length(unique(out2$id.outcome)), " candidate traits associated with outliers at p < ", search_threshold)
+    self$output$search <- search
     invisible(self$output$search)
     self$output$sig_search <- out2
     invisible(self$output$sig_search)
@@ -125,7 +126,6 @@ Tryx <- R6::R6Class("Tryx", list(
   if(is.null(candidate_instruments))
   {
          candidate_instruments <- extract_instruments(unique(self$output$sig_search$id.outcome))
-         self$output$candidate_instruments <- candidate_instruments
          if(nrow(candidate_instruments) == 0)
          {
             message("No instruments available for the candidate traits")
@@ -144,7 +144,8 @@ Tryx <- R6::R6Class("Tryx", list(
                                         })
          }
   }
-  message(length(unique(self$output$candidate_instruments$id.exposure)), " traits with at least one instrument")
+  message(length(unique(candidate_instruments$id.exposure)), " traits with at least one instrument")
+  self$output$candidate_instruments <- candidate_instruments
   invisible(self$output$candidate_instruments)
   },
   
@@ -152,13 +153,13 @@ Tryx <- R6::R6Class("Tryx", list(
   outcome_instruments = function(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE) {
     message("Looking up candidate trait instruments for ", dat$outcome[1])
     candidate_outcome <- extract_outcome_data(unique(self$output$candidate_instruments$SNP), dat$id.outcome[1], proxies=use_proxies)
-    self$output$candidate_outcome <- candidate_outcome
     if(is.null(candidate_outcome))
     {
         message("None of the candidate trait instruments available for ", dat$outcome[1])
         return(self$output)
     }
     message(nrow(candidate_outcome), " instruments extracted for ", dat$outcome[1])
+    self$output$candidate_outcome <- candidate_outcome
     invisible(self$output$candidate_outcome)
   },
   
@@ -166,13 +167,13 @@ Tryx <- R6::R6Class("Tryx", list(
   exposure_instruments = function(candidate_exposure = NULL, dat = self$output$dat, use_proxies=FALSE) {
     message("Looking up candidate trait instruments for ", dat$exposure[1])
     candidate_exposure <- extract_outcome_data(unique(self$output$candidate_instruments$SNP), dat$id.exposure[1], proxies=use_proxies)
-    self$output$candidate_exposure <- candidate_exposure
     if(is.null(candidate_exposure))
     {
       message("None of the candidate trait instruments available for ", dat$exposure[1])
       return(self$output)
     }
     message(nrow(self$output$candidate_exposure), " instruments extracted for ", dat$exposure[1])
+    self$output$candidate_exposure <- candidate_exposure
     invisible(self$output$candidate_exposure)
   },
   
@@ -180,13 +181,15 @@ Tryx <- R6::R6Class("Tryx", list(
   exposure_candidate_instruments = function(exposure_candidate = NULL, dat = self$output$dat, use_proxies = FALSE, include_outliers = FALSE) {
     message("Looking up exposure instruments for ", length(unique(self$output$sig_search$id.outcome)), " candidate traits")
     exposure_candidate <- extract_outcome_data(unique(dat$SNP), unique(self$output$sig_search$id.outcome), proxies=use_proxies)
-    self$output$exposure_candidate <- exposure_candidate
     if(is.null(exposure_candidate))
     {
       message("None of the candidate trait instruments available for ", dat$exposure[1])
       return(self$output)
     }
+    self$output$exposure_candidate <- exposure_candidate
+    invisible(self$output$exposure_candidate)
     message(nrow(self$output$exposure_candidate), " instruments extracted")
+    
     temp <- subset(dat, select=c(SNP, beta.exposure, se.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, id.exposure, exposure))
     if(!include_outliers)
     {
@@ -201,7 +204,6 @@ Tryx <- R6::R6Class("Tryx", list(
         })
       message("Removed ", n1 - nrow(self$output$exposure_candidate), " outlier SNPs")
     }
-    invisible(self$output$exposure_candidate)
     self$output$temp <- temp
     invisible(self$output$temp)
   },
@@ -212,7 +214,7 @@ Tryx <- R6::R6Class("Tryx", list(
     x$outcome_instruments(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE)
     x$exposure_instruments(candidate_exposure = NULL, dat = self$output$dat, use_proxies=FALSE)
     x$exposure_candidate_instruments(exposure_candidate = NULL, dat = self$output$dat, use_proxies = FALSE, include_outliers = FALSE)
-    invisible(self$output)
+    invisible(self)
   },
   
   ##########################################################################################################################################################################
@@ -233,24 +235,25 @@ Tryx <- R6::R6Class("Tryx", list(
   candidate_exposure_dat = function(dat = self$output$dat){
     candidate_exposure_dat <- suppressMessages(harmonise_data(self$output$candidate_instruments, self$output$candidate_exposure))
     candidate_exposure_dat <- subset(candidate_exposure_dat, mr_keep)
-    self$output$candidate_exposure_dat <- candidate_exposure_dat
     if(nrow(candidate_exposure_dat) == 0)
     {
       message("None of the candidate trait instruments available for ", dat$exposure[1], " after harmonising")
       return(self$output)
     }
+    self$output$candidate_exposure_dat <- candidate_exposure_dat
+    invisible(self$output$candidate_exposure_dat)
   },
 
   #make a dataset for the original exposure and the candidate traits
   exposure_candidate_dat = function(dat = self$output$dat){
      exposure_candidate_dat <- suppressMessages(harmonise_data(self$output$temp, self$output$exposure_candidate))
      exposure_candidate_dat <- subset(exposure_candidate_dat, mr_keep)
-     self$output$exposure_candidate_dat <- exposure_candidate_dat
      if(nrow(exposure_candidate_dat) == 0)
      {
         message("None of the candidate traits have the ", dat$exposure[1], " instruments after harmonising")
         return(self$output)
      }
+     self$output$exposure_candidate_dat <- exposure_candidate_dat
      invisible(self$output$exposure_candidate_dat)
   },
   
@@ -259,7 +262,7 @@ Tryx <- R6::R6Class("Tryx", list(
     x$candidate_outcome_dat(dat = self$output$dat)
     x$candidate_exposure_dat(dat = self$output$dat)
     x$exposure_candidate_dat(dat = self$output$dat)
-    invisible(self$output)
+    invisible(self)
   },
   
   ##########################################################################################################################################################################
@@ -302,6 +305,7 @@ Tryx <- R6::R6Class("Tryx", list(
     invisible(self$output$exposure_candidate_mr_full)
   },
   
+  ##########################################################################################################################################################################
   #All-in-one: Do everything at once
   mrtryx = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw") {
     x$get_outliers(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05))
@@ -315,7 +319,7 @@ Tryx <- R6::R6Class("Tryx", list(
     x$candidate_exposure_dat(dat = self$output$dat)
     x$exposure_candidate_dat(dat = self$output$dat)
     x$mr(dat = self$output$dat, mr_method="mr_ivw")
-    invisible(self$output)
+    invisible(self)
   },
   
   ##########################################################################################################################################################################
@@ -341,8 +345,7 @@ Tryx <- R6::R6Class("Tryx", list(
       self$output$candidate_exposure_mr$sig <- self$output$candidate_exposure_mr$pval < mr_threshold
       self$output$exposure_candidate_mr$sig <- self$output$exposure_candidate_mr$pval < mr_threshold
     }
-    invisible(self$output)
-    
+
     message("* * * *")
     message("Number of candidate - outcome associations: ", sum(self$output$candidate_outcome_mr$sig))
     message("* * * *")
@@ -357,9 +360,11 @@ Tryx <- R6::R6Class("Tryx", list(
     message("Number of exposure - candidate associations: ", sum(self$output$exposure_candidate_mr$sig))
     message("* * * *")
     message(paste(subset(self$output$candidate_exposure_mr, sig)$exposure, collapse="\n"))
-    return(self$output)
-    invisible(self$output)
+    #return(self$output)
+    invisible(self)
   }
   
   
   ))
+      
+   
