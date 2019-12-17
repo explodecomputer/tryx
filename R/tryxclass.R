@@ -105,8 +105,9 @@ Tryx <- R6::R6Class("Tryx", list(
     stopifnot(search_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
     stopifnot(search_threshold > 0 & search_threshold < 1)
     search <- extract_outcome_data(self$output$outliers, self$output$id_list, proxies=use_proxies)
-    search$padj <- p.adjust(search$pval.outcome, search_correction)
-    out2 <- subset(search, padj < search_threshold)
+    padj <- p.adjust(search$pval.outcome, search_correction)
+    search$sig <- padj < search_threshold
+    out2 <- subset(search, sig)
     if(nrow(out2) == 0)
     {
       message("Outliers do not associate with any other traits. Try relaxing the search_threshold")
