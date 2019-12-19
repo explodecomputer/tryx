@@ -137,6 +137,20 @@ Will by default use FDR of 5%. See `?tryx.sig` for more options.
 
 
 
+### Adjustment
+
+Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:
+
+```r
+x$adjustment()
+x$adjustment.mv()
+x$analyse()
+x$analyse.mv()
+```
+
+By default, this adjusts for the trait that has the largest impact for a particular SNP. 
+
+The `x$output$adjustment$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `x$output$adjustment$plot`.
 
 
 
@@ -163,20 +177,5 @@ or e.g. just exposures
 ```r
 volcano_plot(tryxscan$candidate_exposure_mr)
 ```
-
-### Adjustment
-
-Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:
-
-```r
-x$adjustment()
-x$adjustment.mv()
-x$analyse()
-x$analyse.mv()
-```
-
-By default, this adjusts for the trait that has the largest impact for a particular SNP. 
-
-The `x$output$adjustment$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `x$output$adjustment$plot`.
 
 ---
