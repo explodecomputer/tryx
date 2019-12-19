@@ -9,7 +9,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
   sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% id_remove)
   sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% id_remove)
   
-  dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+  dat$qi <- private$cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
   dat$Q <- sum(dat$qi)
   for(i in 1:nrow(sig))
   {
@@ -25,10 +25,10 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
         a$candidate.se.exposure <- sige$se[sige$id.exposure == sig$id.outcome[i]]
         a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
         a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-        b <- bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sige$b[sige$id.exposure == sig$id.outcome[i]], sige$se[sige$id.exposure == sig$id.outcome[i]])
+        b <- private$bootstrap_path(a$beta.exposure, a$se.exposure, sig$beta.outcome[i], sig$se.outcome[i], sige$b[sige$id.exposure == sig$id.outcome[i]], sige$se[sige$id.exposure == sig$id.outcome[i]])
         a$adj.beta.exposure <- b[1]
         a$adj.se.exposure <- b[2]
-        b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
+        b <- private$bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
         a$adj.beta.outcome <- b[1]
         a$adj.se.outcome <- b[2]
       } else {
@@ -38,7 +38,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
         a$candidate.se.exposure <- NA
         a$candidate.beta.outcome <- sigo$b[sigo$id.exposure == sig$id.outcome[i]]
         a$candidate.se.outcome <- sigo$se[sigo$id.exposure == sig$id.outcome[i]]
-        b <- bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
+        b <- private$bootstrap_path(a$beta.outcome, a$se.outcome, sig$beta.outcome[i], sig$se.outcome[i], sigo$b[sigo$id.exposure == sig$id.outcome[i]], sigo$se[sigo$id.exposure == sig$id.outcome[i]])
         a$adj.beta.exposure <- a$beta.exposure
         a$adj.se.exposure <- a$se.exposure
         a$adj.beta.outcome <- b[1]
@@ -49,7 +49,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
       temp$se.exposure[temp$SNP == a$SNP] <- a$adj.se.exposure
       temp$beta.outcome[temp$SNP == a$SNP] <- a$adj.beta.outcome
       temp$se.outcome[temp$SNP == a$SNP] <- a$adj.se.outcome
-      temp$qi <- cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
+      temp$qi <- private$cochrans_q(temp$beta.outcome / temp$beta.exposure, temp$se.outcome / abs(temp$beta.exposure))
       a$adj.qi <- temp$qi[temp$SNP == a$SNP]
       a$adj.Q <- sum(temp$qi)
       
@@ -62,6 +62,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
   self$output$adjustment <- l
   invisible(self$output$adjustment)
   }
+
 )
 
 
@@ -85,7 +86,7 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
   sigo1 <- subset(sig, id.outcome %in% sigo$id.exposure) %>% group_by(SNP) %>% mutate(snpcount=n()) %>% arrange(desc(snpcount), SNP)
   snplist <- unique(sigo1$SNP)
   mvo <- list()
-  dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+  dat$qi <- private$cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
   dat$Q <- sum(dat$qi)
   dat$orig.beta.outcome <- dat$beta.outcome
   dat$orig.se.outcome <- dat$se.outcome
@@ -126,7 +127,7 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
     temp2 <- with(temp, tibble(SNP=SNP, exposure=outcome, snpeff=beta.outcome, snpeff.se=se.outcome, snpeff.pval=pval.outcome))
     mvo[[i]] <- merge(mvo[[i]], temp2, by="exposure")
     boo <- with(subset(dat, SNP == snplist[i]), 
-                bootstrap_path(
+                private$bootstrap_path(
                   beta.outcome,
                   se.outcome,
                   mvo[[i]]$snpeff,
@@ -139,11 +140,12 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
   }
   mvo <- bind_rows(mvo)
   
-  dat$qi[dat$mr_keep] <- cochrans_q(dat$beta.outcome[dat$mr_keep] / dat$beta.exposure[dat$mr_keep], dat$se.outcome[dat$mr_keep] / abs(dat$beta.exposure[dat$mr_keep]))
+  dat$qi[dat$mr_keep] <- private$cochrans_q(dat$beta.outcome[dat$mr_keep] / dat$beta.exposure[dat$mr_keep], dat$se.outcome[dat$mr_keep] / abs(dat$beta.exposure[dat$mr_keep]))
   self$output$adjustment.mv <- list(mvo=mvo, dat=dat)
   invisible(self$output)
 }
 )
+
 
 
 Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE) {
@@ -176,7 +178,7 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
   dat$ratiow <- dat$ratio * dat$weights
   dat$what <- "Unadjusted"
   dat$candidate <- "NA"
-  dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+  dat$qi <- private$cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
   
   analysis$Q$full_Q <- adj$Q[1]
   analysis$Q$num_reduced <- sum(adj$adj.qi < adj$qi)
@@ -184,7 +186,7 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
   
   
   temp <- subset(adj, select=c(SNP, adj.beta.exposure, adj.beta.outcome, adj.se.exposure, adj.se.outcome, candidate))
-  temp$qi <- cochrans_q(temp$adj.beta.outcome / temp$adj.beta.exposure, temp$adj.se.outcome / abs(temp$adj.beta.exposure))
+  temp$qi <- private$cochrans_q(temp$adj.beta.outcome / temp$adj.beta.exposure, temp$adj.se.outcome / abs(temp$adj.beta.exposure))
   ind <- grepl("\\|", temp$candidate)
   if(any(ind))
   {
@@ -197,7 +199,7 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
   temp$ratiow <- temp$ratio * temp$weights
   
   dat_adj <- rbind(temp, dat) %>% filter(!duplicated(SNP))
-  dat_adj$qi <- cochrans_q(dat_adj$beta.outcome / dat_adj$beta.exposure, dat_adj$se.outcome / abs(dat_adj$beta.exposure))
+  dat_adj$qi <- private$cochrans_q(dat_adj$beta.outcome / dat_adj$beta.exposure, dat_adj$se.outcome / abs(dat_adj$beta.exposure))
   analysis$Q$adj_Q <- sum(dat_adj$qi)
   
   dat_rem <- subset(dat, !SNP %in% temp$SNP)
@@ -263,7 +265,7 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
   
   # Outliers adjusted
   tt <- rbind(temp, dat) %>% filter(!duplicated(SNP))
-  tt$qi <- cochrans_q(tt$beta.outcome / tt$beta.exposure, tt$se.outcome / abs(tt$beta.exposure))
+  tt$qi <- private$cochrans_q(tt$beta.outcome / tt$beta.exposure, tt$se.outcome / abs(tt$beta.exposure))
   analysis$Q$adj_Q <- sum(tt$qi)
   mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
   if(class(mod) != "try-error")
@@ -347,6 +349,7 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
 )
 
 
+
 Tryx$set("public", "analyse.mv", function(tryxscan=self$output, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE) {
   adj <- x$adjustment.mv(tryxscan=self$output, lasso=lasso, id_remove=id_remove, proxies=proxies)
   dat <- subset(adj$dat, mr_keep)
@@ -415,5 +418,70 @@ Tryx$set("public", "analyse.mv", function(tryxscan=self$output, lasso=TRUE, plot
   self$output$analyse.mv <- analysis
   invisible(self$output)
 }
-)    
-    
+)
+
+
+
+
+#' Cochran's Q statistic
+#' 
+#' @param b vector of effecti 
+#' @param se vector of standard errors
+#' 
+#' @return q values
+#' 
+#' @export
+
+
+Tryx$set("private", "cochrans_q", function(b, se) {
+    xw <- sum(b / se^2) / sum(1/se^2)
+    qi <- (1/se^2) * (b - xw)^2
+    return(qi)
+}
+)
+
+
+Tryx$set("private", "bootstrap_path1", function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000) {
+    res <- rnorm(nboot, gx, gx.se) - rnorm(nboot, gp, gp.se) * rnorm(nboot, px, px.se)
+    pe <- gx - gp * px
+    return(c(pe, sd(res)))
+}
+)
+
+
+Tryx$set("private", "bootstrap_path", function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000) {
+    nalt <- length(gp)
+    altpath <- tibble(
+      p = rnorm(nboot * nalt, gp, gp.se) * rnorm(nboot * nalt, px, px.se),
+      b = rep(1:nboot, each=nalt)
+    )
+    altpath <- group_by(altpath, b) %>%
+    summarise(p = sum(p))
+    res <- rnorm(nboot, gx, gx.se) - altpath$p
+    pe <- gx - sum(gp * px)
+    return(c(pe, sd(res)))
+}
+)
+
+
+Tryx$set("private", "radialmr", function(dat, outlier=NULL) {
+  library(ggplot2)
+  beta.exposure <- dat$beta.exposure
+  beta.outcome <- dat$beta.outcome
+  se.outcome <- dat$se.outcome
+  w <- sqrt(beta.exposure^2 / se.outcome^2)
+  ratio <- beta.outcome / beta.exposure
+  ratiow <- ratio*w
+  dat <- data.frame(w=w, ratio=ratio, ratiow=ratiow)
+  if(is.null(outlier))
+  {
+    dat2 <- dat
+  } else {
+    dat2 <- dat[-c(outlier), ]
+  }
+  mod <- lm(ratiow ~ -1 + w, dat2)$coefficients[1]
+  ggplot(dat, aes(x=w, y=ratiow)) +
+    geom_point() +
+    geom_abline(slope=mod, intercept=0)
+}
+)
