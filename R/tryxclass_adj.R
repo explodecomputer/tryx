@@ -145,3 +145,275 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
 }
 )
 
+
+Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE) {
+  
+  analysis <- list()
+  adj_full <- x$adjustment()
+  if(nrow(adj_full) == 0)
+    {
+       return(NULL)
+    }
+  analysis$adj_full <- adj_full
+  if(filter_duplicate_outliers)
+    {
+       adj <- adj_full %>% arrange(d) %>% filter(!duplicated(SNP))
+    } else {
+       adj <- adj_full
+    }
+  analysis$adj <- adj
+ 
+  
+  cpg <- require(ggrepel)
+  if(!cpg)
+  {
+    stop("Please install the ggrepel package\ninstall.packages('ggrepel')")
+  }
+  
+  dat <- subset(tryxscan$dat, mr_keep, select=c(SNP, beta.exposure, beta.outcome, se.exposure, se.outcome))
+  dat$ratio <- dat$beta.outcome / dat$beta.exposure
+  dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
+  dat$ratiow <- dat$ratio * dat$weights
+  dat$what <- "Unadjusted"
+  dat$candidate <- "NA"
+  dat$qi <- cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
+  
+  analysis$Q$full_Q <- adj$Q[1]
+  analysis$Q$num_reduced <- sum(adj$adj.qi < adj$qi)
+  analysis$Q$mean_d <- mean(adj$d)
+  
+  
+  temp <- subset(adj, select=c(SNP, adj.beta.exposure, adj.beta.outcome, adj.se.exposure, adj.se.outcome, candidate))
+  temp$qi <- cochrans_q(temp$adj.beta.outcome / temp$adj.beta.exposure, temp$adj.se.outcome / abs(temp$adj.beta.exposure))
+  ind <- grepl("\\|", temp$candidate)
+  if(any(ind))
+  {
+    temp$candidate[ind] <- sapply(strsplit(temp$candidate[ind], split=" \\|"), function(x) x[[1]])
+  }
+  names(temp) <- gsub("adj.", "", names(temp))
+  temp$what <- "Adjusted"
+  temp$weights <- sqrt(temp$beta.exposure^2 / temp$se.outcome^2)
+  temp$ratio <- temp$beta.outcome / temp$beta.exposure
+  temp$ratiow <- temp$ratio * temp$weights
+  
+  dat_adj <- rbind(temp, dat) %>% filter(!duplicated(SNP))
+  dat_adj$qi <- cochrans_q(dat_adj$beta.outcome / dat_adj$beta.exposure, dat_adj$se.outcome / abs(dat_adj$beta.exposure))
+  analysis$Q$adj_Q <- sum(dat_adj$qi)
+  
+  dat_rem <- subset(dat, !SNP %in% temp$SNP)
+  dat_rem2 <- subset(dat, !SNP %in% tryxscan$outliers)
+  # adjust everything that's possible remove remaining outliers
+  dat_rem3 <- rbind(temp, dat_rem2) %>% filter(!duplicated(SNP))
+  
+  
+  
+  estimates <- tibble()
+  
+  
+  # Raw IVW
+  tt <- dat
+  mod <- summary(lm(ratiow ~ -1 + weights, data=tt))
+  estimates <- bind_rows(estimates, 
+                         tibble(
+                           est="Raw",
+                           b=coefficients(mod)[1,1], 
+                           se = coefficients(mod)[1,2],
+                           pval=coefficients(mod)[1,4],
+                           nsnp = nrow(tt),
+                           Q = sum(tt$qi),
+                           int = 0
+                         )
+  )
+  
+  # Outliers removed (all)
+  tt <- subset(dat, !SNP %in% tryxscan$outliers)
+  mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+  if(class(mod) != "try-error")
+  {
+    estimates <- bind_rows(estimates, 
+                           tibble(
+                             est="Outliers removed (all)",
+                             b=coefficients(mod)[1,1], 
+                             se = coefficients(mod)[1,2],
+                             pval=coefficients(mod)[1,4],
+                             nsnp = nrow(tt),
+                             Q = sum(tt$qi),
+                             int = 0
+                           )
+    )
+  }
+  
+  # Outliers removed (candidates)
+  tt <- subset(dat, !SNP %in% temp$SNP)
+  mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+  if(class(mod) != "try-error")
+  {
+    estimates <- bind_rows(estimates, 
+                           tibble(
+                             est="Outliers removed (candidates)",
+                             b=coefficients(mod)[1,1], 
+                             se = coefficients(mod)[1,2],
+                             pval=coefficients(mod)[1,4],
+                             nsnp = nrow(tt),
+                             Q = sum(tt$qi),
+                             int = 0
+                           )
+    )
+  }
+  
+  # Outliers adjusted
+  tt <- rbind(temp, dat) %>% filter(!duplicated(SNP))
+  tt$qi <- cochrans_q(tt$beta.outcome / tt$beta.exposure, tt$se.outcome / abs(tt$beta.exposure))
+  analysis$Q$adj_Q <- sum(tt$qi)
+  mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+  if(class(mod) != "try-error")
+  {
+    estimates <- bind_rows(estimates, 
+                           tibble(
+                             est="Outliers adjusted",
+                             b=coefficients(mod)[1,1], 
+                             se = coefficients(mod)[1,2],
+                             pval=coefficients(mod)[1,4],
+                             nsnp = nrow(tt),
+                             Q = sum(tt$qi),
+                             int = 0
+                           )
+    )
+  }
+  
+  if("mvres" %in% names(tryxscan))
+  {
+    estimates <- bind_rows(estimates, 
+                           tibble(
+                             est="Multivariable MR",
+                             b=tryxscan$mvres$result$b[1], 
+                             se = tryxscan$mvres$result$se[1],
+                             pval = tryxscan$mvres$result$pval[1],
+                             nsnp = tryxscan$mvres$result$nsnp[1],
+                             Q = NA,
+                             int = 0
+                           )
+    )
+  }
+  
+  if("true_outliers" %in% names(tryxscan))
+  {
+    tt <- subset(dat, !SNP %in% tryxscan$true_outliers)
+    mod <- try(summary(lm(ratiow ~ -1 + weights, data=tt)))
+    if(class(mod) != "try-error")
+    {
+      estimates <- bind_rows(estimates,
+                             tibble(
+                               est=c("Oracle"),
+                               b=c(coefficients(mod)[1,1]), 
+                               se=c(coefficients(mod)[1,2]), 
+                               pval=c(coefficients(mod)[1,4]),
+                               nsnp=c(nrow(tt)),
+                               Q = c(sum(tt$qi)),
+                               int=0
+                             )
+      )
+    }
+  }
+  
+  
+  estimates <- bind_rows(estimates)
+  estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+  
+  analysis$estimates <- estimates
+  self$output$analysis <- analysis
+
+  
+  if(plot)
+  {	
+    temp2 <- merge(dat, temp, by="SNP")
+    labs <- rbind(
+      data.frame(label=temp2$SNP, x=temp2$weights.x, y=temp2$weights.x * temp2$ratio.x),
+      data.frame(label=temp$candidate, x=temp$weights, y=temp$weights * temp$ratio)
+    )
+    p <- ggplot(rbind(dat, temp), aes(y=ratiow, x=weights)) +
+      geom_abline(data=estimates, aes(slope=b, intercept=0, colour=est)) +
+      geom_label_repel(data=labs, aes(x=x, y=y, label=label), size=2, segment.color = "grey10") +
+      geom_point() +
+      geom_segment(data=temp2, colour="grey50", aes(x=weights.x, xend=weights.y, y=ratiow.x, yend=ratiow.y), arrow = arrow(length = unit(0.02, "npc"))) +
+      labs(colour="") +
+      xlim(c(0, max(dat$weights))) +
+      ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow))) +
+      scale_colour_brewer(type="qual")
+    self$output$analysis$plot <- p
+  }
+  invisible(self$output)
+}
+)
+
+
+Tryx$set("public", "analyse.mv", function(tryxscan=self$output, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE) {
+  adj <- x$adjustment.mv(tryxscan=self$output, lasso=lasso, id_remove=id_remove, proxies=proxies)
+  dat <- subset(adj$dat, mr_keep)
+  dat$orig.ratio <- dat$orig.beta.outcome / dat$beta.exposure
+  dat$orig.weights <- sqrt(dat$beta.exposure^2 / dat$orig.se.outcome^2)
+  dat$orig.ratiow <- dat$orig.ratio * dat$orig.weights
+  dat$ratio <- dat$beta.outcome / dat$beta.exposure
+  dat$weights <- sqrt(dat$beta.exposure^2 / dat$se.outcome^2)
+  dat$ratiow <- dat$ratio * dat$weights
+  
+  est_raw <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=dat))
+  est_adj <- summary(lm(ratiow ~ -1 + weights, data=dat))
+  est_out1 <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=subset(dat, !SNP %in% tryxscan$outliers)))
+  est_out2 <- summary(lm(orig.ratiow ~ -1 + orig.weights, data=subset(dat, !SNP %in% adj$mvo$SNP)))
+  
+  estimates <- data.frame(
+    est=c("Raw", "Outliers removed (all)", "Outliers removed (candidates)", "Outliers adjusted"),
+    b=c(coefficients(est_raw)[1,1], coefficients(est_out2)[1,1], coefficients(est_out1)[1,1], coefficients(est_adj)[1,1]), 
+    se=c(coefficients(est_raw)[1,2], coefficients(est_out2)[1,2], coefficients(est_out1)[1,2], coefficients(est_adj)[1,2]), 
+    pval=c(coefficients(est_raw)[1,4], coefficients(est_out2)[1,4], coefficients(est_out1)[1,4], coefficients(est_adj)[1,4]),
+    nsnp=c(nrow(dat), nrow(subset(dat, !SNP %in% tryxscan$outliers)), nrow(subset(dat, !SNP %in% adj$mvo$SNP)), nrow(dat)),
+    Q = c(sum(dat$orig.qi), sum(subset(dat, !SNP %in% tryxscan$outliers)$qi), sum(subset(dat, !SNP %in% adj$mvo$SNP)$qi), sum(dat$qi)),
+    int=0
+  )
+  estimates$Isq <- pmax(0, (estimates$Q - estimates$nsnp - 1) / estimates$Q) 
+  
+  analysis <- list(
+    estimates=estimates,
+    mvo=adj$mvo,
+    dat=adj$dat
+  )
+  
+  if(plot)
+  {	
+    dato <- subset(dat, SNP %in% tryxscan$outliers)
+    datadj <- subset(dat, SNP %in% adj$mvo$SNP)
+    datadj$x <- datadj$orig.weights
+    datadj$xend <- datadj$weights
+    datadj$y <- datadj$orig.ratiow
+    datadj$yend <- datadj$ratiow
+    
+    mvog <- tidyr::separate(adj$mvo, exposure, sep="\\|", c("exposure", "temp", "id"))
+    mvog$exposure <- gsub(" $", "", mvog$exposure)
+    mvog <- group_by(mvog, SNP) %>% summarise(label = paste(exposure, collapse="\n"))
+    datadj <- merge(datadj, mvog, by="SNP")
+    
+    labs <- rbind(
+      tibble(label=dato$SNP, x=dato$orig.weights, y=dato$orig.ratiow, col="grey50"),
+      tibble(label=datadj$label, x=datadj$weights, y=datadj$ratiow, col="grey100")
+    )
+    
+    
+    p <- ggplot(dat, aes(y=orig.ratiow, x=orig.weights)) +
+      geom_abline(data=estimates, aes(slope=b, intercept=0, linetype=est)) +
+      geom_label_repel(data=labs, aes(label=label, x=x, y=y, colour=col), size=2, segment.color = "grey50", show.legend = FALSE) +
+      geom_point(data=dato, size=4) +
+      # geom_label_repel(data=labs, aes(label=label, x=weights, y=ratiow), size=2, segment.color = "grey50") +
+      geom_point(data=datadj, aes(x=weights, y=ratiow)) +
+      geom_point(aes(colour=SNP %in% dato$SNP), show.legend=FALSE) +
+      geom_segment(data=datadj, colour="grey50", aes(x=x, xend=xend, y=y, yend=yend), arrow = arrow(length = unit(0.01, "npc"))) +
+      labs(colour=NULL, linetype="Estimate", x="w", y="beta * w")
+    # xlim(c(0, max(dat$weights))) +
+    # ylim(c(min(0, dat$ratiow, temp$ratiow), max(dat$ratiow, temp$ratiow)))
+    analysis$plot <- p
+  }
+  self$output$analyse.mv <- analysis
+  invisible(self$output)
+}
+)    
+    
