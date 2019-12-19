@@ -169,11 +169,14 @@ volcano_plot(tryxscan$candidate_exposure_mr)
 Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:
 
 ```r
-tryxanalysis <- tryx.analyse(tryxscan)
+x$adjustment()
+x$adjustment.mv()
+x$analyse()
+x$analyse.mv()
 ```
 
 By default, this adjusts for the trait that has the largest impact for a particular SNP. 
 
-The `tryxanalysis$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `tryxanalysis$plot`.
+The `x$output$adjustment$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `x$output$adjustment$plot`.
 
 ---
