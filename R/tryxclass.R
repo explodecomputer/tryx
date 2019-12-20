@@ -1,9 +1,22 @@
+#' Class for MR-TRYX analysis
+#'
+#' <full description>
+#'
+#'
+#' @export
+#' @return R6 class
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   
   ##########################################################################################################################################################################
   
-  input = function(dat) {
+#' Initialise the class with a dataset
+#'
+#'
+#' @param dat output from harmonise_data. Only allowed one exposure / outcome combination
+#'
+#' @export
+initialize = function(dat) {
     if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
     {
       message("Warning! Multiple exposure/outcome combinations found")
@@ -11,6 +24,14 @@ Tryx <- R6::R6Class("Tryx", list(
     }
     dat <- subset(dat, id.exposure == id.exposure[1] & id.outcome == id.outcome[1] & mr_keep)
     self$output$dat <- dat
+    invisible(self)
+  },
+
+
+  print = function(...) {
+    cat("Tryx analysis of ", self$output$dat$exposure[1], " against ", self$output$dat$outcome[1], "\n")
+    cat("Status:\n")
+    null <- sapply(names(self$output), function(x) cat("  ", x, "\n"))
     invisible(self)
   },
   

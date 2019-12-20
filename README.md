@@ -76,8 +76,7 @@ dat <- harmonise_data(a,b)
 We can now perform the analysis:
 
 ```r
-x <- Tryx$new()
-x$input(dat)
+x <- Tryx$new(dat)
 x$mrtryx()
 ```
 
