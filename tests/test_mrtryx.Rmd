@@ -1,0 +1,77 @@
+---
+title: "Test file for MR-TRYX"
+author: "Yoonsu Cho"
+date: "7 November 2019"
+output: html_document
+---
+
+```{r, echo=TRUE, warning=FALSE, message=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, dev="png", cache=TRUE)
+```
+
+
+Test commands for each function
+
+
+```{r}
+library(TwoSampleMR)
+library(MRInstruments)
+library(RadialMR)
+library(tryx)
+```
+
+
+Data preparation
+
+Example: systolic blood pressure and coronary artery disease
+
+
+```{r}
+ao <- available_outcomes()
+bmi <- extract_instruments(outcomes = 2)
+sbp <-  extract_outcome_data(snps=bmi$SNP, outcomes = "UKB-a:360")
+dat <- harmonise_data(bmi, sbp)
+```
+
+
+
+Scan
+
+ a. Test "tryx.scan"
+```{r}
+#scan_bmi <- tryx.scan(dat)
+load("~/tryx/tests/test_mrtryx.RData")
+```
+
+
+ b. Test "tryx.sig""
+```{r}
+scan_bmi <- tryx.sig(scan_bmi)
+```
+
+
+  c. Test "tryx.adjustment"
+```{r}
+id_remove <- c(2, 72, 89, 90, "UKB-a:35", "UKB-a:359", "UKB-a:61", 1096, 85, 91, 93, 999)
+
+ad <- tryx.adjustment(scan_bmi, id_remove = id_remove)
+```
+
+
+  d. Test "tryx.adjustment.mv"
+```{r}
+ad.mv <- tryx.adjustment.mv(scan_bmi, id_remove = id_remove)
+```
+
+  
+  e. Test "tryx.analyse"
+```{r}
+an <- tryx.analyse(scan_bmi, id_remove = id_remove)
+```
+
+
+  f. Test "tryx.analyse.mv"
+```{r}
+an.mv <- tryx.analyse.mv(scan_bmi, id_remove = id_remove)
+```
