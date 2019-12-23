@@ -21,7 +21,9 @@ NULL
 #'  
 #' @section Arguments:
 #' \code{dat} Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
+#' 
 #' \code{outliers} Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
+#' 
 #' \code{outlier_correction} Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
 #' \code{outlier_threshold} If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
 #' \code{use_proxies} Whether to use proxies when looking up associations. FALSE by default for speed.
