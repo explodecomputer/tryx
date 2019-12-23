@@ -48,7 +48,7 @@ NULL
 #' 
 #' @section Methods:
 #'  \code{$new()} Initialize an R interface.
-#'  
+#'  \code{$get_outliers()} Get a list of outliers used
 #'  
 #'  
 NULL
