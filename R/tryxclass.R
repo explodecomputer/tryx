@@ -5,6 +5,7 @@
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
 #'
+
 #' @name tryx-package
 #' @aliases tryx
 #' @docType package
@@ -12,10 +13,11 @@ NULL
 
 #' R Environdment 
 #' 
+#'
 #' @section Usage:
 #' \preformatted{x = Tryx$new(dat)
 #' 
-#' x$get_outliers(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05))
+#' x$get_outliers(dat, outliers, outlier_correction, outlier_threshold)
 #' 
 #' x$set_candidate_traits(id_list=NULL)
 #' x$scan(dat=self$output$dat, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), use_proxies=FALSE)
