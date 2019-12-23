@@ -13,17 +13,28 @@ NULL
 #' R Environdment 
 #' 
 #' @section Usage:
-#' \preformatted{x = Tryx$new(dat, outliers)
+#' \preformatted{x = Tryx$new(dat)
 #' 
-#' x$mrtryx(dat, outliers, outlier_correction, outlier_threshold, use_proxies, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw")
+#' x$get_outliers(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05))
+#' 
+#' x$set_candidate_traits(id_list=NULL)
+#' x$scan(dat=self$output$dat, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), use_proxies=FALSE)
 #'
+#' x$candidate_instruments(candidate_instruments = NULL, include_outliers = FALSE)
+#' x$outcome_instruments(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE)
+#' x$exposure_instruments(candidate_exposure = NULL, dat = self$output$dat, use_proxies=FALSE)
+#' x$exposure_candidate_instruments(exposure_candidate = NULL, dat = self$output$dat, use_proxies = FALSE, include_outliers = FALSE)
+#' 
+#' x$candidate_outcome_dat(dat = self$output$dat)
+#' x$candidate_exposure_dat(dat = self$output$dat)
+#' x$exposure_candidate_dat(dat = self$output$dat)
+#' x$mr(dat = self$output$dat, mr_method="mr_ivw")
+#' 
+#' print(x)
 #'}
 #'  
 #' @section Arguments:
 #' \code{dat} Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
-#' 
-#' \code{outliers} Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
-#' 
 #' \code{outliers} Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
 #' \code{outlier_correction} Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
 #' \code{outlier_threshold} If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
