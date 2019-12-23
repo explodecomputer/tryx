@@ -5,34 +5,31 @@
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
 #'
-#' 
 #' @name MR-TRYX-package
 #' @aliases tryx
 #' @docType package
-
 NULL
 
+#' R Environdment 
+#' 
 #' @section Usage:
 #' \preformatted{x = Tryx$new(dat)
-#' x$mrtryx()
-#' x$get_outliers()
-#' x$set_candidate_traits()
-#' x$scan()
-#' x$extractions()
-#' x$candidate_instruments()
-#' x$outcome_instruments()
-#' x$exposure_instruments()
-#' x$exposure_candidate_instruments()
-#' x$harmonise() 
-#' x$candidate_outcome_dat()
-#' x$candidate_exposure_dat()
-#' x$exposure_candidate_dat()
-#' x$mr()
-#' }
 #' 
+#'  x$mrtryx(dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw")
+#'
+#'}
+#'  
 #' @section Arguments:
 #' \code{dat} Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
-#' 
+#' \code{outliers} Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
+#' \code{outlier_correction} Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
+#' \code{outlier_threshold} If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
+#' \code{use_proxies} Whether to use proxies when looking up associations. FALSE by default for speed.
+#' \code{search_correction} Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
+#' \code{search_threshold} If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.
+#' \code{id_list} The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().
+#' \code{include_outliers} When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
+#' \code{mr_method} Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
 #' 
 #' 
 #' @section Methods:
@@ -49,9 +46,6 @@ Tryx <- R6::R6Class("Tryx", list(
   
   ##########################################################################################################################################################################
   
-#' Initialise the class with a dataset
-#'
-
 initialize = function(dat) {
     if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
     {
