@@ -1,10 +1,51 @@
 #' Class for MR-TRYX analysis
 #'
-#' <full description>
+#' Outlier scan
+#' 
+#' A simple wrapper function.
+#' Using a summary set, find outliers in the MR analysis between the pair of trais.
+#' Find other 'candidate traits' associated with those outliers.
+#' Perform MR of each of those candidate traits with the original exposure and outcome.
 #'
-#'
+#' 
+#' @name MR-TRYX-package
+#' @aliases tryx
+#' @docType package
+
+NULL
+
+#' @section Usage:
+#' \preformatted{x = Tryx$new(dat)
+#' x$mrtryx()
+#' x$get_outliers()
+#' x$set_candidate_traits()
+#' x$scan()
+#' x$extractions()
+#' x$candidate_instruments()
+#' x$outcome_instruments()
+#' x$exposure_instruments()
+#' x$exposure_candidate_instruments()
+#' x$harmonise() 
+#' x$candidate_outcome_dat()
+#' x$candidate_exposure_dat()
+#' x$exposure_candidate_dat()
+#' x$mr()
+#' }
+#' 
+#' @section Arguments:
+#' \code{dat} Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
+#' 
+#' 
+#' 
+#' @section Methods:
+#'  \code{$new()} Initialize an R interface.
+#'  
+#'  
+#'  
+NULL
+
 #' @export
-#' @return R6 class
+
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   
@@ -12,10 +53,7 @@ Tryx <- R6::R6Class("Tryx", list(
   
 #' Initialise the class with a dataset
 #'
-#'
-#' @param dat output from harmonise_data. Only allowed one exposure / outcome combination
-#'
-#' @export
+
 initialize = function(dat) {
     if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
     {
