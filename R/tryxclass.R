@@ -13,9 +13,9 @@ NULL
 #' R Environdment 
 #' 
 #' @section Usage:
-#' \preformatted{x = Tryx$new(dat, outliers, outlier_correction)
+#' \preformatted{x = Tryx$new(dat, outliers)
 #' 
-#'  x$mrtryx(dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw")
+#' x$mrtryx(dat, outliers, outlier_correction, outlier_threshold, use_proxies, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw")
 #'
 #'}
 #'  
