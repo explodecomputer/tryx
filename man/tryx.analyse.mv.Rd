@@ -4,8 +4,13 @@
 \alias{tryx.analyse.mv}
 \title{Analyse tryx results}
 \usage{
-tryx.analyse.mv(tryxscan, lasso = TRUE, plot = TRUE,
-  id_remove = NULL, proxies = FALSE)
+tryx.analyse.mv(
+  tryxscan,
+  lasso = TRUE,
+  plot = TRUE,
+  id_remove = NULL,
+  proxies = FALSE
+)
 }
 \arguments{
 \item{tryxscan}{Output from \code{tryx.scan}}
@@ -19,10 +24,6 @@ tryx.analyse.mv(tryxscan, lasso = TRUE, plot = TRUE,
 \item{proxies}{Look for proxies in the MVMR methods. Default = FALSE.}
 
 \item{filter_duplicate_outliers}{Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.}
-
-\item{tryxscan}{Output from \code{tryx.scan}}
-
-\item{plot}{Whether to plot or not. Default is TRUE}
 }
 \value{
 List of 

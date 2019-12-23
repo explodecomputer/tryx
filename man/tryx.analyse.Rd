@@ -4,8 +4,12 @@
 \alias{tryx.analyse}
 \title{Analyse tryx results}
 \usage{
-tryx.analyse(tryxscan, plot = TRUE, id_remove = NULL,
-  filter_duplicate_outliers = TRUE)
+tryx.analyse(
+  tryxscan,
+  plot = TRUE,
+  id_remove = NULL,
+  filter_duplicate_outliers = TRUE
+)
 }
 \arguments{
 \item{tryxscan}{Output from \code{tryx.scan}}
