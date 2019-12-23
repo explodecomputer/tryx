@@ -1,39 +1,14 @@
-#' Class for MR-TRYX analysis
+#' @title Class for MR-TRYX analysis
 #'
-#' A simple wrapper function.
+#' @description  A simple wrapper function.
 #' Using a summary set, find outliers in the MR analysis between the pair of trais.
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
 #'
-
 #' @name Tryx
-#' @aliases tryx
-#' @docType package
-NULL
-
-#' R Environdment 
 #' 
-#'
-#' @section Usage:
-#' \preformatted{x = Tryx$new(dat)
+#' @section Construtor: Tryx$new(dat)
 #' 
-#' x$get_outliers(dat, outliers, outlier_correction, outlier_threshold)
-#' 
-#' x$set_candidate_traits(id_list=NULL)
-#' x$scan(dat=self$output$dat, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), use_proxies=FALSE)
-#'
-#' x$candidate_instruments(candidate_instruments = NULL, include_outliers = FALSE)
-#' x$outcome_instruments(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE)
-#' x$exposure_instruments(candidate_exposure = NULL, dat = self$output$dat, use_proxies=FALSE)
-#' x$exposure_candidate_instruments(exposure_candidate = NULL, dat = self$output$dat, use_proxies = FALSE, include_outliers = FALSE)
-#' 
-#' x$candidate_outcome_dat(dat = self$output$dat)
-#' x$candidate_exposure_dat(dat = self$output$dat)
-#' x$exposure_candidate_dat(dat = self$output$dat)
-#' x$mr(dat = self$output$dat, mr_method="mr_ivw")
-#' 
-#' print(x)
-#'}
 #'  
 #' @section Arguments:
 #' \code{dat} Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
@@ -48,14 +23,15 @@ NULL
 #' \code{mr_method} Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
 #' 
 #' 
-#' @section Methods:
+#' @section Public Methods:
 #'  \code{$new()} Initialize an R interface.
 #'  \code{$get_outliers()} Get a list of outliers used
 #'  
-#'  
+#'
+#' @export  
 NULL
 
-#' @export
+
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   
