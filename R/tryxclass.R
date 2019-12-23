@@ -6,7 +6,7 @@
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
 #'
 
-#' @name tryx-package
+#' @name Tryx
 #' @aliases tryx
 #' @docType package
 NULL
@@ -56,7 +56,6 @@ NULL
 NULL
 
 #' @export
-
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   
