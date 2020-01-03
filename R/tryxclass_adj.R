@@ -7,16 +7,11 @@
 #' @section Usage: 
 #' 
 #' x$adjustment(dat= self$output$dat, tryxscan=self$output, id_remove=NULL)
-#' 
-#' x$adjustment.mv(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE)
-#' 
 #'        
 #' @section Arguments:
 #' \code{tryxscan} Output from \code{Tryx}
 #' 
 #' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
-#' 
-#' \code{lasso} Whether to shrink the estimates of each trait within SNP. Default=TRUE.
 #' 
 #' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
 #'
@@ -87,10 +82,35 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
   l$d <- (l$adj.qi / l$adj.Q) / (l$qi / l$Q)
   self$output$adjustment <- l
   invisible(self$output$adjustment)
-  }
+}
 
 )
 
+
+
+
+#' @title Class for outlier adjustment estimation
+#'
+#' @description  Similar to tryx.analyse, but when there are multiple traits associated with a single variant. 
+#'
+#' @name adjustment.mv
+#' 
+#' @section Usage: 
+#' 
+#' x$adjustment.mv(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE)
+#' 
+#'         
+#' @section Arguments:
+#' \code{tryxscan} Output from \code{Tryx}
+#' 
+#' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
+#' 
+#' \code{lasso} Whether to shrink the estimates of each trait within SNP. Default=TRUE.
+#' 
+#' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
+#'
+#' @export  
+NULL
 
 
 Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE) {
@@ -202,18 +222,18 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
   analysis <- list()
   adj_full <- x$adjustment()
   if(nrow(adj_full) == 0)
-    {
-       return(NULL)
-    }
+  {
+    return(NULL)
+  }
   analysis$adj_full <- adj_full
   if(filter_duplicate_outliers)
-    {
-       adj <- adj_full %>% arrange(d) %>% filter(!duplicated(SNP))
-    } else {
-       adj <- adj_full
-    }
+  {
+    adj <- adj_full %>% arrange(d) %>% filter(!duplicated(SNP))
+  } else {
+    adj <- adj_full
+  }
   analysis$adj <- adj
- 
+  
   
   cpg <- require(ggrepel)
   if(!cpg)
@@ -373,7 +393,7 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
   
   analysis$estimates <- estimates
   self$output$analysis <- analysis
-
+  
   
   if(plot)
   {	
@@ -503,32 +523,32 @@ Tryx$set("public", "analyse.mv", function(tryxscan=self$output, lasso=TRUE, plot
 
 
 Tryx$set("private", "cochrans_q", function(b, se) {
-    xw <- sum(b / se^2) / sum(1/se^2)
-    qi <- (1/se^2) * (b - xw)^2
-    return(qi)
+  xw <- sum(b / se^2) / sum(1/se^2)
+  qi <- (1/se^2) * (b - xw)^2
+  return(qi)
 }
 )
 
 
 Tryx$set("private", "bootstrap_path1", function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000) {
-    res <- rnorm(nboot, gx, gx.se) - rnorm(nboot, gp, gp.se) * rnorm(nboot, px, px.se)
-    pe <- gx - gp * px
-    return(c(pe, sd(res)))
+  res <- rnorm(nboot, gx, gx.se) - rnorm(nboot, gp, gp.se) * rnorm(nboot, px, px.se)
+  pe <- gx - gp * px
+  return(c(pe, sd(res)))
 }
 )
 
 
 Tryx$set("private", "bootstrap_path", function(gx, gx.se, gp, gp.se, px, px.se, nboot=1000) {
-    nalt <- length(gp)
-    altpath <- tibble(
-      p = rnorm(nboot * nalt, gp, gp.se) * rnorm(nboot * nalt, px, px.se),
-      b = rep(1:nboot, each=nalt)
-    )
-    altpath <- group_by(altpath, b) %>%
+  nalt <- length(gp)
+  altpath <- tibble(
+    p = rnorm(nboot * nalt, gp, gp.se) * rnorm(nboot * nalt, px, px.se),
+    b = rep(1:nboot, each=nalt)
+  )
+  altpath <- group_by(altpath, b) %>%
     summarise(p = sum(p))
-    res <- rnorm(nboot, gx, gx.se) - altpath$p
-    pe <- gx - sum(gp * px)
-    return(c(pe, sd(res)))
+  res <- rnorm(nboot, gx, gx.se) - altpath$p
+  pe <- gx - sum(gp * px)
+  return(c(pe, sd(res)))
 }
 )
 
