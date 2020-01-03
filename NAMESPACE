@@ -2,6 +2,7 @@
 
 export()
 export(Tryx)
+export(adjustment)
 export(cochrans_q)
 export(tryx.adjustment)
 export(tryx.analyse)

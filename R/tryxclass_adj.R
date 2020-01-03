@@ -1,3 +1,29 @@
+#' @title Class for outlier adjustment estimation
+#'
+#' @description  How much of the heterogeneity due to the outlier can be explained by alternative pathways?
+#'
+#' @name adjustment
+#' 
+#' @section Usage: 
+#' 
+#' x$adjustment(dat= self$output$dat, tryxscan=self$output, id_remove=NULL)
+#' 
+#' x$adjustment.mv(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE)
+#' 
+#'        
+#' @section Arguments:
+#' \code{tryxscan} Output from \code{Tryx}
+#' 
+#' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
+#' 
+#' \code{lasso} Whether to shrink the estimates of each trait within SNP. Default=TRUE.
+#' 
+#' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
+#'
+#' @export  
+NULL
+
+
 Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$output, id_remove=NULL) {
   if(!any(tryxscan$search$sig))
   {
@@ -64,6 +90,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
   }
 
 )
+
 
 
 Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE) {
@@ -147,6 +174,18 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
 )
 
 
+
+
+#' @title Analyse tryx results
+#'
+#' @description  This returns various heterogeneity statistics, IVW estimates for raw, 
+#' adjusted and outlier removed datasets, and summary of peripheral 
+#' traits detected etc.
+#'
+#' @name analyse
+#' 
+#' @section Usage:
+#' 
 
 Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE) {
   
