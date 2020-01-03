@@ -42,6 +42,32 @@ x$mrtryx(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", ou
 
  \code{$new()} Initialize an R interface.
  
+ \code{$mrtryx()} Perform MR-TRYX analysis for outlier detection, searching for candidate traits and performing MR analysis
+   
  \code{$get_outliers()} Get a list of outliers used
+ 
+ \code{$set_candidate_traits()} Set a list of GWAS IDs used
+ 
+ \code{$scan()} Result from search of outliers against GWAS IDs
+ 
+ \code{$extractions()} Extract instruments for MR
+ 
+ \code{$candidate_instruments()} Instruments for candidate traits
+
+ \code{$outcome_instruments()} Instruments for the outcome
+ 
+ \code{$exposure_instruments()} Instruments for the exposure
+ 
+ \code{$exposure_candidate_instruments()} Extracted instrument SNPs from exposure
+ 
+ \code{$harmonise()} Harmonised exposure - outcome dataset
+
+ \code{$candidate_outcome_dat()} Harmonised candidate traits - outcome dataset
+
+ \code{$candidate_exposure_dat()} Harmonised candidate traits - exposure dataset
+
+ \code{$exposure_candidate_dat()} Harmonised exposure - candidate traits dataset
+ 
+ \code{$mr()} MR analysis of candidates against exposure
 }
 

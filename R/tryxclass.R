@@ -61,7 +61,7 @@
 #' 
 #'  \code{$candidate_exposure_dat()} Harmonised candidate traits - exposure dataset
 #'
-#'  \code{$exposure_candidate_dat()} 
+#'  \code{$exposure_candidate_dat()} Harmonised exposure - candidate traits dataset
 #'  
 #'  \code{$mr()} MR analysis of candidates against exposure
 #'  
