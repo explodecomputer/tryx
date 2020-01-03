@@ -87,7 +87,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
 )
 
 
-
+##############################################################################################################################
 
 #' @title Class for outlier adjustment estimation using multivariable MR
 #'
