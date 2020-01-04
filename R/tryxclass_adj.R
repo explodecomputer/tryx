@@ -94,7 +94,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
 
 #' @title R6 Class for outlier adjustment estimation using multivariable MR
 #'
-#' @description  Similar to tryx.analyse, but when there are multiple traits associated with a single variant. 
+#' @description  Similar to adjusment, but when there are multiple traits associated with a single variant. 
 #'
 #' @name adjustment.mv
 #' 
