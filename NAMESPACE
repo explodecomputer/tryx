@@ -2,6 +2,7 @@
 
 export()
 export(Tryx)
+export(adjustment)
 export(adjustment.mv)
 export(analyse)
 export(analyse.mv)

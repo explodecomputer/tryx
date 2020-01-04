@@ -1,7 +1,7 @@
-#' Class for outlier adjustment estimation
+#' @title R6 Class for outlier adjustment estimation
 #'
-#' @description  How much of the heterogeneity due to the outlier can be explained by alternative pathways?
-#' Roxygen: list(r6 = FALSE)
+#' @description 
+#' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 #'
 #' @name adjustment
 #' 
@@ -92,7 +92,7 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
 
 ##############################################################################################################################
 
-#' @title Class for outlier adjustment estimation using multivariable MR
+#' @title R6 Class for outlier adjustment estimation using multivariable MR
 #'
 #' @description  Similar to tryx.analyse, but when there are multiple traits associated with a single variant. 
 #'
