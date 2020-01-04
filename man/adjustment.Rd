@@ -3,10 +3,9 @@
 \name{adjustment}
 \alias{adjustment}
 \alias{Tryx}
-\title{Class for outlier adjustment estimation}
+\title{R6 Class for outlier adjustment estimation}
 \description{
 How much of the heterogeneity due to the outlier can be explained by alternative pathways?
-Roxygen: list(r6 = FALSE)
 }
 \section{Usage}{
  
