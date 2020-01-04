@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^mrbase\.oauth$
 ^LICENSE\.md$
+^\.travis\.yml$
