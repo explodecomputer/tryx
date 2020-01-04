@@ -2,7 +2,7 @@
 #'
 #' @description  How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 #'
-#' @name adjustment
+#' @rdname Tryx
 #' 
 #' @section Usage: 
 #' 
