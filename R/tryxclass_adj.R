@@ -98,6 +98,8 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
 #'
 #' @name adjustment.mv
 #' 
+#' @aliases Tryx
+#' 
 #' @section Usage: 
 #' 
 #' x$adjustment.mv(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE)
@@ -206,6 +208,8 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
 #' traits detected etc.
 #'
 #' @name analyse
+#' 
+#' @aliases Tryx
 #' 
 #' @section Usage:
 #' 
@@ -426,6 +430,8 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
 #' @description  Similar to tryx.analyse, but when there are multiple traits associated with a single variant then we use a LASSO-based multivariable approach 
 #'
 #' @name analyse.mv
+#' 
+#' @aliases Tryx
 #' 
 #' @section Usage:
 #' 
