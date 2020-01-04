@@ -2,6 +2,7 @@
 % Please edit documentation in R/tryxclass_adj.R
 \name{analyse.mv}
 \alias{analyse.mv}
+\alias{Tryx}
 \title{Adjust and analyse the tryx results}
 \description{
 Similar to tryx.analyse, but when there are multiple traits associated with a single variant then we use a LASSO-based multivariable approach

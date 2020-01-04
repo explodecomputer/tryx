@@ -2,6 +2,7 @@
 % Please edit documentation in R/tryxclass_adj.R
 \name{adjustment.mv}
 \alias{adjustment.mv}
+\alias{Tryx}
 \title{Class for outlier adjustment estimation using multivariable MR}
 \description{
 Similar to tryx.analyse, but when there are multiple traits associated with a single variant.

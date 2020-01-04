@@ -2,6 +2,7 @@
 % Please edit documentation in R/tryxclass_adj.R
 \name{analyse}
 \alias{analyse}
+\alias{Tryx}
 \title{Analyse tryx results}
 \description{
 This returns various heterogeneity statistics, IVW estimates for raw, 
