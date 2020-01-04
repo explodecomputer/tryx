@@ -1,7 +1,11 @@
 #' Class for outlier adjustment estimation
-Tryx$set("public", "adjustment", 
-         
+#'
 #' @description  How much of the heterogeneity due to the outlier can be explained by alternative pathways?
+#' Roxygen: list(r6 = FALSE)
+#'
+#' @name adjustment
+#' 
+#' @aliases Tryx
 #' 
 #' @section Usage: 
 #' 
@@ -14,8 +18,11 @@ Tryx$set("public", "adjustment",
 #' 
 #' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
 #'
-         
-         function(dat= self$output$dat, tryxscan=self$output, id_remove=NULL) {
+#' @export  
+NULL
+
+
+Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$output, id_remove=NULL) {
   if(!any(tryxscan$search$sig))
   {
     return(NULL)
