@@ -440,9 +440,13 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
 #' 
 #' @section Arguments:
 #' \code{tryxscan} Output from \code{tryx.scan}.
+#' 
 #' \code{lasso} Whether to shrink the estimates of each trait within SNP. Default=TRUE.
+#' 
 #' \code{plot} Whether to plot or not. Default is TRUE.
+#' 
 #' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
+#' 
 #' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
 #' 
 #' @export
