@@ -1,9 +1,3 @@
-
-library(ggplot2)
-library(ggrepel)
-library(dplyr)
-
-
 Tryx$set("public", "manhattan_candi_ex", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
   
   cpg <- require(ggplot2)
