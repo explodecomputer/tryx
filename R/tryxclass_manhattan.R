@@ -53,7 +53,7 @@ Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcom
     #ggtitle("Effect of the candidate traits on the outcome") +
     # xlab("cat") + 
     ylab("-Log10(Adjusted P-value) x sign(beta)") + 
-    xlab("Association of the candidate traits and the outcome")+
+    xlab(paste("Association of the candidate traits and ", temp$outcome[1], sep=""))+
     
     # Custom the theme:
     theme_bw() +
