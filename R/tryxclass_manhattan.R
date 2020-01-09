@@ -1,4 +1,4 @@
-Tryx$set("public", "manhattan_candi_ex", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
+Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
   
   cpg <- require(ggplot2)
   if(!cpg)
@@ -74,7 +74,9 @@ Tryx$set("public", "manhattan_candi_ex", function(dat = self$output$candidate_ou
     p + geom_label_repel(data=subset(temp, sig), aes(label=exposure), size=2)
   }
   
-  self$output$plots$manhattan_candi_exp <- p
+  self$output$plots$manhattan_plot <- p
   invisible(self$output)
 }
 )
+
+
