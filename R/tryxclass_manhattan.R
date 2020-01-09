@@ -1,4 +1,4 @@
-Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
+Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, lable = TRUE){
   
   cpg <- require(ggplot2)
   if(!cpg)
