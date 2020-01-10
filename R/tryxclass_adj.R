@@ -18,7 +18,7 @@
 #' 
 #' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
 #'
-#' @export  
+#' @export
 NULL
 
 
@@ -522,17 +522,6 @@ Tryx$set("public", "analyse.mv", function(tryxscan=self$output, lasso=TRUE, plot
 }
 )
 
-
-
-
-#' Cochran's Q statistic
-#' 
-#' @param b vector of effecti 
-#' @param se vector of standard errors
-#' 
-#' @return q values
-#' 
-#' @export
 
 
 Tryx$set("private", "cochrans_q", function(b, se) {
