@@ -1,27 +1,3 @@
-#' @title R6 Class for outlier adjustment estimation
-#'
-#' @description 
-#' How much of the heterogeneity due to the outlier can be explained by alternative pathways?
-#'
-#' @name adjustment
-#' 
-#' @aliases Tryx
-#' 
-#' @section Usage: 
-#' 
-#' x$adjustment(dat= self$output$dat, tryxscan=self$output, id_remove=NULL)
-#'        
-#' @section Arguments:
-#' \code{tryxscan} Output from \code{Tryx}
-#' 
-#' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
-#' 
-#' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
-#'
-#' @export
-NULL
-
-
 Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$output, id_remove=NULL) {
   if(!any(tryxscan$search$sig))
   {
@@ -92,30 +68,6 @@ Tryx$set("public", "adjustment", function(dat= self$output$dat, tryxscan=self$ou
 
 ##############################################################################################################################
 
-#' @title R6 Class for outlier adjustment estimation using multivariable MR
-#'
-#' @description  Similar to adjusment, but when there are multiple traits associated with a single variant. 
-#'
-#' @name adjustment.mv
-#' 
-#' @aliases Tryx
-#' 
-#' @section Usage: 
-#' 
-#' x$adjustment.mv(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE)
-#' 
-#'         
-#' @section Arguments:
-#' \code{tryxscan} Output from \code{Tryx}
-#' 
-#' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
-#' 
-#' \code{lasso} Whether to shrink the estimates of each trait within SNP. Default=TRUE.
-#' 
-#' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
-#'
-#' @export  
-NULL
 
 
 Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE) {
@@ -201,28 +153,6 @@ Tryx$set("public", "adjustment.mv", function(dat= self$output$dat, tryxscan=self
 
 
 
-#' @title Analyse tryx results
-#'
-#' @description  This returns various heterogeneity statistics, IVW estimates for raw, 
-#' adjusted and outlier removed datasets, and summary of peripheral 
-#' traits detected etc.
-#'
-#' @name analyse
-#' 
-#' @aliases Tryx
-#' 
-#' @section Usage:
-#' 
-#' x$analyse(tryxscan=self$output, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE)
-#' 
-#' @section Arguments:
-#' \code{tryxscan} Output from \code{tryx.scan}
-#' \code{plot} Whether to plot or not. Default is TRUE
-#' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
-#' \code{duplicate_outliers_method} Sometimes more than one trait will associate with a particular outlier. TRUE = only keep the trait that has the biggest influence on heterogeneity
-#' 
-#' @export
-NULL
 
 Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE) {
   
@@ -425,32 +355,6 @@ Tryx$set("public", "analyse", function(tryxscan=self$output, plot=TRUE, id_remov
 )
 
 
-#' @title Adjust and analyse the tryx results
-#'
-#' @description  Similar to tryx.analyse, but when there are multiple traits associated with a single variant then we use a LASSO-based multivariable approach 
-#'
-#' @name analyse.mv
-#' 
-#' @aliases Tryx
-#' 
-#' @section Usage:
-#' 
-#' x$analyse.mv(tryxscan=self$output, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE)
-#' 
-#' 
-#' @section Arguments:
-#' \code{tryxscan} Output from \code{tryx.scan}.
-#' 
-#' \code{lasso} Whether to shrink the estimates of each trait within SNP. Default=TRUE.
-#' 
-#' \code{plot} Whether to plot or not. Default is TRUE.
-#' 
-#' \code{id_remove} List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
-#' 
-#' \code{proxies} Look for proxies in the MVMR methods. Default = FALSE.
-#' 
-#' @export
-NULL
 
 Tryx$set("public", "analyse.mv", function(tryxscan=self$output, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE) {
   adj <- x$adjustment.mv(tryxscan=self$output, lasso=lasso, id_remove=id_remove, proxies=proxies)

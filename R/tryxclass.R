@@ -1,80 +1,17 @@
-#' @title Class for MR-TRYX analysis
+#' Class for MR-TRYX analysis
 #'
-#' @description  A simple wrapper function.
+#' A simple wrapper function.
 #' Using a summary set, find outliers in the MR analysis between the pair of trais.
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
-#'
-#' @name Tryx
-#' 
-#' @section Usage: Tryx$new(dat)
-#' 
-#' x$mrtryx(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw")
-#'  
-#'  
-#' @section Arguments:
-#' \code{dat} Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
-#' 
-#' \code{outliers} Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
-#' 
-#' \code{outlier_correction} Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").
-#'  
-#' \code{outlier_threshold} If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
-#' 
-#' \code{use_proxies} Whether to use proxies when looking up associations. FALSE by default for speed.
-#' 
-#' \code{search_correction} Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
-#' 
-#' \code{search_threshold} If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.
-#' 
-#' \code{id_list} The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().
-#' 
-#' \code{include_outliers} When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
-#' 
-#' \code{mr_method} Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
-#' 
-#' 
-#' @section Public Methods:
-#'  \code{$new()} Initialize an R interface.
-#'  
-#'  \code{$mrtryx()} Perform MR-TRYX analysis for outlier detection, searching for candidate traits and performing MR analysis
-#'    
-#'  \code{$get_outliers()} Get a list of outliers used
-#'  
-#'  \code{$set_candidate_traits()} Set a list of GWAS IDs used
-#'  
-#'  \code{$scan()} Result from search of outliers against GWAS IDs
-#'  
-#'  \code{$extractions()} Extract instruments for MR
-#'  
-#'  \code{$candidate_instruments()} Instruments for candidate traits
-#' 
-#'  \code{$outcome_instruments()} Instruments for the outcome
-#'  
-#'  \code{$exposure_instruments()} Instruments for the exposure
-#'  
-#'  \code{$exposure_candidate_instruments()} Extracted instrument SNPs from exposure
-#'  
-#'  \code{$harmonise()} Harmonised exposure - outcome dataset
-#'
-#'  \code{$candidate_outcome_dat()} Harmonised candidate traits - outcome dataset
-#' 
-#'  \code{$candidate_exposure_dat()} Harmonised candidate traits - exposure dataset
-#'
-#'  \code{$exposure_candidate_dat()} Harmonised exposure - candidate traits dataset
-#'  
-#'  \code{$mr()} MR analysis of candidates against exposure
-#'  
-#'
-#' @export  
-NULL
-
-
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   
   ##########################################################################################################################################################################
-  
+
+#' @description
+#' Create a new dataset
+#' @param dat Dataset from TwoSampleMR::harmonise_data
 initialize = function(dat) {
     if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
     {
@@ -95,14 +32,14 @@ initialize = function(dat) {
   },
   
   ##########################################################################################################################################################################
-  
-  test = function(dat = self$output$dat) {
-    print(dat)
-    invisible(NULL)
-  },
-  
-  ##########################################################################################################################################################################
-  
+
+#' @param description
+#' Detect outliers in exposure-outcome dataset
+#' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
+#' 
+#' @param outlier_correction Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").
+#'  
+#' @param outlier_threshold If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
   get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05)) {
     stopifnot(outlier_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
     stopifnot(outlier_threshold > 0 & outlier_threshold < 1)
