@@ -13,8 +13,7 @@ Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcom
   
   #Open & clean data
   #mr outcome: candidate traits-outcome / candidate traits-exposure / exposure-candidate traits
-  temp <- subset(dat, !id.exposure %in% id_remove)
-  
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
   #X-axis preparing: 
   #Each trait needs to be shown in different phenotype groups, along the X axis 
   #Sort the traits based on their p-value for MR results

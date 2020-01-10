@@ -4,11 +4,6 @@
 \alias{Tryx}
 \title{Class for MR-TRYX analysis}
 \description{
-Class for MR-TRYX analysis
-
-Class for MR-TRYX analysis
-}
-\details{
 A simple wrapper function.
 Using a summary set, find outliers in the MR analysis between the pair of trais.
 Find other 'candidate traits' associated with those outliers.
@@ -17,11 +12,6 @@ Perform MR of each of those candidate traits with the original exposure and outc
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-adjustment}{\code{Tryx$adjustment()}}
-\item \href{#method-adjustment.mv}{\code{Tryx$adjustment.mv()}}
-\item \href{#method-analyse}{\code{Tryx$analyse()}}
-\item \href{#method-analyse.mv}{\code{Tryx$analyse.mv()}}
-\item \href{#method-manhattan_plot}{\code{Tryx$manhattan_plot()}}
 \item \href{#method-new}{\code{Tryx$new()}}
 \item \href{#method-print}{\code{Tryx$print()}}
 \item \href{#method-get_outliers}{\code{Tryx$get_outliers()}}
@@ -39,74 +29,13 @@ Perform MR of each of those candidate traits with the original exposure and outc
 \item \href{#method-mr}{\code{Tryx$mr()}}
 \item \href{#method-mrtryx}{\code{Tryx$mrtryx()}}
 \item \href{#method-tryx.sig}{\code{Tryx$tryx.sig()}}
+\item \href{#method-adjustment}{\code{Tryx$adjustment()}}
+\item \href{#method-adjustment.mv}{\code{Tryx$adjustment.mv()}}
+\item \href{#method-analyse}{\code{Tryx$analyse()}}
+\item \href{#method-analyse.mv}{\code{Tryx$analyse.mv()}}
+\item \href{#method-manhattan_plot}{\code{Tryx$manhattan_plot()}}
 \item \href{#method-clone}{\code{Tryx$clone()}}
 }
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-adjustment"></a>}}
-\subsection{Method \code{adjustment()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment(
-  dat = self$output$dat,
-  tryxscan = self$output,
-  id_remove = NULL
-)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-adjustment.mv"></a>}}
-\subsection{Method \code{adjustment.mv()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment.mv(
-  dat = self$output$dat,
-  tryxscan = self$output,
-  lasso = TRUE,
-  id_remove = NULL,
-  proxies = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-analyse"></a>}}
-\subsection{Method \code{analyse()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tryx$analyse(
-  tryxscan = self$output,
-  plot = TRUE,
-  id_remove = NULL,
-  filter_duplicate_outliers = TRUE
-)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-analyse.mv"></a>}}
-\subsection{Method \code{analyse.mv()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tryx$analyse.mv(
-  tryxscan = self$output,
-  lasso = TRUE,
-  plot = TRUE,
-  id_remove = NULL,
-  proxies = FALSE
-)}\if{html}{\out{</div>}}
-}
-
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-manhattan_plot"></a>}}
-\subsection{Method \code{manhattan_plot()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tryx$manhattan_plot(
-  dat = self$output$candidate_outcome_mr,
-  id_remove = NULL,
-  y_scale = NULL,
-  lable = TRUE
-)}\if{html}{\out{</div>}}
-}
-
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
@@ -306,6 +235,72 @@ Create a new dataset
 \subsection{Method \code{tryx.sig()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$tryx.sig(mr_threshold_method = "fdr", mr_threshold = 0.05)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-adjustment"></a>}}
+\subsection{Method \code{adjustment()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment(
+  dat = self$output$dat,
+  tryxscan = self$output,
+  id_remove = NULL
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-adjustment.mv"></a>}}
+\subsection{Method \code{adjustment.mv()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment.mv(
+  dat = self$output$dat,
+  tryxscan = self$output,
+  lasso = TRUE,
+  id_remove = NULL,
+  proxies = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-analyse"></a>}}
+\subsection{Method \code{analyse()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Tryx$analyse(
+  tryxscan = self$output,
+  plot = TRUE,
+  id_remove = NULL,
+  filter_duplicate_outliers = TRUE
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-analyse.mv"></a>}}
+\subsection{Method \code{analyse.mv()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Tryx$analyse.mv(
+  tryxscan = self$output,
+  lasso = TRUE,
+  plot = TRUE,
+  id_remove = NULL,
+  proxies = FALSE
+)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-manhattan_plot"></a>}}
+\subsection{Method \code{manhattan_plot()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{Tryx$manhattan_plot(
+  dat = self$output$candidate_outcome_mr,
+  id_remove = NULL,
+  y_scale = NULL,
+  lable = TRUE
+)}\if{html}{\out{</div>}}
 }
 
 }

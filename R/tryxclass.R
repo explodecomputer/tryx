@@ -1,17 +1,21 @@
 #' Class for MR-TRYX analysis
 #'
+#' @description
 #' A simple wrapper function.
 #' Using a summary set, find outliers in the MR analysis between the pair of trais.
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
+
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   
   ##########################################################################################################################################################################
 
 #' @description
-#' Create a new dataset
+#' Create a new dataset and initialise an R interface
 #' @param dat Dataset from TwoSampleMR::harmonise_data
+#' 
+
 initialize = function(dat) {
     if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
     {
@@ -23,7 +27,6 @@ initialize = function(dat) {
     invisible(self)
   },
 
-
   print = function(...) {
     cat("Tryx analysis of ", self$output$dat$exposure[1], " against ", self$output$dat$outcome[1], "\n")
     cat("Status:\n")
@@ -33,14 +36,17 @@ initialize = function(dat) {
   
   ##########################################################################################################################################################################
 
-#' @param description
+#' @description 
 #' Detect outliers in exposure-outcome dataset
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
+#' 
 #' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
 #' 
 #' @param outlier_correction Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").
 #'  
 #' @param outlier_threshold If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
-  get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05)) {
+get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05)) {
     stopifnot(outlier_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
     stopifnot(outlier_threshold > 0 & outlier_threshold < 1)
     if(outliers[1] == "RadialMR")
