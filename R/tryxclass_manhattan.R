@@ -1,4 +1,15 @@
-Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, lable = TRUE){
+#' @description
+#' Draw a Manhattan style plot for candidate traits-outcome/exposure associations.
+#' 
+#' @param dat Dataset from TwoSampleMR::harmonise_data.
+#' 
+#' @param id_remove List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
+#' 
+#' @param y_scale The scaling function to be applied to y scale.
+#' 
+#' @param label Display the names of the traits on the graph.
+
+Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
   
   cpg <- require(ggplot2)
   if(!cpg)
