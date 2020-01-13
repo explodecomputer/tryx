@@ -1,3 +1,5 @@
+#' @aliases {adjustment}-Tryx
+#' @rdname Tryx
 #' @description
 #' Outlier adjustment estimation - How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 #' 
