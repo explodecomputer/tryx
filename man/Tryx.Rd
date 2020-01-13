@@ -40,7 +40,7 @@ Perform MR of each of those candidate traits with the original exposure and outc
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
 \subsection{Method \code{new()}}{
-Create a new dataset
+Create a new dataset and initialise an R interface
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$new(dat)}\if{html}{\out{</div>}}
 }
@@ -64,6 +64,7 @@ Create a new dataset
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-get_outliers"></a>}}
 \subsection{Method \code{get_outliers()}}{
+Detect outliers in exposure-outcome dataset
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$get_outliers(
   dat = self$output$dat,
@@ -76,13 +77,13 @@ Create a new dataset
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
+\item{\code{dat}}{Output from TwoSampleMR::harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
+
 \item{\code{outliers}}{Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.}
 
 \item{\code{outlier_correction}}{Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").}
 
 \item{\code{outlier_threshold}}{If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.}
-
-\item{\code{description}}{Detect outliers in exposure-outcome dataset}
 }
 \if{html}{\out{</div>}}
 }
@@ -90,10 +91,18 @@ Create a new dataset
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-set_candidate_traits"></a>}}
 \subsection{Method \code{set_candidate_traits()}}{
+Set a list of GWAS IDs used
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$set_candidate_traits(id_list = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{id_list}}{The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-scan"></a>}}

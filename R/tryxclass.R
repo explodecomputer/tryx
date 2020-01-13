@@ -16,7 +16,7 @@ Tryx <- R6::R6Class("Tryx", list(
 #' @param dat Dataset from TwoSampleMR::harmonise_data
 #' 
 
-initialize = function(dat) {
+  initialize = function(dat) {
     if(length(unique(dat$id.exposure)) > 1 | length(unique(dat$id.outcome)) > 1)
     {
       message("Warning! Multiple exposure/outcome combinations found")
@@ -35,9 +35,9 @@ initialize = function(dat) {
   },
   
   ##########################################################################################################################################################################
-
+# Get a list of outliers used 
 #' @description 
-#' Detect outliers in exposure-outcome dataset
+#' Detect outliers in exposure-outcome dataset.
 #' 
 #' @param dat Output from TwoSampleMR::harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
 #' 
@@ -46,7 +46,7 @@ initialize = function(dat) {
 #' @param outlier_correction Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").
 #'  
 #' @param outlier_threshold If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
-get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05)) {
+  get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05)) {
     stopifnot(outlier_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
     stopifnot(outlier_threshold > 0 & outlier_threshold < 1)
     if(outliers[1] == "RadialMR")
@@ -103,7 +103,11 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   
   ##########################################################################################################################################################################
   # Find associations with outliers
-  
+#' @description 
+#' Set a list of GWAS IDs used.
+#' 
+#' @param id_list The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().
+#' 
   set_candidate_traits = function(id_list=NULL) {
     if(is.null(id_list))
     {
@@ -122,8 +126,16 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   },
   
   ##########################################################################################################################################################################
-  #Search for candidate traits associated with outliers
-  
+#' @description 
+#' Search for candidate traits associated with outliers.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. 
+#' 
+#' @param search_correction Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none.
+#' 
+#' @param search_threshold If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.
+#' 
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
   scan = function(dat=self$output$dat, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), use_proxies=FALSE) {
     stopifnot(search_correction %in% c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"))
     stopifnot(search_threshold > 0 & search_threshold < 1)
@@ -143,8 +155,14 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
     invisible(self$output$sig_search)
   },
   
-  ##########################################################################################################################################################################
-  #Obtain instruments for the candidate traits
+##########################################################################################################################################################################
+#Instruments for candidate traits 
+#' @description
+#' Obtain instruments for the candidate traits.
+#' 
+#' @param candidate_instruments Instruments for candidate traits.
+#' 
+#' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE. 
   candidate_instruments = function(candidate_instruments = NULL, include_outliers = FALSE) {
   message("Finding instruments for candidate traits")
   if(is.null(candidate_instruments))
@@ -173,7 +191,16 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   invisible(self$output$candidate_instruments)
   },
   
-  #extract instrument for candidate trait instruments for the original outcome
+##########################################################################################################################################################################
+#Instruments for the outcome
+#' @description 
+#' Extract instrument for candidate trait instruments for the original outcome.
+#' 
+#' @param candidate_outcome Extracted instrument SNPs from outcome.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data.
+#' 
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
   outcome_instruments = function(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE) {
     message("Looking up candidate trait instruments for ", dat$outcome[1])
     candidate_outcome <- extract_outcome_data(unique(self$output$candidate_instruments$SNP), dat$id.outcome[1], proxies=use_proxies)
@@ -186,8 +213,17 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
     self$output$candidate_outcome <- candidate_outcome
     invisible(self$output$candidate_outcome)
   },
-  
-  #extract instrument for candidate trait instruments for the original exposure
+
+########################################################################################################################################################################## 
+#Instruments for the exposure 
+#' @description
+#' Extract instrument for candidate trait instruments for the original exposure.
+#' 
+#' @param candidate_exposure Extracted instrument SNPs from exposure.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data.
+#' 
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
   exposure_instruments = function(candidate_exposure = NULL, dat = self$output$dat, use_proxies=FALSE) {
     message("Looking up candidate trait instruments for ", dat$exposure[1])
     candidate_exposure <- extract_outcome_data(unique(self$output$candidate_instruments$SNP), dat$id.exposure[1], proxies=use_proxies)
@@ -200,8 +236,19 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
     self$output$candidate_exposure <- candidate_exposure
     invisible(self$output$candidate_exposure)
   },
-  
-  #extract instrument for the original exposure for the candidate traits
+
+########################################################################################################################################################################## 
+#Extracted instrument SNPs from exposure 
+#' @description 
+#' Extract instrument for the original exposure for the candidate traits.
+#' 
+#' @param exposure_candidate Extracted instrument SNPs from exposure.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data.
+#' 
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
+#' 
+#' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
   exposure_candidate_instruments = function(exposure_candidate = NULL, dat = self$output$dat, use_proxies = FALSE, include_outliers = FALSE) {
     message("Looking up exposure instruments for ", length(unique(self$output$sig_search$id.outcome)), " candidate traits")
     exposure_candidate <- extract_outcome_data(unique(dat$SNP), unique(self$output$sig_search$id.outcome), proxies=use_proxies)
@@ -231,8 +278,25 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
     self$output$temp <- temp
     invisible(self$output$temp)
   },
-  
+ 
+##########################################################################################################################################################################  
   # All in one - Extraction
+#' @description 
+#' Extract instruments for MR analyses.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data.
+#'
+#' @param candidate_instruments Instruments for candidate traits.
+#'
+#' @param candidate_outcome Extracted instrument SNPs from outcome.
+#'
+#' @param candidate_exposure Extracted instrument SNPs from exposure.
+#'
+#' @param exposure_candidate Extracted instrument SNPs from exposure.
+#'
+#' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE. 
+#' 
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
   extractions = function(dat = self$output$dat, candidate_instruments = NULL, candidate_outcome = NULL, candidate_exposure = NULL, exposure_candidate = NULL, include_outliers = FALSE, use_proxies=FALSE){
     x$candidate_instruments(candidate_instruments = NULL, include_outliers = FALSE)
     x$outcome_instruments(candidate_outcome = NULL, dat = self$output$dat, use_proxies=FALSE)
@@ -242,7 +306,11 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   },
   
   ##########################################################################################################################################################################
-  #make a dataset for the candidate traits and the original outcome
+#Harmonised candidate traits - outcome dataset 
+#' @description 
+#' Make a dataset for the candidate traits and the original outcome.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. 
   candidate_outcome_dat = function(dat = self$output$dat){
     candidate_outcome_dat <- suppressMessages(harmonise_data(self$output$candidate_instruments, self$output$candidate_outcome))
     candidate_outcome_dat <- subset(candidate_outcome_dat, mr_keep)
@@ -255,7 +323,12 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
     invisible(self$output$candidate_outcome_dat)
   },
   
-  #make a dataset for the candidate traits and the original exposure
+##########################################################################################################################################################################
+#Harmonised candidate traits - exposure dataset 
+#' @description 
+#' Make a dataset for the candidate traits and the original exposure.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. 
   candidate_exposure_dat = function(dat = self$output$dat){
     candidate_exposure_dat <- suppressMessages(harmonise_data(self$output$candidate_instruments, self$output$candidate_exposure))
     candidate_exposure_dat <- subset(candidate_exposure_dat, mr_keep)
@@ -268,7 +341,12 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
     invisible(self$output$candidate_exposure_dat)
   },
 
-  #make a dataset for the original exposure and the candidate traits
+##########################################################################################################################################################################
+#Harmonised exposure - candidate traits dataset 
+#' @description 
+#' Make a dataset for the original exposure and the candidate traits.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. 
   exposure_candidate_dat = function(dat = self$output$dat){
      exposure_candidate_dat <- suppressMessages(harmonise_data(self$output$temp, self$output$exposure_candidate))
      exposure_candidate_dat <- subset(exposure_candidate_dat, mr_keep)
@@ -280,8 +358,13 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
      self$output$exposure_candidate_dat <- exposure_candidate_dat
      invisible(self$output$exposure_candidate_dat)
   },
-  
-  # All in one - data harmonisation
+
+##########################################################################################################################################################################
+# All in one - data harmonisation
+#' @description 
+#' Harmonised exposure - outcome dataset. 
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. 
   harmonise = function(dat = self$output$dat) {
     x$candidate_outcome_dat(dat = self$output$dat)
     x$candidate_exposure_dat(dat = self$output$dat)
@@ -290,7 +373,13 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   },
   
   ##########################################################################################################################################################################
-  #Performing MR of 1) candidate traits-outcome 2) candidate traits-exposure 3) exposure-candidate traits
+  #MR analysis of candidates against exposure 
+#' @description
+#' Perform MR anlayses of 1) candidate traits-outcome 2) candidate traits-exposure 3) exposure-candidate traits.
+#' 
+#' @param dat Output from TwoSampleMR::harmonise_data. 
+#' 
+#' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
   mr = function(dat = self$output$dat, mr_method="mr_ivw") {
     message("Performing MR of ", length(unique(self$output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
     if(mr_method == "strategy1")
@@ -331,6 +420,26 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   
   ##########################################################################################################################################################################
   #All-in-one: Do everything at once
+#' @description 
+#' All-in-one: 1) Detect outlier 2) Search candidate traits 3) Perform MR of candidate traits and the outcome / exposure. 
+#' 
+#' @param dat Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
+#' 
+#' @param outliers Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.
+#' 
+#' @param outlier_correction Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
+#' 
+#' @param outlier_threshold If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.
+#' 
+#' @param use_proxies Whether to use proxies when looking up associations. FALSE by default for speed.
+#' 
+#' @param search_correction Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none"). 
+#' 
+#' @param search_threshold If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.
+#' 
+#' @param include_outliers When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.
+#' 
+#' @param mr_method Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.
   mrtryx = function(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05), use_proxies=FALSE, search_correction="none", search_threshold=ifelse(search_correction=="none", 5e-8, 0.05), include_outliers=FALSE, mr_method="mr_ivw") {
     x$get_outliers(dat=self$output$dat, outliers="RadialMR", outlier_correction="none", outlier_threshold=ifelse(outlier_correction=="none", 0.05/nrow(dat), 0.05))
     x$set_candidate_traits(id_list=NULL)
@@ -348,6 +457,12 @@ get_outliers = function(dat=self$output$dat, outliers="RadialMR", outlier_correc
   
   ##########################################################################################################################################################################
   #tryx-sig
+#' @description
+#' Identify putatively significant associations in the outlier scan.
+#'  
+#' @param mr_threshold_method This is the argument to be passed to \code{p.adjust}. Default is "fdr". If no p-value adjustment is to be applied then specify "unadjusted".
+#' 
+#' @param mr_threshold Threshold to declare significance.  
   tryx.sig = function(mr_threshold_method = "fdr", mr_threshold = 0.05){
 
     stopifnot("candidate_outcome_mr" %in% names(self$output))
