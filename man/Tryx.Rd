@@ -466,7 +466,7 @@ Identify putatively significant associations in the outlier scan.
   dat = self$output$candidate_outcome_mr,
   id_remove = NULL,
   y_scale = NULL,
-  lable = TRUE
+  label = TRUE
 )}\if{html}{\out{</div>}}
 }
 

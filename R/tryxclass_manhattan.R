@@ -8,7 +8,6 @@
 #' @param y_scale The scaling function to be applied to y scale.
 #' 
 #' @param label Display the names of the traits on the graph.
-
 Tryx$set("public", "manhattan_plot", function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
   
   cpg <- require(ggplot2)
