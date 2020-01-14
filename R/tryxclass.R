@@ -462,7 +462,7 @@ Tryx <- R6::R6Class("Tryx", list(
 #'  
 #' @param mr_threshold_method This is the argument to be passed to \code{p.adjust}. Default is "fdr". If no p-value adjustment is to be applied then specify "unadjusted".
 #' 
-#' @param mr_threshold Threshold to declare significance.  
+#' @param mr_threshold Threshold to declare significance  
   tryx.sig = function(mr_threshold_method = "fdr", mr_threshold = 0.05){
 
     stopifnot("candidate_outcome_mr" %in% names(self$output))

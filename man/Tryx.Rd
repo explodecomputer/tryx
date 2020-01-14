@@ -400,7 +400,7 @@ Identify putatively significant associations in the outlier scan.
 \describe{
 \item{\code{mr_threshold_method}}{This is the argument to be passed to \code{p.adjust}. Default is "fdr". If no p-value adjustment is to be applied then specify "unadjusted".}
 
-\item{\code{mr_threshold}}{Threshold to declare significance.}
+\item{\code{mr_threshold}}{Threshold to declare significance}
 }
 \if{html}{\out{</div>}}
 }
