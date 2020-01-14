@@ -1,0 +1,13 @@
+base
+knitr
+TwoSampleMR
+MRInstruments
+RadialMR
+dplyr
+magrittr
+tidyr
+ggplot2
+Matrix
+glmnet
+ggrepel
+tryx
