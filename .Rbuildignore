@@ -3,3 +3,6 @@
 ^mrbase\.oauth$
 ^LICENSE\.md$
 ^\.travis\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
