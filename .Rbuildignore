@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
 ^mrbase\.oauth$
 ^LICENSE\.md$
 ^\.travis\.yml$

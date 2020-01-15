@@ -408,6 +408,7 @@ Identify putatively significant associations in the outlier scan.
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-adjustment"></a>}}
 \subsection{Method \code{adjustment()}}{
+Outlier adjustment estimation - How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment(
   dat = self$output$dat,
@@ -416,10 +417,22 @@ Identify putatively significant associations in the outlier scan.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dat}}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
+
+\item{\code{tryxscan}}{Output from \code{x$scan()}}
+
+\item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-adjustment.mv"></a>}}
 \subsection{Method \code{adjustment.mv()}}{
+Similar to adjusment, but when there are multiple traits associated with a single variant.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment.mv(
   dat = self$output$dat,
@@ -430,10 +443,26 @@ Identify putatively significant associations in the outlier scan.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dat}}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
+
+\item{\code{tryxscan}}{Output from \code{x$scan()}}
+
+\item{\code{lasso}}{Whether to shrink the estimates of each trait within SNP. Default=TRUE.}
+
+\item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+
+\item{\code{proxies}}{Look for proxies in the MVMR methods. Default = FALSE.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-analyse"></a>}}
 \subsection{Method \code{analyse()}}{
+This returns various heterogeneity statistics, IVW estimates for raw, adjusted and outlier removed datasets, and summary of peripheral traits detected etc.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$analyse(
   tryxscan = self$output,
@@ -443,10 +472,24 @@ Identify putatively significant associations in the outlier scan.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{tryxscan}}{Output from \code{x$scan()}.}
+
+\item{\code{plot}}{Whether to plot or not. Default is TRUE.}
+
+\item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+
+\item{\code{duplicate_outliers_method}}{Sometimes more than one trait will associate with a particular outlier. TRUE = only keep the trait that has the biggest influence on heterogeneity.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-analyse.mv"></a>}}
 \subsection{Method \code{analyse.mv()}}{
+Similar to analyse, but when there are multiple traits associated with a single variant.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$analyse.mv(
   tryxscan = self$output,
@@ -457,10 +500,24 @@ Identify putatively significant associations in the outlier scan.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{tryxscan}}{Output from \code{x$scan()}}
+
+\item{\code{lasso}}{Whether to shrink the estimates of each trait within SNP. Default=TRUE.}
+
+\item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+
+\item{\code{proxies}}{Look for proxies in the MVMR methods. Default = FALSE.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-manhattan_plot"></a>}}
 \subsection{Method \code{manhattan_plot()}}{
+Draw a Manhattan style plot for candidate traits-outcome/exposure associations.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$manhattan_plot(
   dat = self$output$candidate_outcome_mr,
@@ -470,6 +527,19 @@ Identify putatively significant associations in the outlier scan.
 )}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{dat}}{Dataset from TwoSampleMR::harmonise_data.}
+
+\item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+
+\item{\code{y_scale}}{The scaling function to be applied to y scale.}
+
+\item{\code{label}}{Display the names of the traits on the graph.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
