@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 mrbase.oauth
+*.rdx
+*.rdb

@@ -1,49 +1,170 @@
 ---
-title: "Test file for MR-TRYX"
+title: "Guide to using MR-TRYX"
 author: "Yoonsu Cho"
-date: "7 November 2019"
-output: html_document
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{Guide to using MR-TRYX}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r, echo=TRUE, warning=FALSE, message=FALSE}
-library(knitr)
-knitr::opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, dev="png", cache=TRUE)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  cache = TRUE
+)
 ```
 
+The following analyses should run within a couple of minutes, depending on internet speed and the traffic that the [IEU GWAS database](https://gwas.mrcieu.ac.uk/) servers are experiencing.
 
-Test commands for each function
+Begin by choosing an exposure-outcome hypothesis to explore. e.g. LDL cholesterol on coronary heart disease. These data can be extracted from the IEU GWAS database using the [TwoSampleMR](https://mrcieu.github.io/TwoSampleMR/) package:
 
+
+## Data setup
+
+If necessary install TwoSampleMR:
+
+```r
+devtools::install_github("mrcieu/TwoSampleMR@ieugwasr")
+```
+
+Create a dataset for LDL and CHD
 
 ```{r}
 library(TwoSampleMR)
-library(MRInstruments)
-library(RadialMR)
+a <- extract_instruments("ieu-a-300")
+b <- extract_outcome_data(a$SNP, "ieu-a-7", access_token=NULL)
+dat <- harmonise_data(a,b)
+```
+
+## Running Tryx
+
+First load the package
+
+```{r}
+```
+
+We can now perform the analysis:
+
+```{r}
 library(tryx)
+x <- Tryx$new(dat)
+x$mrtryx()
+```
+
+This will do the following:
+
+1. Find outlier SNPs in the exposure-outcome analysis
+2. Find traits in the IEU GWAS database that those outliers associate with. These traits are known as 'candidate traits'
+3. Extract instruments for those 'candidate traits'
+4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
+
+
+## Step-by-step analysis
+
+
+The analysis steps can be done one-by-one running the following commands:
+
+```r
+# Find outlier SNPs in the exposure-outcome analysis
+x$get_outliers()
+
+# Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
+x$set_candidate_traits()
+x$scan()
+```
+
+Note that you can browse available traits here: https://gwas.mrcieu.ac.uk/ and get a complete list using:
+
+```r
+traits <- TwoSampleMR::available_outcomes()
+```
+
+```r
+# Extract instruments for those 'candidate traits'
+x$extractions() #which includes the following functions:
+  x$candidate_instruments()
+  x$outcome_instruments()
+  x$exposure_instruments()
+  x$exposure_candidate_instruments()
+
+# Make datasets for MR analysis
+x$harmonise() #which includes the following functions:
+  x$candidate_outcome_dat()
+  x$candidate_exposure_dat()
+  x$exposure_candidate_dat()
+
+# Perform MR of each of those 'candidate traits' against the exposure and the outcomes
+x$mr()
 ```
 
 
-Data preparation
+See the `?Tryx` for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
 
-Example: systolic blood pressure and coronary artery disease
+```r
+a <- as.character(subset(dat, pval.outcome < 5e-8)$SNP)
+x <- Tryx$new(dat)
+x$mrtryx(outliers=a)
+```
+
+The next steps are to determine which of the candidate traits are of interest (e.g. using p-value thresholds), visualise the results, and adjust the exposure-outcome estimates based on knowledge of the 'candidate trait' associations.
 
 
-```{r}
-ao <- available_outcomes()
-sbp <- extract_instruments(outcomes='UKB-a:360')
-chd <-  extract_outcome_data(snps=sbp$SNP, outcomes = 7)
-dat <- harmonise_data(sbp, chd)
+## Significant candidate traits
+
+One can determine which of the putative associations might be 'interesting' in different ways. We have provided a simple convenience function to apply different multiple testing corrections. e.g.
+
+```r
+x$tryx.sig()
+```
+
+Will by default use FDR of 5%. See `?tryx.sig` for more options.
+
+
+
+## Adjustment
+
+Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:
+
+```r
+x$adjustment()
+x$adjustment.mv()
+x$analyse()
+x$analyse.mv()
+```
+
+By default, this adjusts for the trait that has the largest impact for a particular SNP. 
+
+The `x$output$adjustment$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `x$output$adjustment$plot`.
+
+
+
+## Visualisation
+
+To produce a basic diagram of the connectivity of SNPs, candidate traits, exposure and outcome:
+
+```r
+tryx.network(tryxscan)
+```
+
+This shows that some candidate traits influence the exposure only, the outcome only, or both the exposure and the outcome. 
+
+You can also create a volcano plot of the candidate-exposure and/or candidate-outcome associations. e.g. to show exposures and outcomes
+
+```r
+volcano_plot(
+    rbind(tryxscan$candidate_exposure_mr, tryxscan$candidate_outcome_mr)
+)
+```
+
+or e.g. just exposures
+
+```r
+volcano_plot(tryxscan$candidate_exposure_mr)
 ```
 
 
-
-Scan
-
-test tryx.scan
-```{r}
-load("~/tryx/tests/test_mrtryx.RData")
-```
-
-test tryx.sig
-```{r}
-scan_sbp <- tryx.sig(scan_sbp)
-```

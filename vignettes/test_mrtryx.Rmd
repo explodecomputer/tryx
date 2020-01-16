@@ -7,7 +7,7 @@ output: html_document
 
 ```{r, echo=TRUE, warning=FALSE, message=FALSE}
 library(knitr)
-knitr::opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, dev="png", cache=TRUE)
+knitr::opts_chunk$set(echo=TRUE, message=FALSE, warning=FALSE, dev="png", cache=TRUE, eval=FALSE)
 ```
 
 
@@ -40,7 +40,7 @@ Scan
 
  a. Test "tryx.scan"
 ```{r}
-#scan_bmi <- tryx.scan(dat)
+scan_bmi <- tryx.scan(dat)
 load("~/tryx/tests/test_mrtryx.RData")
 ```
 

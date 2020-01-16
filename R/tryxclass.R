@@ -5,7 +5,7 @@
 #' Using a summary set, find outliers in the MR analysis between the pair of trais.
 #' Find other 'candidate traits' associated with those outliers.
 #' Perform MR of each of those candidate traits with the original exposure and outcome.
-
+#' @export
 Tryx <- R6::R6Class("Tryx", list(
   output = list(),
   

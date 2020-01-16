@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/all.min.css" integrity="sha256-PbSmjxuVAzJ6FPvNYsrXygfGhNJYyZ2GktDbkMBqQZg=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.1/css/v4-shims.min.css" integrity="sha256-A6jcAdwFD48VMjlI3GDxUd+eCQa7/KWy6G9oe/ovaPA=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
@@ -95,7 +95,7 @@ Perform MR of each of those candidate traits with the original exposure and outc
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/guide.html">Test file for MR-TRYX</a>
+      <a href="../articles/guide.html">Guide to using MR-TRYX</a>
     </li>
     <li>
       <a href="../articles/test_mrtryx.html">Test file for MR-TRYX</a>
@@ -434,18 +434,25 @@ Perform MR of each of those candidate traits with the original exposure and outc
 </dl><p></div></p>
 <p><hr>
 <a id="method-adjustment"></a></p><h3>Method <code>adjustment()</code></h3>
-
-<h3>Usage</h3>
+<p>Outlier adjustment estimation - How much of the heterogeneity due to the outlier can be explained by alternative pathways?</p><h3>Usage</h3>
 <p><div class="r"></p><pre>Tryx$adjustment(
   dat = self$output$dat,
   tryxscan = self$output,
   id_remove = NULL
 )</pre><p></div></p>
 
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl class='dl-horizontal'>
+<dt><code>dat</code></dt><dd><p>Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.</p></dd>
+
+<dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code></p></dd>
+
+<dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-adjustment.mv"></a></p><h3>Method <code>adjustment.mv()</code></h3>
-
-<h3>Usage</h3>
+<p>Similar to adjusment, but when there are multiple traits associated with a single variant.</p><h3>Usage</h3>
 <p><div class="r"></p><pre>Tryx$adjustment.mv(
   dat = self$output$dat,
   tryxscan = self$output,
@@ -454,10 +461,22 @@ Perform MR of each of those candidate traits with the original exposure and outc
   proxies = FALSE
 )</pre><p></div></p>
 
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl class='dl-horizontal'>
+<dt><code>dat</code></dt><dd><p>Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.</p></dd>
+
+<dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code></p></dd>
+
+<dt><code>lasso</code></dt><dd><p>Whether to shrink the estimates of each trait within SNP. Default=TRUE.</p></dd>
+
+<dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
+
+<dt><code>proxies</code></dt><dd><p>Look for proxies in the MVMR methods. Default = FALSE.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-analyse"></a></p><h3>Method <code>analyse()</code></h3>
-
-<h3>Usage</h3>
+<p>This returns various heterogeneity statistics, IVW estimates for raw, adjusted and outlier removed datasets, and summary of peripheral traits detected etc.</p><h3>Usage</h3>
 <p><div class="r"></p><pre>Tryx$analyse(
   tryxscan = self$output,
   plot = TRUE,
@@ -465,10 +484,20 @@ Perform MR of each of those candidate traits with the original exposure and outc
   filter_duplicate_outliers = TRUE
 )</pre><p></div></p>
 
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl class='dl-horizontal'>
+<dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code>.</p></dd>
+
+<dt><code>plot</code></dt><dd><p>Whether to plot or not. Default is TRUE.</p></dd>
+
+<dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
+
+<dt><code>duplicate_outliers_method</code></dt><dd><p>Sometimes more than one trait will associate with a particular outlier. TRUE = only keep the trait that has the biggest influence on heterogeneity.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-analyse.mv"></a></p><h3>Method <code>analyse.mv()</code></h3>
-
-<h3>Usage</h3>
+<p>Similar to analyse, but when there are multiple traits associated with a single variant.</p><h3>Usage</h3>
 <p><div class="r"></p><pre>Tryx$analyse.mv(
   tryxscan = self$output,
   lasso = TRUE,
@@ -477,10 +506,20 @@ Perform MR of each of those candidate traits with the original exposure and outc
   proxies = FALSE
 )</pre><p></div></p>
 
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl class='dl-horizontal'>
+<dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code></p></dd>
+
+<dt><code>lasso</code></dt><dd><p>Whether to shrink the estimates of each trait within SNP. Default=TRUE.</p></dd>
+
+<dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
+
+<dt><code>proxies</code></dt><dd><p>Look for proxies in the MVMR methods. Default = FALSE.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-manhattan_plot"></a></p><h3>Method <code>manhattan_plot()</code></h3>
-
-<h3>Usage</h3>
+<p>Draw a Manhattan style plot for candidate traits-outcome/exposure associations.</p><h3>Usage</h3>
 <p><div class="r"></p><pre>Tryx$manhattan_plot(
   dat = self$output$candidate_outcome_mr,
   id_remove = NULL,
@@ -488,6 +527,17 @@ Perform MR of each of those candidate traits with the original exposure and outc
   label = TRUE
 )</pre><p></div></p>
 
+<h3>Arguments</h3>
+<p><div class="arguments"></p><dl class='dl-horizontal'>
+<dt><code>dat</code></dt><dd><p>Dataset from TwoSampleMR::harmonise_data.</p></dd>
+
+<dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
+
+<dt><code>y_scale</code></dt><dd><p>The scaling function to be applied to y scale.</p></dd>
+
+<dt><code>label</code></dt><dd><p>Display the names of the traits on the graph.</p></dd>
+
+</dl><p></div></p>
 <p><hr>
 <a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
@@ -502,7 +552,7 @@ Perform MR of each of those candidate traits with the original exposure and outc
 
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#methods">Methods</a></li>
@@ -518,7 +568,7 @@ Perform MR of each of those candidate traits with the original exposure and outc
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
 
       </footer>
