@@ -112,7 +112,7 @@ Tryx <- R6::R6Class("Tryx", list(
     if(is.null(id_list))
     {
       ao <- suppressMessages(TwoSampleMR::available_outcomes())
-      ids <- subset(ao, priority == 1 & nsnp > 500000 & sample_size > 50000) %>% 
+      ids <- subset(ao, nsnp > 500000 & sample_size > 50000) %>% 
              arrange(desc(sample_size)) %>%
              filter(!duplicated(trait), mr == 1) %>%
              filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
