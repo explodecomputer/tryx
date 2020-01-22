@@ -512,10 +512,10 @@ Tryx <- R6::R6Class("Tryx", list(
   #' 
   #' @param dat Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.
   #' 
-  #' @param tryxscan Output from \code{x$scan()}
+  #' @param tryxscan Output from \code{x$mrtryx()}
   #' 
   #' @param id_remove List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
-   adjustment = function(dat= self$output$dat, tryxscan=self$output, id_remove=NULL) {
+   adjustment = function(tryxscan=self$output, id_remove=NULL) {
     if(!any(tryxscan$search$sig))
     {
       return(NULL)
@@ -526,6 +526,7 @@ Tryx <- R6::R6Class("Tryx", list(
     sige <- subset(tryxscan$candidate_exposure_mr, sig & !id.exposure %in% id_remove)
     sigo <- subset(tryxscan$candidate_outcome_mr, sig & !id.exposure %in% id_remove)
     
+    dat <- tryxscan$dat
     dat$qi <- private$cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
     dat$Q <- sum(dat$qi)
     for(i in 1:nrow(sig))
@@ -594,7 +595,7 @@ Tryx <- R6::R6Class("Tryx", list(
   #' @param lasso Whether to shrink the estimates of each trait within SNP. Default=TRUE.
   #' 
   #' @param proxies Look for proxies in the MVMR methods. Default = FALSE.
-    adjustment.mv = function(dat= self$output$dat, tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE) {
+    adjustment.mv = function(tryxscan=self$output, lasso=TRUE, id_remove=NULL, proxies=FALSE) {
     if(!any(tryxscan$search$sig))
     {
       return(NULL)
@@ -614,6 +615,7 @@ Tryx <- R6::R6Class("Tryx", list(
     sigo1 <- subset(sig, id.outcome %in% sigo$id.exposure) %>% group_by(SNP) %>% mutate(snpcount=n()) %>% arrange(desc(snpcount), SNP)
     snplist <- unique(sigo1$SNP)
     mvo <- list()
+    dat <- tryxscan$dat
     dat$qi <- private$cochrans_q(dat$beta.outcome / dat$beta.exposure, dat$se.outcome / abs(dat$beta.exposure))
     dat$Q <- sum(dat$qi)
     dat$orig.beta.outcome <- dat$beta.outcome
@@ -689,7 +691,8 @@ Tryx <- R6::R6Class("Tryx", list(
   analyse = function(tryxscan=self$output, plot=TRUE, id_remove=NULL, filter_duplicate_outliers=TRUE) {
     
     analysis <- list()
-    adj_full <- x$adjustment()
+    x$adjustment(tryxscan=self$output, id_remove=id_remove)
+    adj_full <- tryxscan$adjustment
     if(nrow(adj_full) == 0)
     {
       return(NULL)
@@ -899,7 +902,8 @@ Tryx <- R6::R6Class("Tryx", list(
   #' 
   #' @param proxies Look for proxies in the MVMR methods. Default = FALSE.
   analyse.mv = function(tryxscan=self$output, lasso=TRUE, plot=TRUE, id_remove=NULL, proxies=FALSE) {
-    adj <- x$adjustment.mv(tryxscan=self$output, lasso=lasso, id_remove=id_remove, proxies=proxies)
+    x$adjustment.mv(tryxscan=self$output, lasso=lasso, id_remove=id_remove, proxies=proxies)
+    adj <- tryxscan$adjustment.mv
     dat <- subset(adj$dat, mr_keep)
     dat$orig.ratio <- dat$orig.beta.outcome / dat$beta.exposure
     dat$orig.weights <- sqrt(dat$beta.exposure^2 / dat$orig.se.outcome^2)
