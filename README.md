@@ -84,7 +84,7 @@ If you using MR-TRYX R package:
 
 [Cho Y, Haycock P, Sanderson E, Gaunt T, Zheng J, Morris A, Davey Smith G, Hemani G. </br>
 **MR-TRYX: A Mendelian randomization framework that exploits horizontal pleiotropy to infer novel causal pathways.** <br/>
-Nature communications [Accepted]. Current version is available at](https://www.biorxiv.org/content/10.1101/476085v3)
+Nature communications [Accepted]. Current version is available at on BioRxiv](https://www.biorxiv.org/content/10.1101/476085v3)
 
 For the IEU GWAS database, MR-Base or the TwoSamleMR R package:
 [Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
