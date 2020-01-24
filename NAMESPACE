@@ -2,5 +2,4 @@
 
 export(Tryx)
 export(tryx.network)
-export(tryx.simulate)
 export(volcano_plot)
