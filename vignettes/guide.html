@@ -346,51 +346,78 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>First load the package</p>
 <p>We can now perform the analysis:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">library</span>(tryx)</span>
-<span id="cb3-2"><a href="#cb3-2"></a>x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</span>
-<span id="cb3-3"><a href="#cb3-3"></a>x<span class="op">$</span><span class="kw">mrtryx</span>()</span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; Using RadialMR package to detect outliers</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; </span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; Radial IVW</span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt; </span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt;                   Estimate  Std.Error   t value     Pr(&gt;|t|)</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; Effect (Mod.2nd) 0.4131547 0.04848067  8.522050 1.567537e-17</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt; Iterative        0.4131605 0.04848234  8.521877 1.569885e-17</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; Exact (FE)       0.4307847 0.02360690 18.248257 2.136159e-74</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; Exact (RE)       0.4182297 0.05601934  7.465809 1.151990e-10</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; </span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; Loading required package: dplyr</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt; </span></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; </span></span>
+<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; </span></span>
+<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; Loading required package: RadialMR</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; Loading required package: magrittr</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; Loading required package: tidyr</span></span>
 <span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; </span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; Residual standard error: 2.056 on 76 degrees of freedom</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; </span></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; F-statistic: 72.63 on 1 and 76 DF, p-value: 1.1e-12</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt; Q-Statistic for heterogeneity: 321.246 on 76 DF , p-value: 6.778753e-32</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; </span></span>
-<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt;  Outliers detected </span></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; Number of iterations = 3</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; Warning in if (radial$outliers[1] == &quot;No significant outliers&quot;) {: the</span></span>
-<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; condition has length &gt; 1 and only the first element will be used</span></span>
-<span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt; Identified 7 outliers</span></span>
-<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; Using default list of 288 traits</span></span>
-<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt; Extracting data for 7 SNP(s) from 288 GWAS(s)</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; Found 24 candidate traits associated with outliers at p &lt; 5e-08</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; Finding instruments for candidate traits</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a><span class="co">#&gt; Warning in format_data(d, type = &quot;exposure&quot;, snps = NULL, phenotype_col =</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a><span class="co">#&gt; &quot;phenotype&quot;, : eaf column is not numeric. Coercing...</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a><span class="co">#&gt; Removing outlier SNPs from candidate trait instrument lists</span></span>
-<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; 24 traits with at least one instrument</span></span>
-<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; Looking up candidate trait instruments for Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb3-34"><a href="#cb3-34"></a><span class="co">#&gt; Extracting data for 730 SNP(s) from 1 GWAS(s)</span></span>
-<span id="cb3-35"><a href="#cb3-35"></a><span class="co">#&gt; 710 instruments extracted for Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; Looking up candidate trait instruments for LDL cholesterol || id:ieu-a-300</span></span>
-<span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; Extracting data for 730 SNP(s) from 1 GWAS(s)</span></span>
-<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt;  instruments extracted for LDL cholesterol || id:ieu-a-300</span></span>
-<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; Looking up exposure instruments for 24 candidate traits</span></span>
-<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; Extracting data for 77 SNP(s) from 24 GWAS(s)</span></span>
-<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; 1790 instruments extracted</span></span>
-<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; Removing outlier SNPs from candidate trait outcome lists</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; Removed 46 outlier SNPs</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; Performing MR of 24 candidate traits against Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; Performing MR of 23 candidate traits against LDL cholesterol || id:ieu-a-300</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; Performing MR of LDL cholesterol || id:ieu-a-300 against 24 candidate traits</span></span></code></pre></div>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; Attaching package: &#39;tidyr&#39;</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; The following object is masked from &#39;package:magrittr&#39;:</span></span>
+<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; </span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt;     extract</span></span>
+<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Loading required package: ggplot2</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; Loading required package: glmnet</span></span>
+<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; Loading required package: Matrix</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; </span></span>
+<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; Attaching package: &#39;Matrix&#39;</span></span>
+<span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt; The following objects are masked from &#39;package:tidyr&#39;:</span></span>
+<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; </span></span>
+<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt;     expand, pack, unpack</span></span>
+<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; Loaded glmnet 3.0-1</span></span>
+<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; Loading required package: ggrepel</span></span>
+<span id="cb3-29"><a href="#cb3-29"></a>x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</span>
+<span id="cb3-30"><a href="#cb3-30"></a>x<span class="op">$</span><span class="kw">mrtryx</span>()</span>
+<span id="cb3-31"><a href="#cb3-31"></a><span class="co">#&gt; Using RadialMR package to detect outliers</span></span>
+<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; </span></span>
+<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; Radial IVW</span></span>
+<span id="cb3-34"><a href="#cb3-34"></a><span class="co">#&gt; </span></span>
+<span id="cb3-35"><a href="#cb3-35"></a><span class="co">#&gt;                   Estimate  Std.Error   t value     Pr(&gt;|t|)</span></span>
+<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; Effect (Mod.2nd) 0.4131547 0.04848067  8.522050 1.567537e-17</span></span>
+<span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; Iterative        0.4131605 0.04848234  8.521877 1.569885e-17</span></span>
+<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; Exact (FE)       0.4307847 0.02360690 18.248257 2.136159e-74</span></span>
+<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; Exact (RE)       0.4182297 0.05616141  7.446922 1.251321e-10</span></span>
+<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; </span></span>
+<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; </span></span>
+<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; Residual standard error: 2.056 on 76 degrees of freedom</span></span>
+<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; </span></span>
+<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; F-statistic: 72.63 on 1 and 76 DF, p-value: 1.1e-12</span></span>
+<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; Q-Statistic for heterogeneity: 321.246 on 76 DF , p-value: 6.778753e-32</span></span>
+<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; </span></span>
+<span id="cb3-47"><a href="#cb3-47"></a><span class="co">#&gt;  Outliers detected </span></span>
+<span id="cb3-48"><a href="#cb3-48"></a><span class="co">#&gt; Number of iterations = 3</span></span>
+<span id="cb3-49"><a href="#cb3-49"></a><span class="co">#&gt; Warning in if (radial$outliers[1] == &quot;No significant outliers&quot;) {: the</span></span>
+<span id="cb3-50"><a href="#cb3-50"></a><span class="co">#&gt; condition has length &gt; 1 and only the first element will be used</span></span>
+<span id="cb3-51"><a href="#cb3-51"></a><span class="co">#&gt; Identified 7 outliers</span></span>
+<span id="cb3-52"><a href="#cb3-52"></a><span class="co">#&gt; Using default list of 288 traits</span></span>
+<span id="cb3-53"><a href="#cb3-53"></a><span class="co">#&gt; Extracting data for 7 SNP(s) from 288 GWAS(s)</span></span>
+<span id="cb3-54"><a href="#cb3-54"></a><span class="co">#&gt; Found 24 candidate traits associated with outliers at p &lt; 5e-08</span></span>
+<span id="cb3-55"><a href="#cb3-55"></a><span class="co">#&gt; Finding instruments for candidate traits</span></span>
+<span id="cb3-56"><a href="#cb3-56"></a><span class="co">#&gt; Warning in format_data(d, type = &quot;exposure&quot;, snps = NULL, phenotype_col =</span></span>
+<span id="cb3-57"><a href="#cb3-57"></a><span class="co">#&gt; &quot;phenotype&quot;, : eaf column is not numeric. Coercing...</span></span>
+<span id="cb3-58"><a href="#cb3-58"></a><span class="co">#&gt; Removing outlier SNPs from candidate trait instrument lists</span></span>
+<span id="cb3-59"><a href="#cb3-59"></a><span class="co">#&gt; 24 traits with at least one instrument</span></span>
+<span id="cb3-60"><a href="#cb3-60"></a><span class="co">#&gt; Looking up candidate trait instruments for Coronary heart disease || id:ieu-a-7</span></span>
+<span id="cb3-61"><a href="#cb3-61"></a><span class="co">#&gt; Extracting data for 730 SNP(s) from 1 GWAS(s)</span></span>
+<span id="cb3-62"><a href="#cb3-62"></a><span class="co">#&gt; 710 instruments extracted for Coronary heart disease || id:ieu-a-7</span></span>
+<span id="cb3-63"><a href="#cb3-63"></a><span class="co">#&gt; Looking up candidate trait instruments for LDL cholesterol || id:ieu-a-300</span></span>
+<span id="cb3-64"><a href="#cb3-64"></a><span class="co">#&gt; Extracting data for 730 SNP(s) from 1 GWAS(s)</span></span>
+<span id="cb3-65"><a href="#cb3-65"></a><span class="co">#&gt;  instruments extracted for LDL cholesterol || id:ieu-a-300</span></span>
+<span id="cb3-66"><a href="#cb3-66"></a><span class="co">#&gt; Looking up exposure instruments for 24 candidate traits</span></span>
+<span id="cb3-67"><a href="#cb3-67"></a><span class="co">#&gt; Extracting data for 77 SNP(s) from 24 GWAS(s)</span></span>
+<span id="cb3-68"><a href="#cb3-68"></a><span class="co">#&gt; 1790 instruments extracted</span></span>
+<span id="cb3-69"><a href="#cb3-69"></a><span class="co">#&gt; Removing outlier SNPs from candidate trait outcome lists</span></span>
+<span id="cb3-70"><a href="#cb3-70"></a><span class="co">#&gt; Removed 46 outlier SNPs</span></span>
+<span id="cb3-71"><a href="#cb3-71"></a><span class="co">#&gt; Performing MR of 24 candidate traits against Coronary heart disease || id:ieu-a-7</span></span>
+<span id="cb3-72"><a href="#cb3-72"></a><span class="co">#&gt; Performing MR of 23 candidate traits against LDL cholesterol || id:ieu-a-300</span></span>
+<span id="cb3-73"><a href="#cb3-73"></a><span class="co">#&gt; Performing MR of LDL cholesterol || id:ieu-a-300 against 24 candidate traits</span></span></code></pre></div>
 <p>This will do the following:</p>
 <ol style="list-style-type: decimal">
 <li>Find outlier SNPs in the exposure-outcome analysis</li>

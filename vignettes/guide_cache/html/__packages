@@ -1,9 +1,7 @@
 base
-knitr
 TwoSampleMR
-MRInstruments
-RadialMR
 dplyr
+RadialMR
 magrittr
 tidyr
 ggplot2

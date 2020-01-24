@@ -43,12 +43,15 @@ dat <- harmonise_data(a,b)
 
 ## Running Tryx
 
-First load the package
-
-```{r}
-```
-
 We can now perform the analysis:
+
+This will do the following:
+
+1. Initialise the Tryx class with the `dat` object we already created
+2. Find outlier SNPs in the exposure-outcome analysis
+3. Find traits in the IEU GWAS database that those outliers associate with. These traits are known as 'candidate traits'
+4. Extract instruments for those 'candidate traits'
+5. Perform MR of each of those 'candidate traits' against the exposure and the outcome
 
 ```{r}
 library(tryx)
@@ -56,18 +59,11 @@ x <- Tryx$new(dat)
 x$mrtryx()
 ```
 
-This will do the following:
-
-1. Find outlier SNPs in the exposure-outcome analysis
-2. Find traits in the IEU GWAS database that those outliers associate with. These traits are known as 'candidate traits'
-3. Extract instruments for those 'candidate traits'
-4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
 
 
-## Step-by-step analysis
+### Step-by-step analysis
 
-
-The analysis steps can be done one-by-one running the following commands:
+The analysis performed by `mrtryx()` can be broken down into multiple steps, running the following commands:
 
 ```r
 # Find outlier SNPs in the exposure-outcome analysis
@@ -118,11 +114,11 @@ The next steps are to determine which of the candidate traits are of interest (e
 
 One can determine which of the putative associations might be 'interesting' in different ways. We have provided a simple convenience function to apply different multiple testing corrections. e.g.
 
-```r
+```{r}
 x$tryx.sig()
 ```
 
-Will by default use FDR of 5%. See `?tryx.sig` for more options.
+Will by default use FDR of 5%. See `?Tryx` for more options.
 
 
 
@@ -130,41 +126,82 @@ Will by default use FDR of 5%. See `?tryx.sig` for more options.
 
 Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:
 
-```r
-x$adjustment()
-x$adjustment.mv()
+```{r}
 x$analyse()
-x$analyse.mv()
 ```
+
+This will estimate the outlier effect that is due to the candidate pathways, adjust the outlier-outcome estimate, and re-perform MR of exposure on outcome with the adjusted outliers.
 
 By default, this adjusts for the trait that has the largest impact for a particular SNP. 
 
-The `x$output$adjustment$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `x$output$adjustment$plot`.
+There is also a multivariable adjustment method here, where for each outlier, all candidate trait effects are estimated jointly:
+
+```r
+x$analyse.mv()
+```
+
+NOTE: it's a good idea to check that there are no traits amongst the candidates that are identical or equivalent to the outcome. 
+
+The adjusted effect estimates:
+
+```{r}
+x$output$analysis$estimates
+```
 
 
 
 ## Visualisation
 
+
+### Adjustment plot
+
+A plot is generated showing how SNP effects have changed due to candidate trait adjustments in:
+
+
+```{r}
+x$output$analysis$plot
+```
+
+
+### Network plot
+
 To produce a basic diagram of the connectivity of SNPs, candidate traits, exposure and outcome:
 
 ```r
-tryx.network(tryxscan)
+tryx.network(x$output)
 ```
 
 This shows that some candidate traits influence the exposure only, the outcome only, or both the exposure and the outcome. 
 
+### Volcano plot
+
 You can also create a volcano plot of the candidate-exposure and/or candidate-outcome associations. e.g. to show exposures and outcomes
 
-```r
+```{r}
 volcano_plot(
-    rbind(tryxscan$candidate_exposure_mr, tryxscan$candidate_outcome_mr)
+    rbind(x$output$candidate_exposure_mr, x$output$candidate_outcome_mr)
 )
 ```
 
 or e.g. just exposures
 
-```r
-volcano_plot(tryxscan$candidate_exposure_mr)
+```{r}
+volcano_plot(x$output$candidate_exposure_mr)
 ```
 
 
+### Manhattan plot
+
+Similar to the volcano plot, a Manhattan plot can also be produced. This can be done for the candidate-exposure associations
+
+```{r}
+x$manhattan_plot("exposure")
+x$output$plots$manhattan_plot
+```
+
+or the candidate-outcome associations
+
+```{r}
+x$manhattan_plot("outcome")
+x$output$plots$manhattan_plot
+```

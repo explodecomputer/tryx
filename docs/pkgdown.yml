@@ -3,5 +3,4 @@ pkgdown: 1.4.1
 pkgdown_sha: ~
 articles:
   guide: guide.html
-  test_mrtryx: test_mrtryx.html
 

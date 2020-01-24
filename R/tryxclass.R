@@ -978,14 +978,14 @@ Tryx <- R6::R6Class("Tryx", list(
 #' @description
 #' Draw a Manhattan style plot for candidate traits-outcome/exposure associations.
 #' 
-#' @param dat Dataset from TwoSampleMR::harmonise_data.
+#' @param what Analyse candidate-exposure ('exposure') or candidate-outcome ('outcome') associations
 #' 
 #' @param id_remove List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.
 #' 
 #' @param y_scale The scaling function to be applied to y scale.
 #' 
 #' @param label Display the names of the traits on the graph.
-   manhattan_plot = function(dat = self$output$candidate_outcome_mr, id_remove=NULL, y_scale=NULL, label = TRUE){
+   manhattan_plot = function(what="outcome", id_remove=NULL, y_scale=NULL, label = TRUE){
       
       cpg <- require(ggplot2)
       if(!cpg)
@@ -1004,8 +1004,12 @@ Tryx <- R6::R6Class("Tryx", list(
       #X-axis preparing: 
       #Each trait needs to be shown in different phenotype groups, along the X axis 
       #Sort the traits based on their p-value for MR results
-      temp <- temp[order(temp$pval_adj),]
       
+      stopifnot(what %in% c("exposure", "outcome"))
+      dat <- self[["output"]][[paste0("candidate_", what, "_mr")]]
+      temp <- subset(dat, !id.exposure %in% id_remove)
+      temp <- temp[order(temp$pval_adj),]
+
       #Numbering row according to phenotype group where numeric variable is required.
       temp <- temp %>% mutate(id = row_number())
       

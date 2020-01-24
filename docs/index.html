@@ -56,9 +56,6 @@
 <li>
       <a href="articles/guide.html">Guide to using MR-TRYX</a>
     </li>
-    <li>
-      <a href="articles/test_mrtryx.html">Test file for MR-TRYX</a>
-    </li>
   </ul>
 </li>
       </ul>
@@ -107,93 +104,13 @@
 <p>and a package for simulating genotype-phenotype maps</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/simulateGP"</span>)</span></code></pre></div>
 <p>It should not take more than a few minutes to install all of these packages.</p>
-<hr>
 </div>
-<div id="guide" class="section level2">
+<div id="citation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#guide" class="anchor"></a>Guide</h2>
-<div id="basic-analysis-implemented-in-r6" class="section level3">
-<h3 class="hasAnchor">
-<a href="#basic-analysis-implemented-in-r6" class="anchor"></a>Basic analysis (Implemented in R6)</h3>
-<p>The following analyses should run within 10 minutes, depending on internet speed and the traffic that the MR-Base servers are experiencing.</p>
-<p>Begin by choosing an exposure-outcome hypothesis to explore. e.g. LDL cholesterol on coronary heart disease. These data can be extracted from MR-Base:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(devtools)</span>
-<span id="cb5-2"><a href="#cb5-2"></a><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"mrcieu/TwoSampleMR@ieugwasr"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tryx)</span>
-<span id="cb5-4"><a href="#cb5-4"></a>a &lt;-<span class="st"> </span><span class="kw">extract_instruments</span>(<span class="st">"ieu-a-300"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5"></a>b &lt;-<span class="st"> </span><span class="kw">extract_outcome_data</span>(a<span class="op">$</span>SNP, <span class="st">"ieu-a-7"</span>, <span class="dt">access_token=</span><span class="ot">NULL</span>)</span>
-<span id="cb5-6"><a href="#cb5-6"></a>dat &lt;-<span class="st"> </span><span class="kw">harmonise_data</span>(a,b)</span></code></pre></div>
-<p>We can now perform the analysis:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</span>
-<span id="cb6-2"><a href="#cb6-2"></a>x<span class="op">$</span><span class="kw">mrtryx</span>()</span></code></pre></div>
-<p>This will do the following:</p>
-<ol>
-<li>Find outlier SNPs in the exposure-outcome analysis</li>
-<li>Find traits in the MR-Base database that those outliers associate with. These traits are known as ‘candidate traits’</li>
-<li>Extract instruments for those ‘candidate traits’</li>
-<li>Perform MR of each of those ‘candidate traits’ against the exposure and the outcome</li>
-</ol>
-<p>The analysis can be done one by one running the following commands:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">#Find outlier SNPs in the exposure-outcome analysis</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>x<span class="op">$</span><span class="kw">get_outliers</span>()</span>
-<span id="cb7-3"><a href="#cb7-3"></a></span>
-<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>x<span class="op">$</span><span class="kw">set_candidate_traits</span>()</span>
-<span id="cb7-6"><a href="#cb7-6"></a>x<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/base/scan.html">scan</a></span>()</span>
-<span id="cb7-7"><a href="#cb7-7"></a></span>
-<span id="cb7-8"><a href="#cb7-8"></a><span class="co">#Extract instruments for those 'candidate traits'</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>x<span class="op">$</span><span class="kw">extractions</span>() <span class="co">#which includes the following functions:</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a>  x<span class="op">$</span><span class="kw">candidate_instruments</span>()</span>
-<span id="cb7-11"><a href="#cb7-11"></a>  x<span class="op">$</span><span class="kw">outcome_instruments</span>()</span>
-<span id="cb7-12"><a href="#cb7-12"></a>  x<span class="op">$</span><span class="kw">exposure_instruments</span>()</span>
-<span id="cb7-13"><a href="#cb7-13"></a>  x<span class="op">$</span><span class="kw">exposure_candidate_instruments</span>()</span>
-<span id="cb7-14"><a href="#cb7-14"></a></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#Make datasets for MR analysis</span></span>
-<span id="cb7-16"><a href="#cb7-16"></a>x<span class="op">$</span><span class="kw">harmonise</span>() <span class="co">#which includes the following functions:</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a>  x<span class="op">$</span><span class="kw">candidate_outcome_dat</span>()</span>
-<span id="cb7-18"><a href="#cb7-18"></a>  x<span class="op">$</span><span class="kw">candidate_exposure_dat</span>()</span>
-<span id="cb7-19"><a href="#cb7-19"></a>  x<span class="op">$</span><span class="kw">exposure_candidate_dat</span>()</span>
-<span id="cb7-20"><a href="#cb7-20"></a></span>
-<span id="cb7-21"><a href="#cb7-21"></a><span class="co">#Perform MR of each of those 'candidate traits' against the exposure and the outcomes</span></span>
-<span id="cb7-22"><a href="#cb7-22"></a>x<span class="op">$</span><span class="kw">mr</span>()</span></code></pre></div>
-<p>See the ?tryx.scan for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(dat, pval.outcome <span class="op">&lt;</span><span class="st"> </span><span class="fl">5e-8</span>)<span class="op">$</span>SNP)</span>
-<span id="cb8-2"><a href="#cb8-2"></a>x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</span>
-<span id="cb8-3"><a href="#cb8-3"></a>x<span class="op">$</span><span class="kw">mrtryx</span>(<span class="dt">outliers=</span>a)</span></code></pre></div>
-<p>The next steps are to determine which of the candidate traits are of interest (e.g. using p-value thresholds), visualise the results, and adjust the exposure-outcome estimates based on knowledge of the ‘candidate trait’ associations.</p>
-</div>
-<div id="significant-candidate-traits" class="section level3">
-<h3 class="hasAnchor">
-<a href="#significant-candidate-traits" class="anchor"></a>Significant candidate traits</h3>
-<p>One can determine which of the putative associations might be ‘interesting’ in different ways. We have provided a simple convenience function to apply different multiple testing corrections. e.g.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>x<span class="op">$</span><span class="kw">tryx.sig</span>()</span></code></pre></div>
-<p>Will by default use FDR of 5%. See <code>?tryx.sig</code> for more options.</p>
-</div>
-<div id="adjustment" class="section level3">
-<h3 class="hasAnchor">
-<a href="#adjustment" class="anchor"></a>Adjustment</h3>
-<p>Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>x<span class="op">$</span><span class="kw">adjustment</span>()</span>
-<span id="cb10-2"><a href="#cb10-2"></a>x<span class="op">$</span><span class="kw">adjustment.mv</span>()</span>
-<span id="cb10-3"><a href="#cb10-3"></a>x<span class="op">$</span><span class="kw">analyse</span>()</span>
-<span id="cb10-4"><a href="#cb10-4"></a>x<span class="op">$</span><span class="kw">analyse.mv</span>()</span></code></pre></div>
-<p>By default, this adjusts for the trait that has the largest impact for a particular SNP.</p>
-<p>The <code>x$output$adjustment$estimates</code> show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in <code>x$output$adjustment$plot</code>.</p>
-</div>
-<div id="visualisation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#visualisation" class="anchor"></a>Visualisation</h3>
-<p>To produce a basic diagram of the connectivity of SNPs, candidate traits, exposure and outcome:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw"><a href="reference/tryx.network.html">tryx.network</a></span>(tryxscan)</span></code></pre></div>
-<p>This shows that some candidate traits influence the exposure only, the outcome only, or both the exposure and the outcome.</p>
-<p>You can also create a volcano plot of the candidate-exposure and/or candidate-outcome associations. e.g. to show exposures and outcomes</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw"><a href="reference/volcano_plot.html">volcano_plot</a></span>(</span>
-<span id="cb12-2"><a href="#cb12-2"></a>    <span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(tryxscan<span class="op">$</span>candidate_exposure_mr, tryxscan<span class="op">$</span>candidate_outcome_mr)</span>
-<span id="cb12-3"><a href="#cb12-3"></a>)</span></code></pre></div>
-<p>or e.g. just exposures</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw"><a href="reference/volcano_plot.html">volcano_plot</a></span>(tryxscan<span class="op">$</span>candidate_exposure_mr)</span></code></pre></div>
-<hr>
-</div>
+<a href="#citation" class="anchor"></a>Citation</h2>
+<p>If you using MR-TRYX R package:</p>
+<p>[Cho Y, Haycock P, Sanderson E, Gaunt T, Zheng J, Morris A, Davey Smith G, Hemani G.  <strong>MR-TRYX: A Mendelian randomization framework that exploits horizontal pleiotropy to infer novel causal pathways.</strong> <br> Nature communications [Accepted]. Current version is available at (<a href="https://www.biorxiv.org/content/10.1101/476085v3" class="uri">https://www.biorxiv.org/content/10.1101/476085v3</a>)</p>
+<p>For the IEU GWAS database, MR-Base or the TwoSamleMR R package: <a href="https://elifesciences.org/articles/34408">Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration. <strong>The MR-Base platform supports systematic causal inference across the human phenome.</strong> <br> eLife 2018;7:e34408. doi: 10.7554/eLife.34408</a></p>
 </div>
 </div>
   </div>

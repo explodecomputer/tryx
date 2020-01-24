@@ -410,21 +410,17 @@ Identify putatively significant associations in the outlier scan.
 \subsection{Method \code{adjustment()}}{
 Outlier adjustment estimation - How much of the heterogeneity due to the outlier can be explained by alternative pathways?
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment(
-  dat = self$output$dat,
-  tryxscan = self$output,
-  id_remove = NULL
-)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment(tryxscan = self$output, id_remove = NULL)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dat}}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
-
-\item{\code{tryxscan}}{Output from \code{x$scan()}}
+\item{\code{tryxscan}}{Output from \code{x$mrtryx()}}
 
 \item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
+
+\item{\code{dat}}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
 }
 \if{html}{\out{</div>}}
 }
@@ -435,7 +431,6 @@ Outlier adjustment estimation - How much of the heterogeneity due to the outlier
 Similar to adjusment, but when there are multiple traits associated with a single variant.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$adjustment.mv(
-  dat = self$output$dat,
   tryxscan = self$output,
   lasso = TRUE,
   id_remove = NULL,
@@ -446,8 +441,6 @@ Similar to adjusment, but when there are multiple traits associated with a singl
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dat}}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
-
 \item{\code{tryxscan}}{Output from \code{x$scan()}}
 
 \item{\code{lasso}}{Whether to shrink the estimates of each trait within SNP. Default=TRUE.}
@@ -455,6 +448,8 @@ Similar to adjusment, but when there are multiple traits associated with a singl
 \item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
 
 \item{\code{proxies}}{Look for proxies in the MVMR methods. Default = FALSE.}
+
+\item{\code{dat}}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
 }
 \if{html}{\out{</div>}}
 }
@@ -520,7 +515,7 @@ Similar to analyse, but when there are multiple traits associated with a single 
 Draw a Manhattan style plot for candidate traits-outcome/exposure associations.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{Tryx$manhattan_plot(
-  dat = self$output$candidate_outcome_mr,
+  what = "outcome",
   id_remove = NULL,
   y_scale = NULL,
   label = TRUE
@@ -530,7 +525,7 @@ Draw a Manhattan style plot for candidate traits-outcome/exposure associations.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{dat}}{Dataset from TwoSampleMR::harmonise_data.}
+\item{\code{what}}{Analyse candidate-exposure ('exposure') or candidate-outcome ('outcome') associations}
 
 \item{\code{id_remove}}{List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.}
 
