@@ -112,11 +112,10 @@ Tryx <- R6::R6Class("Tryx", list(
     if(is.null(id_list))
     {
       ao <- suppressMessages(TwoSampleMR::available_outcomes())
-      ids <- subset(ao, nsnp > 500000 & sample_size > 50000) %>% 
+      ids <- subset(ao) %>% 
              arrange(desc(sample_size)) %>%
              filter(!duplicated(trait), mr == 1) %>%
-             filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
-             filter(!grepl("ukb-b", id)) %>%
+             filter(!grepl("ukb-a", id)) %>%
              filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
       id_list <- ids$id
       message("Using default list of ", nrow(ids), " traits")

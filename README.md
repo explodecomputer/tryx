@@ -6,6 +6,12 @@ experimental](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https:/
 
 <!-- badges: end -->
 
+**Major update:**
+
+This package has been under major development and the way in which it is implemented has changed quite substantially. See below for how to revert to the previous version if necessary
+
+---
+
 This package will perform MR-TRYX analysis, which entails the following. 
 
 In MR analysis a major assumption is that the SNP influences the outcome only through the exposure. If the SNP influences the outcome through some other (candidate) traits, in addition to influencing through the exposure, then the MR estimate can be biased.
@@ -58,6 +64,13 @@ devtools::install_github("explodecomputer/simulateGP")
 
 It should not take more than a few minutes to install all of these packages.
 
+### Installing previous versions
+
+You can go back to an earlier version using:
+
+```r
+devtools::install_github("explodecomputer/tryx@0.1.1")
+```
 
 ## Citation
 
