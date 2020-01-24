@@ -41,7 +41,7 @@ This software is an R package that depends on various other packages available o
 
 ## Installation
 
-A beta development version can bbe installed directly from this repository.
+A beta development version can be installed directly from this repository.
 
 First install the `TwoSampleMR` and `RadialMR` R packages:
 
