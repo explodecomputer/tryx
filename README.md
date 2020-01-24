@@ -1,5 +1,11 @@
 # Treasure your exceptions! (TRYX)
 
+<!-- badges: start -->
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) [![Travis-CI build status](https://travis-ci.org/explodecomputer/tryx.svg?branch=master)](https://travis-ci.org/explodecomputer/tryx) [![codecov](https://codecov.io/github/explodecomputer/tryx/branch/master/graphs/badge.svg)](https://codecov.io/github/explodecomputer/tryx)
+
+<!-- badges: end -->
+
 This package will perform MR-TRYX analysis, which entails the following. 
 
 In MR analysis a major assumption is that the SNP influences the outcome only through the exposure. If the SNP influences the outcome through some other (candidate) traits, in addition to influencing through the exposure, then the MR estimate can be biased.
