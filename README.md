@@ -13,6 +13,11 @@ experimental](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https:/
 
 This package has been under major development and the way in which it is implemented has changed quite substantially. See below for how to revert to the previous version if necessary
 
+
+---
+
+**Full documentation including a vignette is available here: ** https://explodecomputer.github.io/tryx/
+
 ---
 
 This package will perform MR-TRYX analysis, which entails the following. 
@@ -29,8 +34,6 @@ This package uses the MR-Base infrastructure to search for alternative pathways 
 ---
 
 The package name TRYX (pronounced 'tricks') is taken from the phrase 'TReasure Your Exceptions', a quote from William Bateson (1908). 
-
---- 
 
 ## Requirements
 
