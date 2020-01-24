@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tryx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -77,6 +77,9 @@
 <!-- badges: start -->
 
 <!-- badges: end -->
+<p><strong>Major update:</strong></p>
+<p>This package has been under major development and the way in which it is implemented has changed quite substantially. See below for how to revert to the previous version if necessary</p>
+<hr>
 <p>This package will perform MR-TRYX analysis, which entails the following.</p>
 <p>In MR analysis a major assumption is that the SNP influences the outcome only through the exposure. If the SNP influences the outcome through some other (candidate) traits, in addition to influencing through the exposure, then the MR estimate can be biased.</p>
 <p>Knowing which traits through which SNPs might be acting in a horizontal pleiotropic manner allows us to exploit these outliers to:</p>
@@ -107,6 +110,12 @@
 <p>and a package for simulating genotype-phenotype maps</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/simulateGP"</span>)</span></code></pre></div>
 <p>It should not take more than a few minutes to install all of these packages.</p>
+<div id="installing-previous-versions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#installing-previous-versions" class="anchor"></a>Installing previous versions</h3>
+<p>You can go back to an earlier version using:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/tryx@0.1.1"</span>)</span></code></pre></div>
+</div>
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
