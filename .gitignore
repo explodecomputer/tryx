@@ -2,3 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
+mrbase.oauth
+*.rdx
+*.rdb

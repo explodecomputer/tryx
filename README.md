@@ -3,6 +3,18 @@
 
 # Treasure your exceptions! (TRYX)
 
+<!-- badges: start -->
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing) [![Travis-CI build status](https://travis-ci.org/explodecomputer/tryx.svg?branch=master)](https://travis-ci.org/explodecomputer/tryx) [![codecov](https://codecov.io/github/explodecomputer/tryx/branch/master/graphs/badge.svg)](https://codecov.io/github/explodecomputer/tryx)
+
+<!-- badges: end -->
+
+**Major update:**
+
+This package has been under major development and the way in which it is implemented has changed quite substantially. See below for how to revert to the previous version if necessary
+
+---
+
 This package will perform MR-TRYX analysis, which entails the following. 
 
 In MR analysis a major assumption is that the SNP influences the outcome only through the exposure. If the SNP influences the outcome through some other (candidate) traits, in addition to influencing through the exposure, then the MR estimate can be biased.
@@ -55,111 +67,26 @@ devtools::install_github("explodecomputer/simulateGP")
 
 It should not take more than a few minutes to install all of these packages.
 
----
+### Installing previous versions
 
-## Guide
-
-### Basic analysis
-
-The following analyses should run within 10 minutes, depending on internet speed and the traffic that the MR-Base servers are experiencing.
-
-Begin by choosing an exposure-outcome hypothesis to explore. e.g. LDL cholesterol on coronary heart disease. These data can be extracted from MR-Base:
+You can go back to an earlier version using:
 
 ```r
-library(tryx)
-a <- extract_instruments(300)
-b <- extract_outcome_data(a$SNP, 7)
-dat <- harmonise_data(a,b)
+devtools::install_github("explodecomputer/tryx@0.1.1")
 ```
 
-We can now perform the analysis:
+## Citation
 
-```r
-tryxscan <- tryx.scan(dat)
-```
+If you using MR-TRYX R package:
 
-This will do the following:
+[Cho Y, Haycock P, Sanderson E, Gaunt T, Zheng J, Morris A, Davey Smith G, Hemani G. </br>
+**MR-TRYX: A Mendelian randomization framework that exploits horizontal pleiotropy to infer novel causal pathways.** <br/>
+Nature communications [Accepted]. Current version is available at (https://www.biorxiv.org/content/10.1101/476085v3)
 
-1. Find outlier SNPs in the exposure-outcome analysis
-2. Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'
-3. Extract instruments for those 'candidate traits'
-4. Perform MR of each of those 'candidate traits' against the exposure and the outcome
-
-See the `?tryx.scan` for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS
-
-```r
-x <- as.character(subset(dat, pval.outcome < 5e-8)$SNP)
-tryxscan <- tryx.scan(dat, outliers=x)
-```
-
-The next steps are to determine which of the candidate traits are of interest (e.g. using p-value thresholds), visualise the results, and adjust the exposure-outcome estimates based on knowledge of the 'candidate trait' associations.
-
-### Significant candidate traits
-
-One can determine which of the putative associations might be 'interesting' in different ways. We have provided a simple convenience function to apply different multiple testing corrections. e.g.
-
-```r
-tryxscan <- tryx.sig(tryxscan)
-```
-
-Will by default use FDR of 5%. See `?tryx.sig` for more options.
-
-### Visualisation
-
-To produce a basic diagram of the connectivity of SNPs, candidate traits, exposure and outcome:
-
-```r
-tryx.network(tryxscan)
-```
-
-This shows that some candidate traits influence the exposure only, the outcome only, or both the exposure and the outcome. 
-
-You can also create a volcano plot of the candidate-exposure and/or candidate-outcome associations. e.g. to show exposures and outcomes
-
-```r
-volcano_plot(
-    rbind(tryxscan$candidate_exposure_mr, tryxscan$candidate_outcome_mr)
-)
-```
-
-or e.g. just exposures
-
-```r
-volcano_plot(tryxscan$candidate_exposure_mr)
-```
-
-### Adjustment
-
-Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:
-
-```r
-tryxanalysis <- tryx.analyse(tryxscan)
-```
-
-By default, this adjusts for the trait that has the largest impact for a particular SNP. 
-
-The `tryxanalysis$estimates` show the adjusted effect estimates. A plot is generated showing how SNP effects have changed due to candidate trait adjustments in `tryxanalysis$plot`.
-
----
+For the IEU GWAS database, MR-Base or the TwoSamleMR R package:
+[Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration.</br>
+**The MR-Base platform supports systematic causal inference across the human phenome.** <br/>
+eLife 2018;7:e34408. doi: 10.7554/eLife.34408](https://elifesciences.org/articles/34408)
 
 
-## To Do
 
-### Plot
-
-- categorise traits
-- print SNP names or gene names
-- option to have no names
-
-### Scan
-
-- Implement cooks distance as option for finding outliers
-- Implement MR PRESSO as option for finding outliers
-
-### Scan output
-
-- calculate significant associations (currently in plot function - should remove from here)
-
-### Analysis
-
-- Simulate improvement in multiple testing correction when filtering by outlier associations
