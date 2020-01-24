@@ -112,11 +112,10 @@ Tryx <- R6::R6Class("Tryx", list(
     if(is.null(id_list))
     {
       ao <- suppressMessages(TwoSampleMR::available_outcomes())
-      ids <- subset(ao, nsnp > 500000 & sample_size > 50000) %>% 
+      ids <- subset(ao) %>% 
              arrange(desc(sample_size)) %>%
              filter(!duplicated(trait), mr == 1) %>%
-             filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
-             filter(!grepl("ukb-b", id)) %>%
+             filter(!grepl("ukb-a", id)) %>%
              filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
       id_list <- ids$id
       message("Using default list of ", nrow(ids), " traits")
@@ -384,7 +383,7 @@ Tryx <- R6::R6Class("Tryx", list(
     message("Performing MR of ", length(unique(self$output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
     if(mr_method == "strategy1")
     {
-      temp <- tryx::strategy1(self$output$candidate_outcome_dat)
+      temp <- private$strategy1(self$output$candidate_outcome_dat)
       self$output$candidate_outcome_mr <- temp$res
       self$output$candidate_outcome_mr_full <- temp
     } else {
@@ -396,7 +395,7 @@ Tryx <- R6::R6Class("Tryx", list(
     message("Performing MR of ", length(unique(self$output$candidate_exposure_dat$id.exposure)), " candidate traits against ", dat$exposure[1])
     if(mr_method == "strategy1")
     {
-      temp <- tryx::strategy1(self$output$candidate_exposure_dat)
+      temp <- private$strategy1(self$output$candidate_exposure_dat)
       self$output$candidate_exposure_mr <- temp$res
       self$output$candidate_exposure_mr_full <- temp
     } else {
@@ -408,7 +407,7 @@ Tryx <- R6::R6Class("Tryx", list(
     message("Performing MR of ", dat$exposure[1], " against ", length(unique(self$output$exposure_candidate_dat$id.outcome)), " candidate traits")
     if(mr_method == "strategy1")
     {
-      temp <- tryx::strategy1(self$output$exposure_candidate_dat)
+      temp <- private$strategy1(self$output$exposure_candidate_dat)
       self$output$exposure_candidate_mr <- temp$res
       self$output$exposure_candidate_mr_full <- temp
     } else {
