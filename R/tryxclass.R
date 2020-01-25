@@ -383,7 +383,7 @@ Tryx <- R6::R6Class("Tryx", list(
     message("Performing MR of ", length(unique(self$output$candidate_outcome_dat$id.exposure)), " candidate traits against ", dat$outcome[1])
     if(mr_method == "strategy1")
     {
-      temp <- tryx::strategy1(self$output$candidate_outcome_dat)
+      temp <- x$strategy1(self$output$candidate_outcome_dat)
       self$output$candidate_outcome_mr <- temp$res
       self$output$candidate_outcome_mr_full <- temp
     } else {
@@ -395,7 +395,7 @@ Tryx <- R6::R6Class("Tryx", list(
     message("Performing MR of ", length(unique(self$output$candidate_exposure_dat$id.exposure)), " candidate traits against ", dat$exposure[1])
     if(mr_method == "strategy1")
     {
-      temp <- tryx::strategy1(self$output$candidate_exposure_dat)
+      temp <- x$strategy1(self$output$candidate_exposure_dat)
       self$output$candidate_exposure_mr <- temp$res
       self$output$candidate_exposure_mr_full <- temp
     } else {

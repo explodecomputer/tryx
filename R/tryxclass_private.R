@@ -37,6 +37,7 @@ Tryx$set("private", "cochrans_q", function(b, se) {
   xw <- sum(b / se^2) / sum(1/se^2)
   qi <- (1/se^2) * (b - xw)^2
   return(qi)
+  invisible(x$ouput)
 }
 )
 
