@@ -1,8 +1,43 @@
 
+Tryx$set("private", "strategy1", function(dat, het_threshold=0.05, ivw_max_snp=1) {
+  message("First pass: running ", length(unique(paste(dat$id.exposure, dat$id.outcome))), " analyses with Wald ratio or IVW")
+  a <- suppressMessages(mr(dat, method_list=c("mr_ivw", "mr_wald_ratio")))
+  b <- subset(a, method == "Wald ratio")
+  message(nrow(b), " analyses can only run Wald ratio")
+  c <- subset(a, method == "Inverse variance weighted")
+  message(nrow(c), " analyses can run IVW or mode")
+  if(nrow(c) > 0)
+  {
+    d <- suppressMessages(mr_heterogeneity(dat, method_list="mr_ivw"))
+    rerun <- subset(d, Q_pval < het_threshold & Q_df >= (ivw_max_snp-1))
+    rerun <- paste(rerun$id.exposure, rerun$id.outcome)
+    if(length(rerun) < 0)
+    {
+      message("All eligible IVW results have low heterogeneity")
+      return(list(res=a, all=NULL, heterogeneity=d))
+    }
+    e <- subset(c, !paste(id.exposure, id.outcome) %in% rerun)
+    message("Rerunning MR with weighted modal estimator for ", length(rerun), " analysis - this may be quite slow")
+    f <- suppressMessages(mr(
+      subset(dat, paste(id.exposure, id.outcome) %in% rerun),
+      method_list="mr_weighted_mode"
+    ))
+    res <- rbind(b, e, f)
+    return(list(res=res, all=a, heterogeneity=d))
+  } else {
+    return(list(res=a, all=NULL, heterogeneity=NULL))
+  }
+  self$output$strategy1 <- res
+  invisible(self$output)
+}
+)
+
+
 Tryx$set("private", "cochrans_q", function(b, se) {
   xw <- sum(b / se^2) / sum(1/se^2)
   qi <- (1/se^2) * (b - xw)^2
   return(qi)
+  invisible(x$ouput)
 }
 )
 
