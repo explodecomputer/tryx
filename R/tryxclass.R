@@ -632,7 +632,7 @@ Tryx <- R6::R6Class("Tryx", list(
       {
         message("Only one candidate trait for SNP ", snplist[i], " so performing standard MVMR instead of LASSO")
       }
-      mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, unique(temp$id.outcome)), find_proxies=proxies))
+      mvexp <- mv_extract_exposures(c(id.exposure, unique(temp$id.outcome)), find_proxies=proxies)
       mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
       mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
       if(lasso & length(candidates) > 1)
