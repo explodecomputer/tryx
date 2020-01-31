@@ -116,6 +116,8 @@ Tryx <- R6::R6Class("Tryx", list(
              arrange(desc(sample_size)) %>%
              filter(!duplicated(trait), mr == 1) %>%
              filter(!grepl("ukb-a", id)) %>%
+             filter(!grepl("ebi", id)) %>%
+             filter(!grepl("ubm", id)) %>%
              filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
       id_list <- ids$id
       message("Using default list of ", nrow(ids), " traits")
