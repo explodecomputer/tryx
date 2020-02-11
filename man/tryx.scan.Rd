@@ -4,24 +4,35 @@
 \alias{tryx.scan}
 \title{Outlier scan}
 \usage{
-tryx.scan(dat, outliers = "RadialMR",
-  outlier_threshold = 0.05/sum(subset(dat, id.exposure == id.exposure[1]
-  & id.outcome == id.outcome[1])$mr_keep), use_proxies = FALSE,
-  search_threshold = 5e-08, id_list = "default",
-  include_outliers = FALSE, mr_method = "mr_ivw")
+tryx.scan(
+  dat,
+  outliers = "RadialMR",
+  outlier_correction = "none",
+  outlier_threshold = ifelse(outlier_correction == "none", 0.05/nrow(dat), 0.05),
+  use_proxies = FALSE,
+  search_correction = "none",
+  search_threshold = ifelse(search_correction == "none", 5e-08, 0.05),
+  id_list = "default",
+  include_outliers = FALSE,
+  mr_method = "mr_ivw"
+)
 }
 \arguments{
-\item{dat}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used}
+\item{dat}{Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.}
 
-\item{outliers}{Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers}
+\item{outliers}{Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.}
 
-\item{outlier_threshold}{The p-value to be used as threshold for detecting outliers, if outliers="RadialMR". Default is 0.05/nsnp.}
+\item{outlier_correction}{Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").}
 
-\item{use_proxies}{Whether to use proxies when looking up associations. FALSE by default for speed}
+\item{outlier_threshold}{If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.}
 
-\item{search_threshold}{The p-value threshold for detecting an association between an outlier and a candidate trait. Default is 5e-8}
+\item{use_proxies}{Whether to use proxies when looking up associations. FALSE by default for speed.}
 
-\item{id_list}{The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes()}
+\item{search_correction}{Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").}
+
+\item{search_threshold}{If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.}
+
+\item{id_list}{The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().}
 
 \item{include_outliers}{When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.}
 
