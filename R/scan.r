@@ -113,12 +113,12 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 	if(id_list[1] == "default")
 	{
 		ao <- suppressMessages(available_outcomes())
-		ids <- subset(ao, priority == 1 & nsnp > 500000 & sample_size > 5000) %>%
+		ids <- subset(ao) %>%
 			arrange(desc(sample_size)) %>%
 			filter(!duplicated(trait), mr == 1) %>%
-			filter(!author %in% c("Shin", "Kettunen", "Roederer")) %>%
-			filter(!grepl("UKB-b", id)) %>%
-			filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
+			filter(!grepl("ukb-a", id)) %>%
+		  filter(!grepl("ebi-a", id)) %>%
+ 			filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
 		id_list <- ids$id
 		message("Using default list of ", nrow(ids), " traits")
 	}
@@ -234,7 +234,7 @@ tryx.scan <- function(dat, outliers="RadialMR", outlier_correction="none", outli
 	}
 	message(nrow(output$candidate_exposure), " instruments extracted")
 	
-	temp <- subset(output$dat, select=c(SNP, beta.exposure, se.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, id.exposure, exposure, units.exposure))
+	temp <- subset(output$dat, select=c(SNP, beta.exposure, se.exposure, effect_allele.exposure, other_allele.exposure, eaf.exposure, id.exposure, exposure))
 
 	if(!include_outliers)
 	{
