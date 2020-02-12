@@ -32,7 +32,7 @@ If necessary install TwoSampleMR:
 devtools::install_github("mrcieu/TwoSampleMR@ieugwasr")
 ```
 
-Create a dataset for LDL and CHD
+Create a dataset for SBP and CHD
 
 ```{r}
 library(TwoSampleMR)
@@ -170,7 +170,7 @@ x$output$analysis$estimates
 A plot is generated showing how SNP effects have changed due to candidate trait adjustments in:
 
 
-```{r}
+```{r, fig.width = 6, fig.height = 5, out.width = "700px", out.height = "600px", dpi=300}
 x$output$analysis$plot
 ```
 
@@ -189,7 +189,7 @@ This shows that some candidate traits influence the exposure only, the outcome o
 
 You can also create a volcano plot of the candidate-exposure and/or candidate-outcome associations. e.g. to show exposures and outcomes
 
-```{r}
+```{r, fig.width = 9, fig.height = 6, out.width = "900px", out.height="500px", dpi=300}
 volcano_plot(
     rbind(x$output$candidate_exposure_mr, x$output$candidate_outcome_mr)
 )
@@ -197,7 +197,7 @@ volcano_plot(
 
 or e.g. just exposures
 
-```{r}
+```{r, fig.width = 9, fig.height = 6, out.width = "900px", out.height="500px", dpi=300}
 volcano_plot(x$output$candidate_exposure_mr)
 ```
 
@@ -206,14 +206,14 @@ volcano_plot(x$output$candidate_exposure_mr)
 
 Similar to the volcano plot, a Manhattan plot can also be produced. This can be done for the candidate-exposure associations
 
-```{r}
+```{r, fig.width = 7, fig.height = 6, out.width = "700px", out.height="600px", dpi=300}
 x$manhattan_plot("exposure")
 x$output$plots$manhattan_plot
 ```
 
 or the candidate-outcome associations
 
-```{r}
+```{r, fig.width = 7, fig.height = 6, out.width = "700px", out.height="600px", dpi=300}
 x$manhattan_plot("outcome")
 x$output$plots$manhattan_plot
 ```
