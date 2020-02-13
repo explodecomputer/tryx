@@ -9,3 +9,5 @@ test_that("initialise",
 	X <- Tryx$new(dat)
 	expect_true(nrow(X$output$dat) == sum(dat$mr_keep))
 })
+
+

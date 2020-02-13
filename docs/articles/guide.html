@@ -56,6 +56,9 @@
 <li>
       <a href="../articles/guide.html">Guide to using MR-TRYX</a>
     </li>
+    <li>
+      <a href="../articles/test_mrtryx.html">Test file for MR-TRYX</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -89,27 +92,23 @@
 <h2 class="hasAnchor">
 <a href="#data-setup" class="anchor"></a>Data setup</h2>
 <p>If necessary install TwoSampleMR:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"mrcieu/TwoSampleMR@ieugwasr"</span>)</span></code></pre></div>
-<p>Create a dataset for LDL and CHD</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(TwoSampleMR)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; TwoSampleMR 0.5.0 - Major update!</span></span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="co">#&gt; [&gt;] List of changes and information about backwards compatibility here:</span></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">#&gt;     https://mrcieu.github.io/TwoSampleMR/articles/gwas2020.html</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="co">#&gt; [&gt;] Browse available data at https://gwas.mrcieu.ac.uk</span></span>
-<span id="cb2-6"><a href="#cb2-6"></a>a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_instruments.html">extract_instruments</a></span>(<span class="st">"ieu-a-300"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7"></a><span class="co">#&gt; API: public: https://gwas-api.mrcieu.ac.uk/</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a><span class="co">#&gt; Warning in format_data(d, type = "exposure", snps = NULL, phenotype_col =</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a><span class="co">#&gt; "phenotype", : eaf column is not numeric. Coercing...</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_outcome_data.html">extract_outcome_data</a></span>(a<span class="op">$</span>SNP, <span class="st">"ieu-a-7"</span>, <span class="dt">access_token=</span><span class="ot">NULL</span>)</span>
-<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#&gt; Extracting data for 81 SNP(s) from 1 GWAS(s)</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#&gt; Finding proxies for 1 SNPs in outcome ieu-a-7</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a><span class="co">#&gt; Extracting data for 1 SNP(s) from 1 GWAS(s)</span></span>
-<span id="cb2-14"><a href="#cb2-14"></a>dat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/harmonise_data.html">harmonise_data</a></span>(a,b)</span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">#&gt; Harmonising LDL cholesterol || id:ieu-a-300 (ieu-a-300) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="co">#&gt; Removing the following SNPs for incompatible alleles:</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a><span class="co">#&gt; rs10947332</span></span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="co">#&gt; Removing the following SNPs for being palindromic with intermediate allele frequencies:</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a><span class="co">#&gt; rs2954029, rs3184504, rs964184</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"mrcieu/TwoSampleMR@ieugwasr"</span>)</a></code></pre></div>
+<p>Create a dataset for SBP and CHD</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(TwoSampleMR)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_instruments.html">extract_instruments</a></span>(<span class="st">"ukb-b-20175"</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; API: public: http://gwas-api.mrcieu.ac.uk/</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Systolic blood pressure, automated reading || id:ukb-b-20175. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co">#&gt; rs17811915</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">b &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_outcome_data.html">extract_outcome_data</a></span>(a<span class="op">$</span>SNP, <span class="st">"ieu-a-7"</span>, <span class="dt">access_token=</span><span class="ot">NULL</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; Extracting data for 244 SNP(s) from 1 GWAS(s)</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; Finding proxies for 4 SNPs in outcome ieu-a-7</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; Extracting data for 4 SNP(s) from 1 GWAS(s)</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">dat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/harmonise_data.html">harmonise_data</a></span>(a,b)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Harmonising Systolic blood pressure, automated reading || id:ukb-b-20175 (ukb-b-20175) and Coronary heart disease || id:ieu-a-7 (ieu-a-7)</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Removing the following SNPs for incompatible alleles:</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; rs17811915</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Removing the following SNPs for being palindromic with intermediate allele frequencies:</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; rs11592442, rs12779675, rs1290790, rs2246832, rs28470858, rs28667801</span></a></code></pre></div>
 </div>
 <div id="running-tryx" class="section level2">
 <h2 class="hasAnchor">
@@ -123,119 +122,214 @@
 <li>Extract instruments for those ‘candidate traits’</li>
 <li>Perform MR of each of those ‘candidate traits’ against the exposure and the outcome</li>
 </ol>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tryx)</span>
-<span id="cb3-2"><a href="#cb3-2"></a><span class="co">#&gt; Loading required package: dplyr</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a><span class="co">#&gt; </span></span>
-<span id="cb3-4"><a href="#cb3-4"></a><span class="co">#&gt; Attaching package: 'dplyr'</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
-<span id="cb3-6"><a href="#cb3-6"></a><span class="co">#&gt; </span></span>
-<span id="cb3-7"><a href="#cb3-7"></a><span class="co">#&gt;     filter, lag</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a><span class="co">#&gt; </span></span>
-<span id="cb3-10"><a href="#cb3-10"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a><span class="co">#&gt; Loading required package: RadialMR</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a><span class="co">#&gt; Loading required package: magrittr</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a><span class="co">#&gt; Loading required package: tidyr</span></span>
-<span id="cb3-14"><a href="#cb3-14"></a><span class="co">#&gt; </span></span>
-<span id="cb3-15"><a href="#cb3-15"></a><span class="co">#&gt; Attaching package: 'tidyr'</span></span>
-<span id="cb3-16"><a href="#cb3-16"></a><span class="co">#&gt; The following object is masked from 'package:magrittr':</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a><span class="co">#&gt; </span></span>
-<span id="cb3-18"><a href="#cb3-18"></a><span class="co">#&gt;     extract</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a><span class="co">#&gt; Loading required package: ggplot2</span></span>
-<span id="cb3-20"><a href="#cb3-20"></a><span class="co">#&gt; Loading required package: glmnet</span></span>
-<span id="cb3-21"><a href="#cb3-21"></a><span class="co">#&gt; Loading required package: Matrix</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a><span class="co">#&gt; </span></span>
-<span id="cb3-23"><a href="#cb3-23"></a><span class="co">#&gt; Attaching package: 'Matrix'</span></span>
-<span id="cb3-24"><a href="#cb3-24"></a><span class="co">#&gt; The following objects are masked from 'package:tidyr':</span></span>
-<span id="cb3-25"><a href="#cb3-25"></a><span class="co">#&gt; </span></span>
-<span id="cb3-26"><a href="#cb3-26"></a><span class="co">#&gt;     expand, pack, unpack</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a><span class="co">#&gt; Loaded glmnet 3.0-1</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a><span class="co">#&gt; Loading required package: ggrepel</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a>x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</span>
-<span id="cb3-30"><a href="#cb3-30"></a>x<span class="op">$</span><span class="kw">mrtryx</span>()</span>
-<span id="cb3-31"><a href="#cb3-31"></a><span class="co">#&gt; Using RadialMR package to detect outliers</span></span>
-<span id="cb3-32"><a href="#cb3-32"></a><span class="co">#&gt; </span></span>
-<span id="cb3-33"><a href="#cb3-33"></a><span class="co">#&gt; Radial IVW</span></span>
-<span id="cb3-34"><a href="#cb3-34"></a><span class="co">#&gt; </span></span>
-<span id="cb3-35"><a href="#cb3-35"></a><span class="co">#&gt;                   Estimate  Std.Error   t value     Pr(&gt;|t|)</span></span>
-<span id="cb3-36"><a href="#cb3-36"></a><span class="co">#&gt; Effect (Mod.2nd) 0.4131547 0.04848067  8.522050 1.567537e-17</span></span>
-<span id="cb3-37"><a href="#cb3-37"></a><span class="co">#&gt; Iterative        0.4131605 0.04848234  8.521877 1.569885e-17</span></span>
-<span id="cb3-38"><a href="#cb3-38"></a><span class="co">#&gt; Exact (FE)       0.4307847 0.02360690 18.248257 2.136159e-74</span></span>
-<span id="cb3-39"><a href="#cb3-39"></a><span class="co">#&gt; Exact (RE)       0.4182297 0.05858524  7.138823 4.803722e-10</span></span>
-<span id="cb3-40"><a href="#cb3-40"></a><span class="co">#&gt; </span></span>
-<span id="cb3-41"><a href="#cb3-41"></a><span class="co">#&gt; </span></span>
-<span id="cb3-42"><a href="#cb3-42"></a><span class="co">#&gt; Residual standard error: 2.056 on 76 degrees of freedom</span></span>
-<span id="cb3-43"><a href="#cb3-43"></a><span class="co">#&gt; </span></span>
-<span id="cb3-44"><a href="#cb3-44"></a><span class="co">#&gt; F-statistic: 72.63 on 1 and 76 DF, p-value: 1.1e-12</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a><span class="co">#&gt; Q-Statistic for heterogeneity: 321.246 on 76 DF , p-value: 6.778753e-32</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a><span class="co">#&gt; </span></span>
-<span id="cb3-47"><a href="#cb3-47"></a><span class="co">#&gt;  Outliers detected </span></span>
-<span id="cb3-48"><a href="#cb3-48"></a><span class="co">#&gt; Number of iterations = 3</span></span>
-<span id="cb3-49"><a href="#cb3-49"></a><span class="co">#&gt; Warning in if (radial$outliers[1] == "No significant outliers") {: the</span></span>
-<span id="cb3-50"><a href="#cb3-50"></a><span class="co">#&gt; condition has length &gt; 1 and only the first element will be used</span></span>
-<span id="cb3-51"><a href="#cb3-51"></a><span class="co">#&gt; Identified 7 outliers</span></span>
-<span id="cb3-52"><a href="#cb3-52"></a><span class="co">#&gt; Using default list of 390 traits</span></span>
-<span id="cb3-53"><a href="#cb3-53"></a><span class="co">#&gt; Extracting data for 7 SNP(s) from 390 GWAS(s)</span></span>
-<span id="cb3-54"><a href="#cb3-54"></a><span class="co">#&gt; Warning in format_d(d): The following SNP(s) are missing required information for the MR tests and will be excluded</span></span>
-<span id="cb3-55"><a href="#cb3-55"></a><span class="co">#&gt; rs75687619</span></span>
-<span id="cb3-56"><a href="#cb3-56"></a><span class="co">#&gt; rs16891156</span></span>
-<span id="cb3-57"><a href="#cb3-57"></a><span class="co">#&gt; rs1250229</span></span>
-<span id="cb3-58"><a href="#cb3-58"></a><span class="co">#&gt; rs7254892</span></span>
-<span id="cb3-59"><a href="#cb3-59"></a><span class="co">#&gt; rs4530754</span></span>
-<span id="cb3-60"><a href="#cb3-60"></a><span class="co">#&gt; rs2315065</span></span>
-<span id="cb3-61"><a href="#cb3-61"></a><span class="co">#&gt; Found 38 candidate traits associated with outliers at p &lt; 5e-08</span></span>
-<span id="cb3-62"><a href="#cb3-62"></a><span class="co">#&gt; Finding instruments for candidate traits</span></span>
-<span id="cb3-63"><a href="#cb3-63"></a><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Heel bone mineral density || id:ebi-a-GCST006979. Just keeping the first instance:</span></span>
-<span id="cb3-64"><a href="#cb3-64"></a><span class="co">#&gt; rs2456049</span></span>
-<span id="cb3-65"><a href="#cb3-65"></a><span class="co">#&gt; Warning in format_data(d, type = "exposure", snps = NULL, phenotype_col =</span></span>
-<span id="cb3-66"><a href="#cb3-66"></a><span class="co">#&gt; "phenotype", : eaf column is not numeric. Coercing...</span></span>
-<span id="cb3-67"><a href="#cb3-67"></a><span class="co">#&gt; Removing outlier SNPs from candidate trait instrument lists</span></span>
-<span id="cb3-68"><a href="#cb3-68"></a><span class="co">#&gt; 38 traits with at least one instrument</span></span>
-<span id="cb3-69"><a href="#cb3-69"></a><span class="co">#&gt; Looking up candidate trait instruments for Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb3-70"><a href="#cb3-70"></a><span class="co">#&gt; Extracting data for 1762 SNP(s) from 1 GWAS(s)</span></span>
-<span id="cb3-71"><a href="#cb3-71"></a><span class="co">#&gt; 1681 instruments extracted for Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb3-72"><a href="#cb3-72"></a><span class="co">#&gt; Looking up candidate trait instruments for LDL cholesterol || id:ieu-a-300</span></span>
-<span id="cb3-73"><a href="#cb3-73"></a><span class="co">#&gt; Extracting data for 1762 SNP(s) from 1 GWAS(s)</span></span>
-<span id="cb3-74"><a href="#cb3-74"></a><span class="co">#&gt;  instruments extracted for LDL cholesterol || id:ieu-a-300</span></span>
-<span id="cb3-75"><a href="#cb3-75"></a><span class="co">#&gt; Looking up exposure instruments for 38 candidate traits</span></span>
-<span id="cb3-76"><a href="#cb3-76"></a><span class="co">#&gt; Extracting data for 77 SNP(s) from 38 GWAS(s)</span></span>
-<span id="cb3-77"><a href="#cb3-77"></a><span class="co">#&gt; 2832 instruments extracted</span></span>
-<span id="cb3-78"><a href="#cb3-78"></a><span class="co">#&gt; Removing outlier SNPs from candidate trait outcome lists</span></span>
-<span id="cb3-79"><a href="#cb3-79"></a><span class="co">#&gt; Removed 70 outlier SNPs</span></span>
-<span id="cb3-80"><a href="#cb3-80"></a><span class="co">#&gt; Performing MR of 38 candidate traits against Coronary heart disease || id:ieu-a-7</span></span>
-<span id="cb3-81"><a href="#cb3-81"></a><span class="co">#&gt; Performing MR of 35 candidate traits against LDL cholesterol || id:ieu-a-300</span></span>
-<span id="cb3-82"><a href="#cb3-82"></a><span class="co">#&gt; Performing MR of LDL cholesterol || id:ieu-a-300 against 38 candidate traits</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tryx)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">x<span class="op">$</span><span class="kw">mrtryx</span>()</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="co">#&gt; Using RadialMR package to detect outliers</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6"><span class="co">#&gt; Radial IVW</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"><span class="co">#&gt;                   Estimate  Std.Error   t value     Pr(&gt;|t|)</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9"><span class="co">#&gt; Effect (Mod.2nd) 0.5991043 0.07718481  7.761945 8.363657e-15</span></a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; Iterative        0.5991043 0.07718481  7.761945 8.363657e-15</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; Exact (FE)       0.6420699 0.04024276 15.954916 2.633294e-57</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt; Exact (RE)       0.6101965 0.08872062  6.877730 5.590550e-11</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt; Residual standard error: 1.92 on 232 degrees of freedom</span></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt; F-statistic: 60.25 on 1 and 232 DF, p-value: 2.66e-13</span></a>
+<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt; Q-Statistic for heterogeneity: 855.6769 on 232 DF , p-value: 2.874833e-72</span></a>
+<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;  Outliers detected </span></a>
+<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt; Number of iterations = 2</span></a>
+<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt; Warning in if (radial$outliers[1] == "No significant outliers") {: the condition</span></a>
+<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; has length &gt; 1 and only the first element will be used</span></a>
+<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; Identified 11 outliers</span></a>
+<a class="sourceLine" id="cb3-25" data-line-number="25"><span class="co">#&gt; Using default list of 6467 traits</span></a>
+<a class="sourceLine" id="cb3-26" data-line-number="26"><span class="co">#&gt; Extracting data for 11 SNP(s) from 6467 GWAS(s)</span></a>
+<a class="sourceLine" id="cb3-27" data-line-number="27"><span class="co">#&gt; Found 139 candidate traits associated with outliers at p &lt; 5e-08</span></a>
+<a class="sourceLine" id="cb3-28" data-line-number="28"><span class="co">#&gt; Finding instruments for candidate traits</span></a>
+<a class="sourceLine" id="cb3-29" data-line-number="29"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '3mm strong meridian (left) || id:ukb-b-14664. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-30" data-line-number="30"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-31" data-line-number="31"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '3mm strong meridian (right) || id:ukb-b-6852. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-32" data-line-number="32"><span class="co">#&gt; rs2242398</span></a>
+<a class="sourceLine" id="cb3-33" data-line-number="33"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-34" data-line-number="34"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '3mm weak meridian (left) || id:ukb-b-11113. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-35" data-line-number="35"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-36" data-line-number="36"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '3mm weak meridian (right) || id:ukb-b-13506. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-37" data-line-number="37"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-38" data-line-number="38"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '6mm strong meridian (right) || id:ukb-b-11452. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-39" data-line-number="39"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-40" data-line-number="40"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '6mm weak meridian (left) || id:ukb-b-13538. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-41" data-line-number="41"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-42" data-line-number="42"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype '6mm weak meridian (right) || id:ukb-b-13416. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-43" data-line-number="43"><span class="co">#&gt; rs8047844</span></a>
+<a class="sourceLine" id="cb3-44" data-line-number="44"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Alcohol intake frequency. || id:ukb-b-5779. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-45" data-line-number="45"><span class="co">#&gt; rs9958320</span></a>
+<a class="sourceLine" id="cb3-46" data-line-number="46"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Ankle spacing width || id:ukb-b-4080. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-47" data-line-number="47"><span class="co">#&gt; rs3732360</span></a>
+<a class="sourceLine" id="cb3-48" data-line-number="48"><span class="co">#&gt; rs1294438</span></a>
+<a class="sourceLine" id="cb3-49" data-line-number="49"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Arm fat percentage (left) || id:ukb-b-20188. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-50" data-line-number="50"><span class="co">#&gt; rs2731238</span></a>
+<a class="sourceLine" id="cb3-51" data-line-number="51"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Arm fat-free mass (right) || id:ukb-b-19520. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-52" data-line-number="52"><span class="co">#&gt; rs3740591</span></a>
+<a class="sourceLine" id="cb3-53" data-line-number="53"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Basal metabolic rate || id:ukb-b-16446. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-54" data-line-number="54"><span class="co">#&gt; rs3129962</span></a>
+<a class="sourceLine" id="cb3-55" data-line-number="55"><span class="co">#&gt; rs3740591</span></a>
+<a class="sourceLine" id="cb3-56" data-line-number="56"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Birth weight || id:ukb-b-13378. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-57" data-line-number="57"><span class="co">#&gt; rs2140240</span></a>
+<a class="sourceLine" id="cb3-58" data-line-number="58"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Blood clot, DVT, bronchitis, emphysema, asthma, rhinitis, eczema, allergy diagnosed by doctor: Asthma || id:ukb-b-20296. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-59" data-line-number="59"><span class="co">#&gt; rs35320232</span></a>
+<a class="sourceLine" id="cb3-60" data-line-number="60"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Blood clot, DVT, bronchitis, emphysema, asthma, rhinitis, eczema, allergy diagnosed by doctor: Hayfever, allergic rhinitis or eczema || id:ukb-b-17241. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-61" data-line-number="61"><span class="co">#&gt; rs35320232</span></a>
+<a class="sourceLine" id="cb3-62" data-line-number="62"><span class="co">#&gt; rs2075973</span></a>
+<a class="sourceLine" id="cb3-63" data-line-number="63"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Blood clot, DVT, bronchitis, emphysema, asthma, rhinitis, eczema, allergy diagnosed by doctor: None of the above || id:ukb-b-18200. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-64" data-line-number="64"><span class="co">#&gt; rs35320232</span></a>
+<a class="sourceLine" id="cb3-65" data-line-number="65"><span class="co">#&gt; rs2097431</span></a>
+<a class="sourceLine" id="cb3-66" data-line-number="66"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Body fat percentage || id:ukb-b-8909. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-67" data-line-number="67"><span class="co">#&gt; rs2731238</span></a>
+<a class="sourceLine" id="cb3-68" data-line-number="68"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Diastolic blood pressure, automated reading || id:ukb-b-7992. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-69" data-line-number="69"><span class="co">#&gt; rs28752924</span></a>
+<a class="sourceLine" id="cb3-70" data-line-number="70"><span class="co">#&gt; rs17304212</span></a>
+<a class="sourceLine" id="cb3-71" data-line-number="71"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Duration to first press of snap-button in each round || id:ukb-b-19373. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-72" data-line-number="72"><span class="co">#&gt; rs9304167</span></a>
+<a class="sourceLine" id="cb3-73" data-line-number="73"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Hip circumference || id:ukb-b-15590. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-74" data-line-number="74"><span class="co">#&gt; rs1294438</span></a>
+<a class="sourceLine" id="cb3-75" data-line-number="75"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Impedance of arm (right) || id:ukb-b-7859. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-76" data-line-number="76"><span class="co">#&gt; rs111650620</span></a>
+<a class="sourceLine" id="cb3-77" data-line-number="77"><span class="co">#&gt; rs1382568</span></a>
+<a class="sourceLine" id="cb3-78" data-line-number="78"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Impedance of leg (left) || id:ukb-b-14068. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-79" data-line-number="79"><span class="co">#&gt; rs776912</span></a>
+<a class="sourceLine" id="cb3-80" data-line-number="80"><span class="co">#&gt; rs2952894</span></a>
+<a class="sourceLine" id="cb3-81" data-line-number="81"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Impedance of leg (right) || id:ukb-b-7376. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-82" data-line-number="82"><span class="co">#&gt; rs776912</span></a>
+<a class="sourceLine" id="cb3-83" data-line-number="83"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Leg fat percentage (left) || id:ukb-b-18377. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-84" data-line-number="84"><span class="co">#&gt; rs1428</span></a>
+<a class="sourceLine" id="cb3-85" data-line-number="85"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Leg fat percentage (right) || id:ukb-b-20531. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-86" data-line-number="86"><span class="co">#&gt; rs7027096</span></a>
+<a class="sourceLine" id="cb3-87" data-line-number="87"><span class="co">#&gt; rs2731238</span></a>
+<a class="sourceLine" id="cb3-88" data-line-number="88"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Leg fat-free mass (left) || id:ukb-b-16099. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-89" data-line-number="89"><span class="co">#&gt; rs3129962</span></a>
+<a class="sourceLine" id="cb3-90" data-line-number="90"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-91" data-line-number="91"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Leg fat-free mass (right) || id:ukb-b-12828. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-92" data-line-number="92"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-93" data-line-number="93"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Leg predicted mass (left) || id:ukb-b-17271. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-94" data-line-number="94"><span class="co">#&gt; rs3129962</span></a>
+<a class="sourceLine" id="cb3-95" data-line-number="95"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-96" data-line-number="96"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Leg predicted mass (right) || id:ukb-b-14310. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-97" data-line-number="97"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-98" data-line-number="98"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-99" data-line-number="99"><span class="co">#&gt; rs2209042</span></a>
+<a class="sourceLine" id="cb3-100" data-line-number="100"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: None of the above || id:ukb-b-20379. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-101" data-line-number="101"><span class="co">#&gt; rs13204736</span></a>
+<a class="sourceLine" id="cb3-102" data-line-number="102"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Medication for pain relief, constipation, heartburn: Paracetamol || id:ukb-b-17595. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-103" data-line-number="103"><span class="co">#&gt; rs34555420</span></a>
+<a class="sourceLine" id="cb3-104" data-line-number="104"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Non-cancer illness code, self-reported: asthma || id:ukb-b-18113. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-105" data-line-number="105"><span class="co">#&gt; rs17142799</span></a>
+<a class="sourceLine" id="cb3-106" data-line-number="106"><span class="co">#&gt; rs35320232</span></a>
+<a class="sourceLine" id="cb3-107" data-line-number="107"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-108" data-line-number="108"><span class="co">#&gt; rs4783581</span></a>
+<a class="sourceLine" id="cb3-109" data-line-number="109"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Number of self-reported non-cancer illnesses || id:ukb-b-4063. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-110" data-line-number="110"><span class="co">#&gt; rs13204736</span></a>
+<a class="sourceLine" id="cb3-111" data-line-number="111"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Pain type(s) experienced in last month: Headache || id:ukb-b-12181. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-112" data-line-number="112"><span class="co">#&gt; rs34555420</span></a>
+<a class="sourceLine" id="cb3-113" data-line-number="113"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Peak expiratory flow (PEF) || id:ukb-b-12019. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-114" data-line-number="114"><span class="co">#&gt; rs2666547</span></a>
+<a class="sourceLine" id="cb3-115" data-line-number="115"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Sitting height || id:ukb-b-16881. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-116" data-line-number="116"><span class="co">#&gt; rs4651157</span></a>
+<a class="sourceLine" id="cb3-117" data-line-number="117"><span class="co">#&gt; rs872937</span></a>
+<a class="sourceLine" id="cb3-118" data-line-number="118"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Standing height || id:ukb-b-10787. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-119" data-line-number="119"><span class="co">#&gt; rs11252860</span></a>
+<a class="sourceLine" id="cb3-120" data-line-number="120"><span class="co">#&gt; rs34773647</span></a>
+<a class="sourceLine" id="cb3-121" data-line-number="121"><span class="co">#&gt; rs664317</span></a>
+<a class="sourceLine" id="cb3-122" data-line-number="122"><span class="co">#&gt; rs7978217</span></a>
+<a class="sourceLine" id="cb3-123" data-line-number="123"><span class="co">#&gt; rs11051456</span></a>
+<a class="sourceLine" id="cb3-124" data-line-number="124"><span class="co">#&gt; rs1019075</span></a>
+<a class="sourceLine" id="cb3-125" data-line-number="125"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Treatment/medication code: amlodipine || id:ukb-b-9207. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-126" data-line-number="126"><span class="co">#&gt; rs2077111</span></a>
+<a class="sourceLine" id="cb3-127" data-line-number="127"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Trunk fat mass || id:ukb-b-20044. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-128" data-line-number="128"><span class="co">#&gt; rs2731238</span></a>
+<a class="sourceLine" id="cb3-129" data-line-number="129"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Trunk fat percentage || id:ukb-b-16407. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-130" data-line-number="130"><span class="co">#&gt; rs2731238</span></a>
+<a class="sourceLine" id="cb3-131" data-line-number="131"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Trunk fat-free mass || id:ukb-b-17409. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-132" data-line-number="132"><span class="co">#&gt; rs3735352</span></a>
+<a class="sourceLine" id="cb3-133" data-line-number="133"><span class="co">#&gt; rs3740591</span></a>
+<a class="sourceLine" id="cb3-134" data-line-number="134"><span class="co">#&gt; rs1040457</span></a>
+<a class="sourceLine" id="cb3-135" data-line-number="135"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Trunk predicted mass || id:ukb-b-9685. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-136" data-line-number="136"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-137" data-line-number="137"><span class="co">#&gt; rs3735352</span></a>
+<a class="sourceLine" id="cb3-138" data-line-number="138"><span class="co">#&gt; rs7978217</span></a>
+<a class="sourceLine" id="cb3-139" data-line-number="139"><span class="co">#&gt; rs1040457</span></a>
+<a class="sourceLine" id="cb3-140" data-line-number="140"><span class="co">#&gt; rs3740591</span></a>
+<a class="sourceLine" id="cb3-141" data-line-number="141"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-142" data-line-number="142"><span class="co">#&gt; rs4783581</span></a>
+<a class="sourceLine" id="cb3-143" data-line-number="143"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-144" data-line-number="144"><span class="co">#&gt; rs4783581</span></a>
+<a class="sourceLine" id="cb3-145" data-line-number="145"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Whole body fat-free mass || id:ukb-b-13354. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-146" data-line-number="146"><span class="co">#&gt; rs434072</span></a>
+<a class="sourceLine" id="cb3-147" data-line-number="147"><span class="co">#&gt; rs3740591</span></a>
+<a class="sourceLine" id="cb3-148" data-line-number="148"><span class="co">#&gt; rs1040457</span></a>
+<a class="sourceLine" id="cb3-149" data-line-number="149"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-150" data-line-number="150"><span class="co">#&gt; Warning in .fun(piece, ...): Duplicated SNPs present in exposure data for phenotype 'Whole body water mass || id:ukb-b-14540. Just keeping the first instance:</span></a>
+<a class="sourceLine" id="cb3-151" data-line-number="151"><span class="co">#&gt; rs1040457</span></a>
+<a class="sourceLine" id="cb3-152" data-line-number="152"><span class="co">#&gt; rs3740591</span></a>
+<a class="sourceLine" id="cb3-153" data-line-number="153"><span class="co">#&gt; rs77760034</span></a>
+<a class="sourceLine" id="cb3-154" data-line-number="154"><span class="co">#&gt; Warning in format_data(d, type = "exposure", snps = NULL, phenotype_col =</span></a>
+<a class="sourceLine" id="cb3-155" data-line-number="155"><span class="co">#&gt; "phenotype", : eaf column is not numeric. Coercing...</span></a>
+<a class="sourceLine" id="cb3-156" data-line-number="156"><span class="co">#&gt; Removing outlier SNPs from candidate trait instrument lists</span></a>
+<a class="sourceLine" id="cb3-157" data-line-number="157"><span class="co">#&gt; 139 traits with at least one instrument</span></a>
+<a class="sourceLine" id="cb3-158" data-line-number="158"><span class="co">#&gt; Looking up candidate trait instruments for Coronary heart disease || id:ieu-a-7</span></a>
+<a class="sourceLine" id="cb3-159" data-line-number="159"><span class="co">#&gt; Extracting data for 10546 SNP(s) from 1 GWAS(s)</span></a>
+<a class="sourceLine" id="cb3-160" data-line-number="160"><span class="co">#&gt; 1 of 1 outcomes</span></a>
+<a class="sourceLine" id="cb3-161" data-line-number="161"><span class="co">#&gt;  [&gt;] 1 of 2 chunks</span></a>
+<a class="sourceLine" id="cb3-162" data-line-number="162"><span class="co">#&gt;  [&gt;] 2 of 2 chunks</span></a>
+<a class="sourceLine" id="cb3-163" data-line-number="163"><span class="co">#&gt; 10339 instruments extracted for Coronary heart disease || id:ieu-a-7</span></a>
+<a class="sourceLine" id="cb3-164" data-line-number="164"><span class="co">#&gt; Looking up candidate trait instruments for Systolic blood pressure, automated reading || id:ukb-b-20175</span></a>
+<a class="sourceLine" id="cb3-165" data-line-number="165"><span class="co">#&gt; Extracting data for 10546 SNP(s) from 1 GWAS(s)</span></a>
+<a class="sourceLine" id="cb3-166" data-line-number="166"><span class="co">#&gt; 1 of 1 outcomes</span></a>
+<a class="sourceLine" id="cb3-167" data-line-number="167"><span class="co">#&gt;  [&gt;] 1 of 2 chunks</span></a>
+<a class="sourceLine" id="cb3-168" data-line-number="168"><span class="co">#&gt;  [&gt;] 2 of 2 chunks</span></a>
+<a class="sourceLine" id="cb3-169" data-line-number="169"><span class="co">#&gt;  instruments extracted for Systolic blood pressure, automated reading || id:ukb-b-20175</span></a>
+<a class="sourceLine" id="cb3-170" data-line-number="170"><span class="co">#&gt; Looking up exposure instruments for 139 candidate traits</span></a>
+<a class="sourceLine" id="cb3-171" data-line-number="171"><span class="co">#&gt; Extracting data for 233 SNP(s) from 139 GWAS(s)</span></a>
+<a class="sourceLine" id="cb3-172" data-line-number="172"><span class="co">#&gt; 30833 instruments extracted</span></a>
+<a class="sourceLine" id="cb3-173" data-line-number="173"><span class="co">#&gt; Removing outlier SNPs from candidate trait outcome lists</span></a>
+<a class="sourceLine" id="cb3-174" data-line-number="174"><span class="co">#&gt; Removed 212 outlier SNPs</span></a>
+<a class="sourceLine" id="cb3-175" data-line-number="175"><span class="co">#&gt; Performing MR of 139 candidate traits against Coronary heart disease || id:ieu-a-7</span></a>
+<a class="sourceLine" id="cb3-176" data-line-number="176"><span class="co">#&gt; Performing MR of 139 candidate traits against Systolic blood pressure, automated reading || id:ukb-b-20175</span></a>
+<a class="sourceLine" id="cb3-177" data-line-number="177"><span class="co">#&gt; Performing MR of Systolic blood pressure, automated reading || id:ukb-b-20175 against 139 candidate traits</span></a></code></pre></div>
 <div id="step-by-step-analysis" class="section level3">
 <h3 class="hasAnchor">
 <a href="#step-by-step-analysis" class="anchor"></a>Step-by-step analysis</h3>
 <p>The analysis performed by <code>mrtryx()</code> can be broken down into multiple steps, running the following commands:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Find outlier SNPs in the exposure-outcome analysis</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>x<span class="op">$</span><span class="kw">get_outliers</span>()</span>
-<span id="cb4-3"><a href="#cb4-3"></a></span>
-<span id="cb4-4"><a href="#cb4-4"></a><span class="co"># Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>x<span class="op">$</span><span class="kw">set_candidate_traits</span>()</span>
-<span id="cb4-6"><a href="#cb4-6"></a>x<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/base/scan.html">scan</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Find outlier SNPs in the exposure-outcome analysis</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2">x<span class="op">$</span><span class="kw">get_outliers</span>()</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co"># Find traits in the MR-Base database that those outliers associate with. These traits are known as 'candidate traits'</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">x<span class="op">$</span><span class="kw">set_candidate_traits</span>()</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">x<span class="op">$</span><span class="kw"><a href="https://rdrr.io/r/base/scan.html">scan</a></span>()</a></code></pre></div>
 <p>Note that you can browse available traits here: <a href="https://gwas.mrcieu.ac.uk/" class="uri">https://gwas.mrcieu.ac.uk/</a> and get a complete list using:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>traits &lt;-<span class="st"> </span>TwoSampleMR<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/available_outcomes.html">available_outcomes</a></span>()</span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Extract instruments for those 'candidate traits'</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>x<span class="op">$</span><span class="kw">extractions</span>() <span class="co">#which includes the following functions:</span></span>
-<span id="cb6-3"><a href="#cb6-3"></a>  x<span class="op">$</span><span class="kw">candidate_instruments</span>()</span>
-<span id="cb6-4"><a href="#cb6-4"></a>  x<span class="op">$</span><span class="kw">outcome_instruments</span>()</span>
-<span id="cb6-5"><a href="#cb6-5"></a>  x<span class="op">$</span><span class="kw">exposure_instruments</span>()</span>
-<span id="cb6-6"><a href="#cb6-6"></a>  x<span class="op">$</span><span class="kw">exposure_candidate_instruments</span>()</span>
-<span id="cb6-7"><a href="#cb6-7"></a></span>
-<span id="cb6-8"><a href="#cb6-8"></a><span class="co"># Make datasets for MR analysis</span></span>
-<span id="cb6-9"><a href="#cb6-9"></a>x<span class="op">$</span><span class="kw">harmonise</span>() <span class="co">#which includes the following functions:</span></span>
-<span id="cb6-10"><a href="#cb6-10"></a>  x<span class="op">$</span><span class="kw">candidate_outcome_dat</span>()</span>
-<span id="cb6-11"><a href="#cb6-11"></a>  x<span class="op">$</span><span class="kw">candidate_exposure_dat</span>()</span>
-<span id="cb6-12"><a href="#cb6-12"></a>  x<span class="op">$</span><span class="kw">exposure_candidate_dat</span>()</span>
-<span id="cb6-13"><a href="#cb6-13"></a></span>
-<span id="cb6-14"><a href="#cb6-14"></a><span class="co"># Perform MR of each of those 'candidate traits' against the exposure and the outcomes</span></span>
-<span id="cb6-15"><a href="#cb6-15"></a>x<span class="op">$</span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span>()</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">traits &lt;-<span class="st"> </span>TwoSampleMR<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/available_outcomes.html">available_outcomes</a></span>()</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Extract instruments for those 'candidate traits'</span></a>
+<a class="sourceLine" id="cb6-2" data-line-number="2">x<span class="op">$</span><span class="kw">extractions</span>() <span class="co">#which includes the following functions:</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">  x<span class="op">$</span><span class="kw">candidate_instruments</span>()</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">  x<span class="op">$</span><span class="kw">outcome_instruments</span>()</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">  x<span class="op">$</span><span class="kw">exposure_instruments</span>()</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">  x<span class="op">$</span><span class="kw">exposure_candidate_instruments</span>()</a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co"># Make datasets for MR analysis</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">x<span class="op">$</span><span class="kw">harmonise</span>() <span class="co">#which includes the following functions:</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">  x<span class="op">$</span><span class="kw">candidate_outcome_dat</span>()</a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">  x<span class="op">$</span><span class="kw">candidate_exposure_dat</span>()</a>
+<a class="sourceLine" id="cb6-12" data-line-number="12">  x<span class="op">$</span><span class="kw">exposure_candidate_dat</span>()</a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co"># Perform MR of each of those 'candidate traits' against the exposure and the outcomes</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15">x<span class="op">$</span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html">mr</a></span>()</a></code></pre></div>
 <p>See the <code><a href="../reference/Tryx.html">?Tryx</a></code> for options on the parameters for this analysis. e.g. You can specify your own set of outliers, for example SNPs that have extreme p-values in the outcome GWAS</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(dat, pval.outcome <span class="op">&lt;</span><span class="st"> </span><span class="fl">5e-8</span>)<span class="op">$</span>SNP)</span>
-<span id="cb7-2"><a href="#cb7-2"></a>x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</span>
-<span id="cb7-3"><a href="#cb7-3"></a>x<span class="op">$</span><span class="kw">mrtryx</span>(<span class="dt">outliers=</span>a)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/character.html">as.character</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/subset.html">subset</a></span>(dat, pval.outcome <span class="op">&lt;</span><span class="st"> </span><span class="fl">5e-8</span>)<span class="op">$</span>SNP)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">x &lt;-<span class="st"> </span>Tryx<span class="op">$</span><span class="kw">new</span>(dat)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">x<span class="op">$</span><span class="kw">mrtryx</span>(<span class="dt">outliers=</span>a)</a></code></pre></div>
 <p>The next steps are to determine which of the candidate traits are of interest (e.g. using p-value thresholds), visualise the results, and adjust the exposure-outcome estimates based on knowledge of the ‘candidate trait’ associations.</p>
 </div>
 </div>
@@ -243,140 +337,392 @@
 <h2 class="hasAnchor">
 <a href="#significant-candidate-traits" class="anchor"></a>Significant candidate traits</h2>
 <p>One can determine which of the putative associations might be ‘interesting’ in different ways. We have provided a simple convenience function to apply different multiple testing corrections. e.g.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>x<span class="op">$</span><span class="kw">tryx.sig</span>()</span>
-<span id="cb8-2"><a href="#cb8-2"></a><span class="co">#&gt; Adjusting p-value</span></span>
-<span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt; * * * *</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; Number of candidate - outcome associations: 23</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; * * * *</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; High light scatter reticulocyte count || id:ebi-a-GCST004611</span></span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; Coronary artery disease || id:ebi-a-GCST005195</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; Paternal history of Alzheimer's disease || id:ebi-a-GCST005920</span></span>
-<span id="cb8-10"><a href="#cb8-10"></a><span class="co">#&gt; Family history of Alzheimer's disease || id:ebi-a-GCST005921</span></span>
-<span id="cb8-11"><a href="#cb8-11"></a><span class="co">#&gt; Parental longevity (combined parental attained age, Martingale residuals) || id:ebi-a-GCST006697</span></span>
-<span id="cb8-12"><a href="#cb8-12"></a><span class="co">#&gt; Heel bone mineral density || id:ebi-a-GCST006979</span></span>
-<span id="cb8-13"><a href="#cb8-13"></a><span class="co">#&gt; HDL cholesterol || id:ieu-a-299</span></span>
-<span id="cb8-14"><a href="#cb8-14"></a><span class="co">#&gt; Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb8-15"><a href="#cb8-15"></a><span class="co">#&gt; Triglycerides || id:ieu-a-302</span></span>
-<span id="cb8-16"><a href="#cb8-16"></a><span class="co">#&gt; Myocardial infarction || id:ieu-a-798</span></span>
-<span id="cb8-17"><a href="#cb8-17"></a><span class="co">#&gt; Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb8-18"><a href="#cb8-18"></a><span class="co">#&gt; Diastolic blood pressure  automated reading || id:ukb-a-359</span></span>
-<span id="cb8-19"><a href="#cb8-19"></a><span class="co">#&gt; Blood clot  DVT  bronchitis  emphysema  asthma  rhinitis  eczema  allergy diagnosed by doctor: Blood clot in the lung || id:ukb-a-445</span></span>
-<span id="cb8-20"><a href="#cb8-20"></a><span class="co">#&gt; Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb8-21"><a href="#cb8-21"></a><span class="co">#&gt; Medication for pain relief  constipation  heartburn: Aspirin || id:ukb-a-452</span></span>
-<span id="cb8-22"><a href="#cb8-22"></a><span class="co">#&gt; Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb8-23"><a href="#cb8-23"></a><span class="co">#&gt; Medication for cholesterol  blood pressure or diabetes: None of the above || id:ukb-a-489</span></span>
-<span id="cb8-24"><a href="#cb8-24"></a><span class="co">#&gt; Diagnoses - main ICD10: I20 Angina pectoris || id:ukb-a-532</span></span>
-<span id="cb8-25"><a href="#cb8-25"></a><span class="co">#&gt; Diagnoses - main ICD10: I25 Chronic ischaemic heart disease || id:ukb-a-534</span></span>
-<span id="cb8-26"><a href="#cb8-26"></a><span class="co">#&gt; Diagnoses - main ICD10: I80 Phlebitis and thrombophlebitis || id:ukb-a-537</span></span>
-<span id="cb8-27"><a href="#cb8-27"></a><span class="co">#&gt; Non-cancer illness code  self-reported: angina || id:ukb-a-62</span></span>
-<span id="cb8-28"><a href="#cb8-28"></a><span class="co">#&gt; Non-cancer illness code  self-reported: heart attack/myocardial infarction || id:ukb-a-63</span></span>
-<span id="cb8-29"><a href="#cb8-29"></a><span class="co">#&gt; </span></span>
-<span id="cb8-30"><a href="#cb8-30"></a><span class="co">#&gt; * * * *</span></span>
-<span id="cb8-31"><a href="#cb8-31"></a><span class="co">#&gt; Number of candidate - exposure associations: 12</span></span>
-<span id="cb8-32"><a href="#cb8-32"></a><span class="co">#&gt; * * * *</span></span>
-<span id="cb8-33"><a href="#cb8-33"></a><span class="co">#&gt; Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb8-34"><a href="#cb8-34"></a><span class="co">#&gt; Parental longevity (mother's attained age) || id:ebi-a-GCST006696</span></span>
-<span id="cb8-35"><a href="#cb8-35"></a><span class="co">#&gt; Parental longevity (father's attained age) || id:ebi-a-GCST006701</span></span>
-<span id="cb8-36"><a href="#cb8-36"></a><span class="co">#&gt; Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb8-37"><a href="#cb8-37"></a><span class="co">#&gt; Triglycerides || id:ieu-a-302</span></span>
-<span id="cb8-38"><a href="#cb8-38"></a><span class="co">#&gt; Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb8-39"><a href="#cb8-39"></a><span class="co">#&gt; Blood clot  DVT  bronchitis  emphysema  asthma  rhinitis  eczema  allergy diagnosed by doctor: Blood clot in the leg (DVT) || id:ukb-a-443</span></span>
-<span id="cb8-40"><a href="#cb8-40"></a><span class="co">#&gt; Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb8-41"><a href="#cb8-41"></a><span class="co">#&gt; Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb8-42"><a href="#cb8-42"></a><span class="co">#&gt; Medication for cholesterol  blood pressure or diabetes: None of the above || id:ukb-a-489</span></span>
-<span id="cb8-43"><a href="#cb8-43"></a><span class="co">#&gt; Diagnoses - main ICD10: I20 Angina pectoris || id:ukb-a-532</span></span>
-<span id="cb8-44"><a href="#cb8-44"></a><span class="co">#&gt; Non-cancer illness code  self-reported: deep venous thrombosis (dvt) || id:ukb-a-65</span></span>
-<span id="cb8-45"><a href="#cb8-45"></a><span class="co">#&gt; </span></span>
-<span id="cb8-46"><a href="#cb8-46"></a><span class="co">#&gt; * * * *</span></span>
-<span id="cb8-47"><a href="#cb8-47"></a><span class="co">#&gt; Number of exposure - candidate associations: 23</span></span>
-<span id="cb8-48"><a href="#cb8-48"></a><span class="co">#&gt; * * * *</span></span>
-<span id="cb8-49"><a href="#cb8-49"></a><span class="co">#&gt; Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb8-50"><a href="#cb8-50"></a><span class="co">#&gt; Parental longevity (mother's attained age) || id:ebi-a-GCST006696</span></span>
-<span id="cb8-51"><a href="#cb8-51"></a><span class="co">#&gt; Parental longevity (father's attained age) || id:ebi-a-GCST006701</span></span>
-<span id="cb8-52"><a href="#cb8-52"></a><span class="co">#&gt; Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb8-53"><a href="#cb8-53"></a><span class="co">#&gt; Triglycerides || id:ieu-a-302</span></span>
-<span id="cb8-54"><a href="#cb8-54"></a><span class="co">#&gt; Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb8-55"><a href="#cb8-55"></a><span class="co">#&gt; Blood clot  DVT  bronchitis  emphysema  asthma  rhinitis  eczema  allergy diagnosed by doctor: Blood clot in the leg (DVT) || id:ukb-a-443</span></span>
-<span id="cb8-56"><a href="#cb8-56"></a><span class="co">#&gt; Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb8-57"><a href="#cb8-57"></a><span class="co">#&gt; Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb8-58"><a href="#cb8-58"></a><span class="co">#&gt; Medication for cholesterol  blood pressure or diabetes: None of the above || id:ukb-a-489</span></span>
-<span id="cb8-59"><a href="#cb8-59"></a><span class="co">#&gt; Diagnoses - main ICD10: I20 Angina pectoris || id:ukb-a-532</span></span>
-<span id="cb8-60"><a href="#cb8-60"></a><span class="co">#&gt; Non-cancer illness code  self-reported: deep venous thrombosis (dvt) || id:ukb-a-65</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">x<span class="op">$</span><span class="kw"><a href="../reference/tryx.sig.html">tryx.sig</a></span>()</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; Adjusting p-value</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; * * * *</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; Number of candidate - outcome associations: 78</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; * * * *</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; Large vessel disease || id:ieu-a-1110</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; HDL cholesterol || id:ieu-a-299</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; LDL cholesterol || id:ieu-a-300</span></a>
+<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt; Total cholesterol || id:ieu-a-301</span></a>
+<a class="sourceLine" id="cb8-10" data-line-number="10"><span class="co">#&gt; Myocardial infarction || id:ieu-a-798</span></a>
+<a class="sourceLine" id="cb8-11" data-line-number="11"><span class="co">#&gt; Interleukin-2 receptor subunit beta || id:prot-a-1519</span></a>
+<a class="sourceLine" id="cb8-12" data-line-number="12"><span class="co">#&gt; Glutaminyl-peptide cyclotransferase-like protein || id:prot-a-2466</span></a>
+<a class="sourceLine" id="cb8-13" data-line-number="13"><span class="co">#&gt; Illnesses of mother: None of the above (group 1) || id:ukb-b-10454</span></a>
+<a class="sourceLine" id="cb8-14" data-line-number="14"><span class="co">#&gt; Age high blood pressure diagnosed || id:ukb-b-1061</span></a>
+<a class="sourceLine" id="cb8-15" data-line-number="15"><span class="co">#&gt; Standing height || id:ukb-b-10787</span></a>
+<a class="sourceLine" id="cb8-16" data-line-number="16"><span class="co">#&gt; Diagnoses - secondary ICD10: Z95.1 Presence of aortocoronary bypass graft || id:ukb-b-11064</span></a>
+<a class="sourceLine" id="cb8-17" data-line-number="17"><span class="co">#&gt; Father's age at death || id:ukb-b-11303</span></a>
+<a class="sourceLine" id="cb8-18" data-line-number="18"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: Heart attack || id:ukb-b-11590</span></a>
+<a class="sourceLine" id="cb8-19" data-line-number="19"><span class="co">#&gt; Treatment/medication code: atenolol || id:ukb-b-11632</span></a>
+<a class="sourceLine" id="cb8-20" data-line-number="20"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: Cholesterol lowering medication || id:ukb-b-11740</span></a>
+<a class="sourceLine" id="cb8-21" data-line-number="21"><span class="co">#&gt; Weight || id:ukb-b-11842</span></a>
+<a class="sourceLine" id="cb8-22" data-line-number="22"><span class="co">#&gt; Treatment/medication code: ramipril || id:ukb-b-11895</span></a>
+<a class="sourceLine" id="cb8-23" data-line-number="23"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014</span></a>
+<a class="sourceLine" id="cb8-24" data-line-number="24"><span class="co">#&gt; Pain type(s) experienced in last month: Headache || id:ukb-b-12181</span></a>
+<a class="sourceLine" id="cb8-25" data-line-number="25"><span class="co">#&gt; Operation code: coronary artery bypass grafts (cabg) || id:ukb-b-12465</span></a>
+<a class="sourceLine" id="cb8-26" data-line-number="26"><span class="co">#&gt; Illnesses of mother: Heart disease || id:ukb-b-12477</span></a>
+<a class="sourceLine" id="cb8-27" data-line-number="27"><span class="co">#&gt; Diagnoses - secondary ICD10: I10 Essential (primary) hypertension || id:ukb-b-12493</span></a>
+<a class="sourceLine" id="cb8-28" data-line-number="28"><span class="co">#&gt; Treatment speciality of consultant (recoded): General medicine || id:ukb-b-12646</span></a>
+<a class="sourceLine" id="cb8-29" data-line-number="29"><span class="co">#&gt; Arm fat percentage (right) || id:ukb-b-12854</span></a>
+<a class="sourceLine" id="cb8-30" data-line-number="30"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb8-31" data-line-number="31"><span class="co">#&gt; Birth weight || id:ukb-b-13378</span></a>
+<a class="sourceLine" id="cb8-32" data-line-number="32"><span class="co">#&gt; 3mm weak meridian (right) || id:ukb-b-13506</span></a>
+<a class="sourceLine" id="cb8-33" data-line-number="33"><span class="co">#&gt; Long-standing illness, disability or infirmity || id:ukb-b-13764</span></a>
+<a class="sourceLine" id="cb8-34" data-line-number="34"><span class="co">#&gt; Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb8-35" data-line-number="35"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb8-36" data-line-number="36"><span class="co">#&gt; Illnesses of siblings: Heart disease || id:ukb-b-14371</span></a>
+<a class="sourceLine" id="cb8-37" data-line-number="37"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb8-38" data-line-number="38"><span class="co">#&gt; Illnesses of father: None of the above (group 1) || id:ukb-b-15169</span></a>
+<a class="sourceLine" id="cb8-39" data-line-number="39"><span class="co">#&gt; Operative procedures - main OPCS: K45.3 Anastomosis of mammary artery to left anterior descending coronary artery || id:ukb-b-15491</span></a>
+<a class="sourceLine" id="cb8-40" data-line-number="40"><span class="co">#&gt; Hip circumference || id:ukb-b-15590</span></a>
+<a class="sourceLine" id="cb8-41" data-line-number="41"><span class="co">#&gt; Diagnoses - secondary ICD10: I20.9 Angina pectoris, unspecified || id:ukb-b-15686</span></a>
+<a class="sourceLine" id="cb8-42" data-line-number="42"><span class="co">#&gt; Diagnoses - secondary ICD10: Z95.5 Presence of coronary angioplasty implant and graft || id:ukb-b-15748</span></a>
+<a class="sourceLine" id="cb8-43" data-line-number="43"><span class="co">#&gt; Non-cancer illness code, self-reported: heart attack/myocardial infarction || id:ukb-b-15829</span></a>
+<a class="sourceLine" id="cb8-44" data-line-number="44"><span class="co">#&gt; Main speciality of consultant (recoded): Cardiology || id:ukb-b-16376</span></a>
+<a class="sourceLine" id="cb8-45" data-line-number="45"><span class="co">#&gt; Trunk fat percentage || id:ukb-b-16407</span></a>
+<a class="sourceLine" id="cb8-46" data-line-number="46"><span class="co">#&gt; Diagnoses - secondary ICD10: I25.8 Other forms of chronic ischaemic heart disease || id:ukb-b-16606</span></a>
+<a class="sourceLine" id="cb8-47" data-line-number="47"><span class="co">#&gt; Diagnoses - main ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-1668</span></a>
+<a class="sourceLine" id="cb8-48" data-line-number="48"><span class="co">#&gt; Treatment/medication code: ibuprofen || id:ukb-b-16866</span></a>
+<a class="sourceLine" id="cb8-49" data-line-number="49"><span class="co">#&gt; Sitting height || id:ukb-b-16881</span></a>
+<a class="sourceLine" id="cb8-50" data-line-number="50"><span class="co">#&gt; Illnesses of siblings: None of the above (group 1) || id:ukb-b-17360</span></a>
+<a class="sourceLine" id="cb8-51" data-line-number="51"><span class="co">#&gt; Trunk fat-free mass || id:ukb-b-17409</span></a>
+<a class="sourceLine" id="cb8-52" data-line-number="52"><span class="co">#&gt; Operative procedures - secondary OPCS: Y02.2 Insertion of prosthesis into organ NOC || id:ukb-b-1744</span></a>
+<a class="sourceLine" id="cb8-53" data-line-number="53"><span class="co">#&gt; Treatment/medication code: levothyroxine sodium || id:ukb-b-17918</span></a>
+<a class="sourceLine" id="cb8-54" data-line-number="54"><span class="co">#&gt; Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb8-55" data-line-number="55"><span class="co">#&gt; Operative procedures - main OPCS: K49.1 Percutaneous transluminal balloon angioplasty of one coronary artery || id:ukb-b-18018</span></a>
+<a class="sourceLine" id="cb8-56" data-line-number="56"><span class="co">#&gt; Illnesses of mother: High blood pressure || id:ukb-b-18167</span></a>
+<a class="sourceLine" id="cb8-57" data-line-number="57"><span class="co">#&gt; Leg fat percentage (left) || id:ukb-b-18377</span></a>
+<a class="sourceLine" id="cb8-58" data-line-number="58"><span class="co">#&gt; Illnesses of father: Heart disease || id:ukb-b-18408</span></a>
+<a class="sourceLine" id="cb8-59" data-line-number="59"><span class="co">#&gt; Treatment/medication code: bendroflumethiazide || id:ukb-b-18799</span></a>
+<a class="sourceLine" id="cb8-60" data-line-number="60"><span class="co">#&gt; Impedance of arm (left) || id:ukb-b-19379</span></a>
+<a class="sourceLine" id="cb8-61" data-line-number="61"><span class="co">#&gt; Non-cancer illness code, self-reported: hypothyroidism/myxoedema || id:ukb-b-19732</span></a>
+<a class="sourceLine" id="cb8-62" data-line-number="62"><span class="co">#&gt; Impedance of whole body || id:ukb-b-19921</span></a>
+<a class="sourceLine" id="cb8-63" data-line-number="63"><span class="co">#&gt; Trunk fat mass || id:ukb-b-20044</span></a>
+<a class="sourceLine" id="cb8-64" data-line-number="64"><span class="co">#&gt; Arm fat percentage (left) || id:ukb-b-20188</span></a>
+<a class="sourceLine" id="cb8-65" data-line-number="65"><span class="co">#&gt; Taking other prescription medications || id:ukb-b-20292</span></a>
+<a class="sourceLine" id="cb8-66" data-line-number="66"><span class="co">#&gt; Treatment speciality of consultant (recoded): Cardiology || id:ukb-b-20300</span></a>
+<a class="sourceLine" id="cb8-67" data-line-number="67"><span class="co">#&gt; Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: None of the above || id:ukb-b-20379</span></a>
+<a class="sourceLine" id="cb8-68" data-line-number="68"><span class="co">#&gt; Leg fat percentage (right) || id:ukb-b-20531</span></a>
+<a class="sourceLine" id="cb8-69" data-line-number="69"><span class="co">#&gt; Birth weight of first child || id:ukb-b-3357</span></a>
+<a class="sourceLine" id="cb8-70" data-line-number="70"><span class="co">#&gt; Number of treatments/medications taken || id:ukb-b-3656</span></a>
+<a class="sourceLine" id="cb8-71" data-line-number="71"><span class="co">#&gt; Number of self-reported non-cancer illnesses || id:ukb-b-4063</span></a>
+<a class="sourceLine" id="cb8-72" data-line-number="72"><span class="co">#&gt; Diagnoses - secondary ICD10: E03.9 Hypothyroidism, unspecified || id:ukb-b-4226</span></a>
+<a class="sourceLine" id="cb8-73" data-line-number="73"><span class="co">#&gt; Medication for pain relief, constipation, heartburn: Aspirin || id:ukb-b-7137</span></a>
+<a class="sourceLine" id="cb8-74" data-line-number="74"><span class="co">#&gt; Diagnoses - secondary ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-7436</span></a>
+<a class="sourceLine" id="cb8-75" data-line-number="75"><span class="co">#&gt; Impedance of arm (right) || id:ukb-b-7859</span></a>
+<a class="sourceLine" id="cb8-76" data-line-number="76"><span class="co">#&gt; Operation code: coronary angioplasty (ptca) +/- stent || id:ukb-b-7869</span></a>
+<a class="sourceLine" id="cb8-77" data-line-number="77"><span class="co">#&gt; Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb8-78" data-line-number="78"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: Angina || id:ukb-b-8468</span></a>
+<a class="sourceLine" id="cb8-79" data-line-number="79"><span class="co">#&gt; Non-cancer illness code, self-reported: angina || id:ukb-b-8650</span></a>
+<a class="sourceLine" id="cb8-80" data-line-number="80"><span class="co">#&gt; Illnesses of siblings: High blood pressure || id:ukb-b-8746</span></a>
+<a class="sourceLine" id="cb8-81" data-line-number="81"><span class="co">#&gt; Treatment/medication code: aspirin || id:ukb-b-8755</span></a>
+<a class="sourceLine" id="cb8-82" data-line-number="82"><span class="co">#&gt; Body fat percentage || id:ukb-b-8909</span></a>
+<a class="sourceLine" id="cb8-83" data-line-number="83"><span class="co">#&gt; Treatment/medication code: amlodipine || id:ukb-b-9207</span></a>
+<a class="sourceLine" id="cb8-84" data-line-number="84"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-85" data-line-number="85"><span class="co">#&gt; * * * *</span></a>
+<a class="sourceLine" id="cb8-86" data-line-number="86"><span class="co">#&gt; Number of candidate - exposure associations: 68</span></a>
+<a class="sourceLine" id="cb8-87" data-line-number="87"><span class="co">#&gt; * * * *</span></a>
+<a class="sourceLine" id="cb8-88" data-line-number="88"><span class="co">#&gt; Large vessel disease || id:ieu-a-1110</span></a>
+<a class="sourceLine" id="cb8-89" data-line-number="89"><span class="co">#&gt; Interleukin-2 receptor subunit beta || id:prot-a-1519</span></a>
+<a class="sourceLine" id="cb8-90" data-line-number="90"><span class="co">#&gt; Glutaminyl-peptide cyclotransferase-like protein || id:prot-a-2466</span></a>
+<a class="sourceLine" id="cb8-91" data-line-number="91"><span class="co">#&gt; Illnesses of mother: None of the above (group 1) || id:ukb-b-10454</span></a>
+<a class="sourceLine" id="cb8-92" data-line-number="92"><span class="co">#&gt; Age high blood pressure diagnosed || id:ukb-b-1061</span></a>
+<a class="sourceLine" id="cb8-93" data-line-number="93"><span class="co">#&gt; Standing height || id:ukb-b-10787</span></a>
+<a class="sourceLine" id="cb8-94" data-line-number="94"><span class="co">#&gt; Treatment/medication code: atenolol || id:ukb-b-11632</span></a>
+<a class="sourceLine" id="cb8-95" data-line-number="95"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: Cholesterol lowering medication || id:ukb-b-11740</span></a>
+<a class="sourceLine" id="cb8-96" data-line-number="96"><span class="co">#&gt; Treatment/medication code: ramipril || id:ukb-b-11895</span></a>
+<a class="sourceLine" id="cb8-97" data-line-number="97"><span class="co">#&gt; Pulse wave Arterial Stiffness index || id:ukb-b-11971</span></a>
+<a class="sourceLine" id="cb8-98" data-line-number="98"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014</span></a>
+<a class="sourceLine" id="cb8-99" data-line-number="99"><span class="co">#&gt; Peak expiratory flow (PEF) || id:ukb-b-12019</span></a>
+<a class="sourceLine" id="cb8-100" data-line-number="100"><span class="co">#&gt; Pain type(s) experienced in last month: Headache || id:ukb-b-12181</span></a>
+<a class="sourceLine" id="cb8-101" data-line-number="101"><span class="co">#&gt; Diagnoses - secondary ICD10: I10 Essential (primary) hypertension || id:ukb-b-12493</span></a>
+<a class="sourceLine" id="cb8-102" data-line-number="102"><span class="co">#&gt; Leg fat-free mass (right) || id:ukb-b-12828</span></a>
+<a class="sourceLine" id="cb8-103" data-line-number="103"><span class="co">#&gt; Arm fat percentage (right) || id:ukb-b-12854</span></a>
+<a class="sourceLine" id="cb8-104" data-line-number="104"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb8-105" data-line-number="105"><span class="co">#&gt; Whole body fat-free mass || id:ukb-b-13354</span></a>
+<a class="sourceLine" id="cb8-106" data-line-number="106"><span class="co">#&gt; Birth weight || id:ukb-b-13378</span></a>
+<a class="sourceLine" id="cb8-107" data-line-number="107"><span class="co">#&gt; 6mm weak meridian (right) || id:ukb-b-13416</span></a>
+<a class="sourceLine" id="cb8-108" data-line-number="108"><span class="co">#&gt; 3mm weak meridian (right) || id:ukb-b-13506</span></a>
+<a class="sourceLine" id="cb8-109" data-line-number="109"><span class="co">#&gt; Long-standing illness, disability or infirmity || id:ukb-b-13764</span></a>
+<a class="sourceLine" id="cb8-110" data-line-number="110"><span class="co">#&gt; Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb8-111" data-line-number="111"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb8-112" data-line-number="112"><span class="co">#&gt; Leg predicted mass (right) || id:ukb-b-14310</span></a>
+<a class="sourceLine" id="cb8-113" data-line-number="113"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb8-114" data-line-number="114"><span class="co">#&gt; Whole body water mass || id:ukb-b-14540</span></a>
+<a class="sourceLine" id="cb8-115" data-line-number="115"><span class="co">#&gt; 3mm strong meridian (left) || id:ukb-b-14664</span></a>
+<a class="sourceLine" id="cb8-116" data-line-number="116"><span class="co">#&gt; Leg fat-free mass (left) || id:ukb-b-16099</span></a>
+<a class="sourceLine" id="cb8-117" data-line-number="117"><span class="co">#&gt; Trunk fat percentage || id:ukb-b-16407</span></a>
+<a class="sourceLine" id="cb8-118" data-line-number="118"><span class="co">#&gt; Basal metabolic rate || id:ukb-b-16446</span></a>
+<a class="sourceLine" id="cb8-119" data-line-number="119"><span class="co">#&gt; Arm predicted mass (right) || id:ukb-b-16698</span></a>
+<a class="sourceLine" id="cb8-120" data-line-number="120"><span class="co">#&gt; Treatment/medication code: ibuprofen || id:ukb-b-16866</span></a>
+<a class="sourceLine" id="cb8-121" data-line-number="121"><span class="co">#&gt; Sitting height || id:ukb-b-16881</span></a>
+<a class="sourceLine" id="cb8-122" data-line-number="122"><span class="co">#&gt; Leg predicted mass (left) || id:ukb-b-17271</span></a>
+<a class="sourceLine" id="cb8-123" data-line-number="123"><span class="co">#&gt; Illnesses of siblings: None of the above (group 1) || id:ukb-b-17360</span></a>
+<a class="sourceLine" id="cb8-124" data-line-number="124"><span class="co">#&gt; Trunk fat-free mass || id:ukb-b-17409</span></a>
+<a class="sourceLine" id="cb8-125" data-line-number="125"><span class="co">#&gt; Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb8-126" data-line-number="126"><span class="co">#&gt; Non-cancer illness code, self-reported: asthma || id:ukb-b-18113</span></a>
+<a class="sourceLine" id="cb8-127" data-line-number="127"><span class="co">#&gt; Illnesses of mother: High blood pressure || id:ukb-b-18167</span></a>
+<a class="sourceLine" id="cb8-128" data-line-number="128"><span class="co">#&gt; Leg fat percentage (left) || id:ukb-b-18377</span></a>
+<a class="sourceLine" id="cb8-129" data-line-number="129"><span class="co">#&gt; Treatment/medication code: bendroflumethiazide || id:ukb-b-18799</span></a>
+<a class="sourceLine" id="cb8-130" data-line-number="130"><span class="co">#&gt; Impedance of arm (left) || id:ukb-b-19379</span></a>
+<a class="sourceLine" id="cb8-131" data-line-number="131"><span class="co">#&gt; Illnesses of father: High blood pressure || id:ukb-b-19456</span></a>
+<a class="sourceLine" id="cb8-132" data-line-number="132"><span class="co">#&gt; Impedance of whole body || id:ukb-b-19921</span></a>
+<a class="sourceLine" id="cb8-133" data-line-number="133"><span class="co">#&gt; Arm fat-free mass (left) || id:ukb-b-19925</span></a>
+<a class="sourceLine" id="cb8-134" data-line-number="134"><span class="co">#&gt; Trunk fat mass || id:ukb-b-20044</span></a>
+<a class="sourceLine" id="cb8-135" data-line-number="135"><span class="co">#&gt; Arm fat percentage (left) || id:ukb-b-20188</span></a>
+<a class="sourceLine" id="cb8-136" data-line-number="136"><span class="co">#&gt; Ever smoked || id:ukb-b-20261</span></a>
+<a class="sourceLine" id="cb8-137" data-line-number="137"><span class="co">#&gt; Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: None of the above || id:ukb-b-20379</span></a>
+<a class="sourceLine" id="cb8-138" data-line-number="138"><span class="co">#&gt; Leg fat percentage (right) || id:ukb-b-20531</span></a>
+<a class="sourceLine" id="cb8-139" data-line-number="139"><span class="co">#&gt; Birth weight of first child || id:ukb-b-3357</span></a>
+<a class="sourceLine" id="cb8-140" data-line-number="140"><span class="co">#&gt; Number of treatments/medications taken || id:ukb-b-3656</span></a>
+<a class="sourceLine" id="cb8-141" data-line-number="141"><span class="co">#&gt; Operation code: hysterectomy || id:ukb-b-3700</span></a>
+<a class="sourceLine" id="cb8-142" data-line-number="142"><span class="co">#&gt; Number of self-reported non-cancer illnesses || id:ukb-b-4063</span></a>
+<a class="sourceLine" id="cb8-143" data-line-number="143"><span class="co">#&gt; Lifetime number of sexual partners || id:ukb-b-4256</span></a>
+<a class="sourceLine" id="cb8-144" data-line-number="144"><span class="co">#&gt; 6mm strong meridian (left) || id:ukb-b-645</span></a>
+<a class="sourceLine" id="cb8-145" data-line-number="145"><span class="co">#&gt; Impedance of arm (right) || id:ukb-b-7859</span></a>
+<a class="sourceLine" id="cb8-146" data-line-number="146"><span class="co">#&gt; Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb8-147" data-line-number="147"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: Angina || id:ukb-b-8468</span></a>
+<a class="sourceLine" id="cb8-148" data-line-number="148"><span class="co">#&gt; Non-cancer illness code, self-reported: angina || id:ukb-b-8650</span></a>
+<a class="sourceLine" id="cb8-149" data-line-number="149"><span class="co">#&gt; Illnesses of siblings: High blood pressure || id:ukb-b-8746</span></a>
+<a class="sourceLine" id="cb8-150" data-line-number="150"><span class="co">#&gt; Treatment/medication code: aspirin || id:ukb-b-8755</span></a>
+<a class="sourceLine" id="cb8-151" data-line-number="151"><span class="co">#&gt; Pulse wave peak to peak time || id:ukb-b-8778</span></a>
+<a class="sourceLine" id="cb8-152" data-line-number="152"><span class="co">#&gt; Body fat percentage || id:ukb-b-8909</span></a>
+<a class="sourceLine" id="cb8-153" data-line-number="153"><span class="co">#&gt; Arm predicted mass (left) || id:ukb-b-9093</span></a>
+<a class="sourceLine" id="cb8-154" data-line-number="154"><span class="co">#&gt; Treatment/medication code: amlodipine || id:ukb-b-9207</span></a>
+<a class="sourceLine" id="cb8-155" data-line-number="155"><span class="co">#&gt; Trunk predicted mass || id:ukb-b-9685</span></a>
+<a class="sourceLine" id="cb8-156" data-line-number="156"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb8-157" data-line-number="157"><span class="co">#&gt; * * * *</span></a>
+<a class="sourceLine" id="cb8-158" data-line-number="158"><span class="co">#&gt; Number of exposure - candidate associations: 89</span></a>
+<a class="sourceLine" id="cb8-159" data-line-number="159"><span class="co">#&gt; * * * *</span></a>
+<a class="sourceLine" id="cb8-160" data-line-number="160"><span class="co">#&gt; Large vessel disease || id:ieu-a-1110</span></a>
+<a class="sourceLine" id="cb8-161" data-line-number="161"><span class="co">#&gt; Interleukin-2 receptor subunit beta || id:prot-a-1519</span></a>
+<a class="sourceLine" id="cb8-162" data-line-number="162"><span class="co">#&gt; Glutaminyl-peptide cyclotransferase-like protein || id:prot-a-2466</span></a>
+<a class="sourceLine" id="cb8-163" data-line-number="163"><span class="co">#&gt; Illnesses of mother: None of the above (group 1) || id:ukb-b-10454</span></a>
+<a class="sourceLine" id="cb8-164" data-line-number="164"><span class="co">#&gt; Age high blood pressure diagnosed || id:ukb-b-1061</span></a>
+<a class="sourceLine" id="cb8-165" data-line-number="165"><span class="co">#&gt; Standing height || id:ukb-b-10787</span></a>
+<a class="sourceLine" id="cb8-166" data-line-number="166"><span class="co">#&gt; Treatment/medication code: atenolol || id:ukb-b-11632</span></a>
+<a class="sourceLine" id="cb8-167" data-line-number="167"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: Cholesterol lowering medication || id:ukb-b-11740</span></a>
+<a class="sourceLine" id="cb8-168" data-line-number="168"><span class="co">#&gt; Treatment/medication code: ramipril || id:ukb-b-11895</span></a>
+<a class="sourceLine" id="cb8-169" data-line-number="169"><span class="co">#&gt; Pulse wave Arterial Stiffness index || id:ukb-b-11971</span></a>
+<a class="sourceLine" id="cb8-170" data-line-number="170"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014</span></a>
+<a class="sourceLine" id="cb8-171" data-line-number="171"><span class="co">#&gt; Peak expiratory flow (PEF) || id:ukb-b-12019</span></a>
+<a class="sourceLine" id="cb8-172" data-line-number="172"><span class="co">#&gt; Pain type(s) experienced in last month: Headache || id:ukb-b-12181</span></a>
+<a class="sourceLine" id="cb8-173" data-line-number="173"><span class="co">#&gt; Diagnoses - secondary ICD10: I10 Essential (primary) hypertension || id:ukb-b-12493</span></a>
+<a class="sourceLine" id="cb8-174" data-line-number="174"><span class="co">#&gt; Leg fat-free mass (right) || id:ukb-b-12828</span></a>
+<a class="sourceLine" id="cb8-175" data-line-number="175"><span class="co">#&gt; Arm fat percentage (right) || id:ukb-b-12854</span></a>
+<a class="sourceLine" id="cb8-176" data-line-number="176"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb8-177" data-line-number="177"><span class="co">#&gt; Whole body fat-free mass || id:ukb-b-13354</span></a>
+<a class="sourceLine" id="cb8-178" data-line-number="178"><span class="co">#&gt; Birth weight || id:ukb-b-13378</span></a>
+<a class="sourceLine" id="cb8-179" data-line-number="179"><span class="co">#&gt; 6mm weak meridian (right) || id:ukb-b-13416</span></a>
+<a class="sourceLine" id="cb8-180" data-line-number="180"><span class="co">#&gt; 3mm weak meridian (right) || id:ukb-b-13506</span></a>
+<a class="sourceLine" id="cb8-181" data-line-number="181"><span class="co">#&gt; Long-standing illness, disability or infirmity || id:ukb-b-13764</span></a>
+<a class="sourceLine" id="cb8-182" data-line-number="182"><span class="co">#&gt; Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb8-183" data-line-number="183"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb8-184" data-line-number="184"><span class="co">#&gt; Leg predicted mass (right) || id:ukb-b-14310</span></a>
+<a class="sourceLine" id="cb8-185" data-line-number="185"><span class="co">#&gt; Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb8-186" data-line-number="186"><span class="co">#&gt; Whole body water mass || id:ukb-b-14540</span></a>
+<a class="sourceLine" id="cb8-187" data-line-number="187"><span class="co">#&gt; 3mm strong meridian (left) || id:ukb-b-14664</span></a>
+<a class="sourceLine" id="cb8-188" data-line-number="188"><span class="co">#&gt; Leg fat-free mass (left) || id:ukb-b-16099</span></a>
+<a class="sourceLine" id="cb8-189" data-line-number="189"><span class="co">#&gt; Trunk fat percentage || id:ukb-b-16407</span></a>
+<a class="sourceLine" id="cb8-190" data-line-number="190"><span class="co">#&gt; Basal metabolic rate || id:ukb-b-16446</span></a>
+<a class="sourceLine" id="cb8-191" data-line-number="191"><span class="co">#&gt; Arm predicted mass (right) || id:ukb-b-16698</span></a>
+<a class="sourceLine" id="cb8-192" data-line-number="192"><span class="co">#&gt; Treatment/medication code: ibuprofen || id:ukb-b-16866</span></a>
+<a class="sourceLine" id="cb8-193" data-line-number="193"><span class="co">#&gt; Sitting height || id:ukb-b-16881</span></a>
+<a class="sourceLine" id="cb8-194" data-line-number="194"><span class="co">#&gt; Leg predicted mass (left) || id:ukb-b-17271</span></a>
+<a class="sourceLine" id="cb8-195" data-line-number="195"><span class="co">#&gt; Illnesses of siblings: None of the above (group 1) || id:ukb-b-17360</span></a>
+<a class="sourceLine" id="cb8-196" data-line-number="196"><span class="co">#&gt; Trunk fat-free mass || id:ukb-b-17409</span></a>
+<a class="sourceLine" id="cb8-197" data-line-number="197"><span class="co">#&gt; Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb8-198" data-line-number="198"><span class="co">#&gt; Non-cancer illness code, self-reported: asthma || id:ukb-b-18113</span></a>
+<a class="sourceLine" id="cb8-199" data-line-number="199"><span class="co">#&gt; Illnesses of mother: High blood pressure || id:ukb-b-18167</span></a>
+<a class="sourceLine" id="cb8-200" data-line-number="200"><span class="co">#&gt; Leg fat percentage (left) || id:ukb-b-18377</span></a>
+<a class="sourceLine" id="cb8-201" data-line-number="201"><span class="co">#&gt; Treatment/medication code: bendroflumethiazide || id:ukb-b-18799</span></a>
+<a class="sourceLine" id="cb8-202" data-line-number="202"><span class="co">#&gt; Impedance of arm (left) || id:ukb-b-19379</span></a>
+<a class="sourceLine" id="cb8-203" data-line-number="203"><span class="co">#&gt; Illnesses of father: High blood pressure || id:ukb-b-19456</span></a>
+<a class="sourceLine" id="cb8-204" data-line-number="204"><span class="co">#&gt; Impedance of whole body || id:ukb-b-19921</span></a>
+<a class="sourceLine" id="cb8-205" data-line-number="205"><span class="co">#&gt; Arm fat-free mass (left) || id:ukb-b-19925</span></a>
+<a class="sourceLine" id="cb8-206" data-line-number="206"><span class="co">#&gt; Trunk fat mass || id:ukb-b-20044</span></a>
+<a class="sourceLine" id="cb8-207" data-line-number="207"><span class="co">#&gt; Arm fat percentage (left) || id:ukb-b-20188</span></a>
+<a class="sourceLine" id="cb8-208" data-line-number="208"><span class="co">#&gt; Ever smoked || id:ukb-b-20261</span></a>
+<a class="sourceLine" id="cb8-209" data-line-number="209"><span class="co">#&gt; Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: None of the above || id:ukb-b-20379</span></a>
+<a class="sourceLine" id="cb8-210" data-line-number="210"><span class="co">#&gt; Leg fat percentage (right) || id:ukb-b-20531</span></a>
+<a class="sourceLine" id="cb8-211" data-line-number="211"><span class="co">#&gt; Birth weight of first child || id:ukb-b-3357</span></a>
+<a class="sourceLine" id="cb8-212" data-line-number="212"><span class="co">#&gt; Number of treatments/medications taken || id:ukb-b-3656</span></a>
+<a class="sourceLine" id="cb8-213" data-line-number="213"><span class="co">#&gt; Operation code: hysterectomy || id:ukb-b-3700</span></a>
+<a class="sourceLine" id="cb8-214" data-line-number="214"><span class="co">#&gt; Number of self-reported non-cancer illnesses || id:ukb-b-4063</span></a>
+<a class="sourceLine" id="cb8-215" data-line-number="215"><span class="co">#&gt; Lifetime number of sexual partners || id:ukb-b-4256</span></a>
+<a class="sourceLine" id="cb8-216" data-line-number="216"><span class="co">#&gt; 6mm strong meridian (left) || id:ukb-b-645</span></a>
+<a class="sourceLine" id="cb8-217" data-line-number="217"><span class="co">#&gt; Impedance of arm (right) || id:ukb-b-7859</span></a>
+<a class="sourceLine" id="cb8-218" data-line-number="218"><span class="co">#&gt; Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb8-219" data-line-number="219"><span class="co">#&gt; Vascular/heart problems diagnosed by doctor: Angina || id:ukb-b-8468</span></a>
+<a class="sourceLine" id="cb8-220" data-line-number="220"><span class="co">#&gt; Non-cancer illness code, self-reported: angina || id:ukb-b-8650</span></a>
+<a class="sourceLine" id="cb8-221" data-line-number="221"><span class="co">#&gt; Illnesses of siblings: High blood pressure || id:ukb-b-8746</span></a>
+<a class="sourceLine" id="cb8-222" data-line-number="222"><span class="co">#&gt; Treatment/medication code: aspirin || id:ukb-b-8755</span></a>
+<a class="sourceLine" id="cb8-223" data-line-number="223"><span class="co">#&gt; Pulse wave peak to peak time || id:ukb-b-8778</span></a>
+<a class="sourceLine" id="cb8-224" data-line-number="224"><span class="co">#&gt; Body fat percentage || id:ukb-b-8909</span></a>
+<a class="sourceLine" id="cb8-225" data-line-number="225"><span class="co">#&gt; Arm predicted mass (left) || id:ukb-b-9093</span></a>
+<a class="sourceLine" id="cb8-226" data-line-number="226"><span class="co">#&gt; Treatment/medication code: amlodipine || id:ukb-b-9207</span></a>
+<a class="sourceLine" id="cb8-227" data-line-number="227"><span class="co">#&gt; Trunk predicted mass || id:ukb-b-9685</span></a></code></pre></div>
 <p>Will by default use FDR of 5%. See <code><a href="../reference/Tryx.html">?Tryx</a></code> for more options.</p>
 </div>
 <div id="adjustment" class="section level2">
 <h2 class="hasAnchor">
 <a href="#adjustment" class="anchor"></a>Adjustment</h2>
 <p>Finally, to adjust the SNP effects on the exposure and outcome traits given their influences on the candidate traits, we can run:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>x<span class="op">$</span><span class="kw">analyse</span>()</span>
-<span id="cb9-2"><a href="#cb9-2"></a><span class="co">#&gt;    p-&gt;y:  rs16891156 - Diagnoses - main ICD10: I25 Chronic ischaemic heart disease || id:ukb-a-534</span></span>
-<span id="cb9-3"><a href="#cb9-3"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs7254892  - Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb9-4"><a href="#cb9-4"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs75687619 - Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb9-5"><a href="#cb9-5"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs2315065  - Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb9-6"><a href="#cb9-6"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs16891156 - Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb9-7"><a href="#cb9-7"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs16891156 - Diagnoses - main ICD10: I20 Angina pectoris || id:ukb-a-532</span></span>
-<span id="cb9-8"><a href="#cb9-8"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs579459   - Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb9-9"><a href="#cb9-9"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs16891156 - Medication for cholesterol  blood pressure or diabetes: None of the above || id:ukb-a-489</span></span>
-<span id="cb9-10"><a href="#cb9-10"></a><span class="co">#&gt;    p-&gt;y:  rs579459   - Diastolic blood pressure  automated reading || id:ukb-a-359</span></span>
-<span id="cb9-11"><a href="#cb9-11"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs2315065  - Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb9-12"><a href="#cb9-12"></a><span class="co">#&gt;    p-&gt;y:  rs16891156 - Non-cancer illness code  self-reported: angina || id:ukb-a-62</span></span>
-<span id="cb9-13"><a href="#cb9-13"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs579459   - Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb9-14"><a href="#cb9-14"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Medication for pain relief  constipation  heartburn: Aspirin || id:ukb-a-452</span></span>
-<span id="cb9-15"><a href="#cb9-15"></a><span class="co">#&gt;    p-&gt;y:  rs16891156 - Non-cancer illness code  self-reported: heart attack/myocardial infarction || id:ukb-a-63</span></span>
-<span id="cb9-16"><a href="#cb9-16"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs2315065  - Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb9-17"><a href="#cb9-17"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs7254892  - Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb9-18"><a href="#cb9-18"></a><span class="co">#&gt;    p-&gt;y:  rs579459   - Blood clot  DVT  bronchitis  emphysema  asthma  rhinitis  eczema  allergy diagnosed by doctor: Blood clot in the lung || id:ukb-a-445</span></span>
-<span id="cb9-19"><a href="#cb9-19"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Diagnoses - main ICD10: I25 Chronic ischaemic heart disease || id:ukb-a-534</span></span>
-<span id="cb9-20"><a href="#cb9-20"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs75687619 - Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb9-21"><a href="#cb9-21"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs7254892  - Non-cancer illness code  self-reported: high cholesterol || id:ukb-a-108</span></span>
-<span id="cb9-22"><a href="#cb9-22"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs75687619 - Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb9-23"><a href="#cb9-23"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs579459   - Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb9-24"><a href="#cb9-24"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Non-cancer illness code  self-reported: angina || id:ukb-a-62</span></span>
-<span id="cb9-25"><a href="#cb9-25"></a><span class="co">#&gt;    p-&gt;y:  rs579459   - Diagnoses - main ICD10: I80 Phlebitis and thrombophlebitis || id:ukb-a-537</span></span>
-<span id="cb9-26"><a href="#cb9-26"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs2315065  - Medication for cholesterol  blood pressure or diabetes: None of the above || id:ukb-a-489</span></span>
-<span id="cb9-27"><a href="#cb9-27"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs16891156 - Medication for cholesterol  blood pressure  diabetes  or take exogenous hormones: Cholesterol lowering medication || id:ukb-a-448</span></span>
-<span id="cb9-28"><a href="#cb9-28"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Non-cancer illness code  self-reported: heart attack/myocardial infarction || id:ukb-a-63</span></span>
-<span id="cb9-29"><a href="#cb9-29"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs16891156 - Medication for cholesterol  blood pressure or diabetes: Cholesterol lowering medication || id:ukb-a-488</span></span>
-<span id="cb9-30"><a href="#cb9-30"></a><span class="co">#&gt;    p-&gt;y:  rs75687619 - HDL cholesterol || id:ieu-a-299</span></span>
-<span id="cb9-31"><a href="#cb9-31"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs7254892  - Triglycerides || id:ieu-a-302</span></span>
-<span id="cb9-32"><a href="#cb9-32"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs75687619 - Triglycerides || id:ieu-a-302</span></span>
-<span id="cb9-33"><a href="#cb9-33"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs7254892  - Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb9-34"><a href="#cb9-34"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs2315065  - Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb9-35"><a href="#cb9-35"></a><span class="co">#&gt;    p-&gt;y:  rs579459   - Myocardial infarction || id:ieu-a-798</span></span>
-<span id="cb9-36"><a href="#cb9-36"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs4530754  - Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb9-37"><a href="#cb9-37"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Myocardial infarction || id:ieu-a-798</span></span>
-<span id="cb9-38"><a href="#cb9-38"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs579459   - Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb9-39"><a href="#cb9-39"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs75687619 - Total cholesterol || id:ieu-a-301</span></span>
-<span id="cb9-40"><a href="#cb9-40"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs75687619 - Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb9-41"><a href="#cb9-41"></a><span class="co">#&gt;    p-&gt;y:  rs16891156 - Coronary artery disease || id:ebi-a-GCST005195</span></span>
-<span id="cb9-42"><a href="#cb9-42"></a><span class="co">#&gt;    p-&gt;y:  rs16891156 - Parental longevity (combined parental attained age, Martingale residuals) || id:ebi-a-GCST006697</span></span>
-<span id="cb9-43"><a href="#cb9-43"></a><span class="co">#&gt;    p-&gt;y:  rs4530754  - Heel bone mineral density || id:ebi-a-GCST006979</span></span>
-<span id="cb9-44"><a href="#cb9-44"></a><span class="co">#&gt;    p-&gt;y:  rs1250229  - Coronary artery disease || id:ebi-a-GCST005195</span></span>
-<span id="cb9-45"><a href="#cb9-45"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs2315065  - Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb9-46"><a href="#cb9-46"></a><span class="co">#&gt;    p-&gt;y:  rs7254892  - Family history of Alzheimer's disease || id:ebi-a-GCST005921</span></span>
-<span id="cb9-47"><a href="#cb9-47"></a><span class="co">#&gt;    p-&gt;y:  rs75687619 - Family history of Alzheimer's disease || id:ebi-a-GCST005921</span></span>
-<span id="cb9-48"><a href="#cb9-48"></a><span class="co">#&gt;    p-&gt;y:  rs7254892  - Coronary artery disease || id:ebi-a-GCST005195</span></span>
-<span id="cb9-49"><a href="#cb9-49"></a><span class="co">#&gt;    p-&gt;y:  rs7254892  - High light scatter reticulocyte count || id:ebi-a-GCST004611</span></span>
-<span id="cb9-50"><a href="#cb9-50"></a><span class="co">#&gt;    p-&gt;y:  rs75687619 - Paternal history of Alzheimer's disease || id:ebi-a-GCST005920</span></span>
-<span id="cb9-51"><a href="#cb9-51"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs7254892  - Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb9-52"><a href="#cb9-52"></a><span class="co">#&gt; x&lt;-p-&gt;y:  rs4530754  - Cholesterol, total || id:ebi-a-GCST002221</span></span>
-<span id="cb9-53"><a href="#cb9-53"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Parental longevity (combined parental attained age, Martingale residuals) || id:ebi-a-GCST006697</span></span>
-<span id="cb9-54"><a href="#cb9-54"></a><span class="co">#&gt;    p-&gt;y:  rs2315065  - Coronary artery disease || id:ebi-a-GCST005195</span></span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">x<span class="op">$</span><span class="kw">analyse</span>()</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Diagnoses - secondary ICD10: I20.9 Angina pectoris, unspecified || id:ukb-b-15686</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Birth weight || id:ukb-b-13378</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt;    p-&gt;y:  rs6430078  - Illnesses of father: Heart disease || id:ukb-b-18408</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Long-standing illness, disability or infirmity || id:ukb-b-13764</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Treatment/medication code: aspirin || id:ukb-b-8755</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Treatment/medication code: atenolol || id:ukb-b-11632</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Illnesses of siblings: High blood pressure || id:ukb-b-8746</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Illnesses of siblings: Heart disease || id:ukb-b-14371</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Treatment/medication code: bendroflumethiazide || id:ukb-b-18799</span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Treatment/medication code: amlodipine || id:ukb-b-9207</span></a>
+<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Operation code: coronary angioplasty (ptca) +/- stent || id:ukb-b-7869</span></a>
+<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Treatment speciality of consultant (recoded): Cardiology || id:ukb-b-20300</span></a>
+<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Impedance of arm (left) || id:ukb-b-19379</span></a>
+<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; x&lt;-p-&gt;y:  rs35114617 - Sitting height || id:ukb-b-16881</span></a>
+<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Illnesses of mother: Heart disease || id:ukb-b-12477</span></a>
+<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Vascular/heart problems diagnosed by doctor: Heart attack || id:ukb-b-11590</span></a>
+<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Diagnoses - secondary ICD10: Z95.5 Presence of coronary angioplasty implant and graft || id:ukb-b-15748</span></a>
+<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - 3mm weak meridian (right) || id:ukb-b-13506</span></a>
+<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Hip circumference || id:ukb-b-15590</span></a>
+<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Illnesses of father: None of the above (group 1) || id:ukb-b-15169</span></a>
+<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#&gt;    p-&gt;y:  rs8027450  - Illnesses of father: None of the above (group 1) || id:ukb-b-15169</span></a>
+<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Impedance of whole body || id:ukb-b-19921</span></a>
+<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Arm fat percentage (left) || id:ukb-b-20188</span></a>
+<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Birth weight || id:ukb-b-13378</span></a>
+<a class="sourceLine" id="cb9-30" data-line-number="30"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Diagnoses - secondary ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-7436</span></a>
+<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: None of the above || id:ukb-b-20379</span></a>
+<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Diagnoses - secondary ICD10: E03.9 Hypothyroidism, unspecified || id:ukb-b-4226</span></a>
+<a class="sourceLine" id="cb9-33" data-line-number="33"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Standing height || id:ukb-b-10787</span></a>
+<a class="sourceLine" id="cb9-34" data-line-number="34"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Operative procedures - secondary OPCS: Y02.2 Insertion of prosthesis into organ NOC || id:ukb-b-1744</span></a>
+<a class="sourceLine" id="cb9-35" data-line-number="35"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Leg fat percentage (left) || id:ukb-b-18377</span></a>
+<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Body fat percentage || id:ukb-b-8909</span></a>
+<a class="sourceLine" id="cb9-37" data-line-number="37"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Age high blood pressure diagnosed || id:ukb-b-1061</span></a>
+<a class="sourceLine" id="cb9-38" data-line-number="38"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Illnesses of mother: High blood pressure || id:ukb-b-18167</span></a>
+<a class="sourceLine" id="cb9-39" data-line-number="39"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Medication for pain relief, constipation, heartburn: Aspirin || id:ukb-b-7137</span></a>
+<a class="sourceLine" id="cb9-40" data-line-number="40"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Non-cancer illness code, self-reported: heart attack/myocardial infarction || id:ukb-b-15829</span></a>
+<a class="sourceLine" id="cb9-41" data-line-number="41"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Diagnoses - secondary ICD10: I25.8 Other forms of chronic ischaemic heart disease || id:ukb-b-16606</span></a>
+<a class="sourceLine" id="cb9-42" data-line-number="42"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Illnesses of siblings: None of the above (group 1) || id:ukb-b-17360</span></a>
+<a class="sourceLine" id="cb9-43" data-line-number="43"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Leg fat percentage (right) || id:ukb-b-20531</span></a>
+<a class="sourceLine" id="cb9-44" data-line-number="44"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014</span></a>
+<a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014</span></a>
+<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Diagnoses - secondary ICD10: Z95.5 Presence of coronary angioplasty implant and graft || id:ukb-b-15748</span></a>
+<a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Weight || id:ukb-b-11842</span></a>
+<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb9-51" data-line-number="51"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb9-52" data-line-number="52"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb9-53" data-line-number="53"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Diagnoses - secondary ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-7436</span></a>
+<a class="sourceLine" id="cb9-54" data-line-number="54"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Diagnoses - secondary ICD10: Z95.1 Presence of aortocoronary bypass graft || id:ukb-b-11064</span></a>
+<a class="sourceLine" id="cb9-55" data-line-number="55"><span class="co">#&gt; x&lt;-p-&gt;y:  rs35114617 - Standing height || id:ukb-b-10787</span></a>
+<a class="sourceLine" id="cb9-56" data-line-number="56"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Non-cancer illness code, self-reported: hypothyroidism/myxoedema || id:ukb-b-19732</span></a>
+<a class="sourceLine" id="cb9-57" data-line-number="57"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Treatment/medication code: levothyroxine sodium || id:ukb-b-17918</span></a>
+<a class="sourceLine" id="cb9-58" data-line-number="58"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Treatment/medication code: ramipril || id:ukb-b-11895</span></a>
+<a class="sourceLine" id="cb9-59" data-line-number="59"><span class="co">#&gt;    p-&gt;y:  rs8027450  - Illnesses of father: Heart disease || id:ukb-b-18408</span></a>
+<a class="sourceLine" id="cb9-60" data-line-number="60"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Illnesses of siblings: High blood pressure || id:ukb-b-8746</span></a>
+<a class="sourceLine" id="cb9-61" data-line-number="61"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Arm fat percentage (right) || id:ukb-b-12854</span></a>
+<a class="sourceLine" id="cb9-62" data-line-number="62"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Trunk fat-free mass || id:ukb-b-17409</span></a>
+<a class="sourceLine" id="cb9-63" data-line-number="63"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Operative procedures - main OPCS: K45.3 Anastomosis of mammary artery to left anterior descending coronary artery || id:ukb-b-15491</span></a>
+<a class="sourceLine" id="cb9-64" data-line-number="64"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Birth weight of first child || id:ukb-b-3357</span></a>
+<a class="sourceLine" id="cb9-65" data-line-number="65"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Main speciality of consultant (recoded): Cardiology || id:ukb-b-16376</span></a>
+<a class="sourceLine" id="cb9-66" data-line-number="66"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb9-67" data-line-number="67"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb9-68" data-line-number="68"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Impedance of arm (right) || id:ukb-b-7859</span></a>
+<a class="sourceLine" id="cb9-69" data-line-number="69"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - 3mm weak meridian (right) || id:ukb-b-13506</span></a>
+<a class="sourceLine" id="cb9-70" data-line-number="70"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb9-71" data-line-number="71"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Impedance of whole body || id:ukb-b-19921</span></a>
+<a class="sourceLine" id="cb9-72" data-line-number="72"><span class="co">#&gt; x&lt;-p-&gt;y:  rs6430078  - Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb9-73" data-line-number="73"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb9-74" data-line-number="74"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Medication for cholesterol, blood pressure, diabetes, or take exogenous hormones: Blood pressure medication || id:ukb-b-18009</span></a>
+<a class="sourceLine" id="cb9-75" data-line-number="75"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Diagnoses - secondary ICD10: I10 Essential (primary) hypertension || id:ukb-b-12493</span></a>
+<a class="sourceLine" id="cb9-76" data-line-number="76"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Diagnoses - secondary ICD10: I10 Essential (primary) hypertension || id:ukb-b-12493</span></a>
+<a class="sourceLine" id="cb9-77" data-line-number="77"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Diagnoses - secondary ICD10: I10 Essential (primary) hypertension || id:ukb-b-12493</span></a>
+<a class="sourceLine" id="cb9-78" data-line-number="78"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Treatment speciality of consultant (recoded): General medicine || id:ukb-b-12646</span></a>
+<a class="sourceLine" id="cb9-79" data-line-number="79"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Treatment/medication code: atenolol || id:ukb-b-11632</span></a>
+<a class="sourceLine" id="cb9-80" data-line-number="80"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Number of treatments/medications taken || id:ukb-b-3656</span></a>
+<a class="sourceLine" id="cb9-81" data-line-number="81"><span class="co">#&gt; x&lt;-p-&gt;y:  rs9349379  - Treatment/medication code: ibuprofen || id:ukb-b-16866</span></a>
+<a class="sourceLine" id="cb9-82" data-line-number="82"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Trunk fat-free mass || id:ukb-b-17409</span></a>
+<a class="sourceLine" id="cb9-83" data-line-number="83"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Birth weight of first child || id:ukb-b-3357</span></a>
+<a class="sourceLine" id="cb9-84" data-line-number="84"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb9-85" data-line-number="85"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Vascular/heart problems diagnosed by doctor: None of the above || id:ukb-b-13352</span></a>
+<a class="sourceLine" id="cb9-86" data-line-number="86"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb9-87" data-line-number="87"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Non-cancer illness code, self-reported: hypertension || id:ukb-b-14057</span></a>
+<a class="sourceLine" id="cb9-88" data-line-number="88"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Impedance of arm (right) || id:ukb-b-7859</span></a>
+<a class="sourceLine" id="cb9-89" data-line-number="89"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Operative procedures - main OPCS: K49.1 Percutaneous transluminal balloon angioplasty of one coronary artery || id:ukb-b-18018</span></a>
+<a class="sourceLine" id="cb9-90" data-line-number="90"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Medication for cholesterol, blood pressure or diabetes: None of the above || id:ukb-b-12014</span></a>
+<a class="sourceLine" id="cb9-91" data-line-number="91"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Father's age at death || id:ukb-b-11303</span></a>
+<a class="sourceLine" id="cb9-92" data-line-number="92"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2681492  - Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb9-93" data-line-number="93"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Vascular/heart problems diagnosed by doctor: High blood pressure || id:ukb-b-14177</span></a>
+<a class="sourceLine" id="cb9-94" data-line-number="94"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb9-95" data-line-number="95"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Diastolic blood pressure, automated reading || id:ukb-b-7992</span></a>
+<a class="sourceLine" id="cb9-96" data-line-number="96"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Birth weight || id:ukb-b-13378</span></a>
+<a class="sourceLine" id="cb9-97" data-line-number="97"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Trunk fat percentage || id:ukb-b-16407</span></a>
+<a class="sourceLine" id="cb9-98" data-line-number="98"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Illnesses of father: Heart disease || id:ukb-b-18408</span></a>
+<a class="sourceLine" id="cb9-99" data-line-number="99"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Illnesses of father: Heart disease || id:ukb-b-18408</span></a>
+<a class="sourceLine" id="cb9-100" data-line-number="100"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Treatment/medication code: ramipril || id:ukb-b-11895</span></a>
+<a class="sourceLine" id="cb9-101" data-line-number="101"><span class="co">#&gt; x&lt;-p-&gt;y:  rs9349379  - Vascular/heart problems diagnosed by doctor: Angina || id:ukb-b-8468</span></a>
+<a class="sourceLine" id="cb9-102" data-line-number="102"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Operation code: coronary artery bypass grafts (cabg) || id:ukb-b-12465</span></a>
+<a class="sourceLine" id="cb9-103" data-line-number="103"><span class="co">#&gt; x&lt;-p-&gt;y:  rs2971603  - Pain type(s) experienced in last month: Headache || id:ukb-b-12181</span></a>
+<a class="sourceLine" id="cb9-104" data-line-number="104"><span class="co">#&gt; x&lt;-p-&gt;y:  rs9349379  - Pain type(s) experienced in last month: Headache || id:ukb-b-12181</span></a>
+<a class="sourceLine" id="cb9-105" data-line-number="105"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Taking other prescription medications || id:ukb-b-20292</span></a>
+<a class="sourceLine" id="cb9-106" data-line-number="106"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Age high blood pressure diagnosed || id:ukb-b-1061</span></a>
+<a class="sourceLine" id="cb9-107" data-line-number="107"><span class="co">#&gt; x&lt;-p-&gt;y:  rs9349379  - Non-cancer illness code, self-reported: angina || id:ukb-b-8650</span></a>
+<a class="sourceLine" id="cb9-108" data-line-number="108"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Treatment/medication code: bendroflumethiazide || id:ukb-b-18799</span></a>
+<a class="sourceLine" id="cb9-109" data-line-number="109"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Medication for cholesterol, blood pressure or diabetes: Cholesterol lowering medication || id:ukb-b-11740</span></a>
+<a class="sourceLine" id="cb9-110" data-line-number="110"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Non-cancer illness code, self-reported: heart attack/myocardial infarction || id:ukb-b-15829</span></a>
+<a class="sourceLine" id="cb9-111" data-line-number="111"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Treatment speciality of consultant (recoded): Cardiology || id:ukb-b-20300</span></a>
+<a class="sourceLine" id="cb9-112" data-line-number="112"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Impedance of arm (left) || id:ukb-b-19379</span></a>
+<a class="sourceLine" id="cb9-113" data-line-number="113"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Number of self-reported non-cancer illnesses || id:ukb-b-4063</span></a>
+<a class="sourceLine" id="cb9-114" data-line-number="114"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Diagnoses - main ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-1668</span></a>
+<a class="sourceLine" id="cb9-115" data-line-number="115"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Diagnoses - main ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-1668</span></a>
+<a class="sourceLine" id="cb9-116" data-line-number="116"><span class="co">#&gt;    p-&gt;y:  rs7798197  - Diagnoses - main ICD10: I25.1 Atherosclerotic heart disease || id:ukb-b-1668</span></a>
+<a class="sourceLine" id="cb9-117" data-line-number="117"><span class="co">#&gt; x&lt;-p-&gt;y:  rs57866767 - Trunk fat mass || id:ukb-b-20044</span></a>
+<a class="sourceLine" id="cb9-118" data-line-number="118"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Vascular/heart problems diagnosed by doctor: Heart attack || id:ukb-b-11590</span></a>
+<a class="sourceLine" id="cb9-119" data-line-number="119"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb9-120" data-line-number="120"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Medication for cholesterol, blood pressure or diabetes: Blood pressure medication || id:ukb-b-14395</span></a>
+<a class="sourceLine" id="cb9-121" data-line-number="121"><span class="co">#&gt; x&lt;-p-&gt;y:  rs8027450  - Illnesses of mother: None of the above (group 1) || id:ukb-b-10454</span></a>
+<a class="sourceLine" id="cb9-122" data-line-number="122"><span class="co">#&gt; x&lt;-p-&gt;y:  rs35114617 - Glutaminyl-peptide cyclotransferase-like protein || id:prot-a-2466</span></a>
+<a class="sourceLine" id="cb9-123" data-line-number="123"><span class="co">#&gt; x&lt;-p-&gt;y:  rs10774625 - Interleukin-2 receptor subunit beta || id:prot-a-1519</span></a>
+<a class="sourceLine" id="cb9-124" data-line-number="124"><span class="co">#&gt;    p-&gt;y:  rs9349379  - Myocardial infarction || id:ieu-a-798</span></a>
+<a class="sourceLine" id="cb9-125" data-line-number="125"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Myocardial infarction || id:ieu-a-798</span></a>
+<a class="sourceLine" id="cb9-126" data-line-number="126"><span class="co">#&gt;    p-&gt;y:  rs10774625 - HDL cholesterol || id:ieu-a-299</span></a>
+<a class="sourceLine" id="cb9-127" data-line-number="127"><span class="co">#&gt; x&lt;-p-&gt;y:  rs7798197  - Large vessel disease || id:ieu-a-1110</span></a>
+<a class="sourceLine" id="cb9-128" data-line-number="128"><span class="co">#&gt;    p-&gt;y:  rs10774625 - Total cholesterol || id:ieu-a-301</span></a>
+<a class="sourceLine" id="cb9-129" data-line-number="129"><span class="co">#&gt;    p-&gt;y:  rs2681492  - Myocardial infarction || id:ieu-a-798</span></a>
+<a class="sourceLine" id="cb9-130" data-line-number="130"><span class="co">#&gt;    p-&gt;y:  rs10774625 - LDL cholesterol || id:ieu-a-300</span></a></code></pre></div>
 <p>This will estimate the outlier effect that is due to the candidate pathways, adjust the outlier-outcome estimate, and re-perform MR of exposure on outcome with the adjusted outliers.</p>
 <p>By default, this adjusts for the trait that has the largest impact for a particular SNP.</p>
 <p>There is also a multivariable adjustment method here, where for each outlier, all candidate trait effects are estimated jointly:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>x<span class="op">$</span><span class="kw">analyse.mv</span>()</span></code></pre></div>
-<p>NOTE: it’s a good idea to check that there are no traits amongst the candidates that are identical or equivalent to the outcome.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">x<span class="op">$</span><span class="kw">analyse.mv</span>()</a></code></pre></div>
+<p>NOTE: it’s a good idea to check that there are no traits amongst the candidates that are identical or equivalent to the outcome:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">id_remove =<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ebi-a-GCST005195"</span>, <span class="st">"ebi-a-GCST005840"</span>, <span class="st">"ebi-a-GCST005843"</span>, <span class="st">"ieu-a-1110"</span>, <span class="st">"ieu-a-798"</span>, <span class="st">"ukb-b-1061"</span>, </a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="st">"ukb-b-11590"</span>, <span class="st">"ukb-b-11895"</span>, <span class="st">"ukb-b-12014"</span>, <span class="st">"ukb-b-12465"</span>, <span class="st">"ukb-b-12493"</span>, <span class="st">"ukb-b-12646"</span>, <span class="st">"ukb-b-13352"</span>, <span class="st">"ukb-b-14057"</span>, </a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="st">"ukb-b-14177"</span>, <span class="st">"ukb-b-14371"</span>, <span class="st">"ukb-b-14395"</span>, <span class="st">"ukb-b-15169"</span>, <span class="st">"ukb-b-15491"</span>, <span class="st">"ukb-b-15686"</span>, <span class="st">"ukb-b-15748"</span>, <span class="st">"ukb-b-15829"</span>, </a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="st">"ukb-b-16606"</span>, <span class="st">"ukb-b-1668"</span>, <span class="st">"ukb-b-17360"</span>, <span class="st">"ukb-b-18009"</span>, <span class="st">"ukb-b-18018"</span>, <span class="st">"ukb-b-18167"</span>, <span class="st">"ukb-b-18408"</span>, <span class="st">"ukb-b-18799"</span>, </a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="st">"ukb-b-20300"</span>, <span class="st">"ukb-b-20379"</span>, <span class="st">"ukb-b-3656"</span>, <span class="st">"ukb-b-4063"</span>, <span class="st">"ukb-b-7137"</span>, <span class="st">"ukb-b-7436"</span>, <span class="st">"ukb-b-7869"</span>, <span class="st">"ukb-b-7992"</span>, </a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="st">"ukb-b-8468"</span>, <span class="st">"ukb-b-8650"</span>, <span class="st">"ukb-b-8746"</span>, <span class="st">"ukb-b-8755"</span>, <span class="st">"ukb-b-9207"</span>, <span class="st">"ukb-b-10454"</span>, <span class="st">"ukb-b-11632"</span>, <span class="st">"ukb-b-11740"</span>, </a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="st">"ukb-b-11971"</span>, <span class="st">"ukb-b-16866"</span>, <span class="st">"ukb-b-19456"</span>, <span class="st">"ukb-b-8778"</span>, <span class="st">"ukb-b-12019"</span>)</a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">x<span class="op">$</span><span class="kw">analyse.mv</span>(<span class="dt">id_remove =</span> id_remove)</a></code></pre></div>
 <p>The adjusted effect estimates:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>x<span class="op">$</span>output<span class="op">$</span>analysis<span class="op">$</span>estimates</span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="co">#&gt; # A tibble: 4 x 8</span></span>
-<span id="cb11-3"><a href="#cb11-3"></a><span class="co">#&gt;   est                             b     se     pval  nsnp     Q   int   Isq</span></span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="co">#&gt;   &lt;chr&gt;                       &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span id="cb11-5"><a href="#cb11-5"></a><span class="co">#&gt; 1 Raw                         0.414 0.0488 1.27e-12    77  335.     0 0.767</span></span>
-<span id="cb11-6"><a href="#cb11-6"></a><span class="co">#&gt; 2 Outliers removed (all)      0.432 0.0345 1.92e-19    70  123.     0 0.423</span></span>
-<span id="cb11-7"><a href="#cb11-7"></a><span class="co">#&gt; 3 Outliers removed (candidat… 0.432 0.0345 1.92e-19    70  123.     0 0.423</span></span>
-<span id="cb11-8"><a href="#cb11-8"></a><span class="co">#&gt; 4 Outliers adjusted           0.421 0.0371 4.86e-18    77  163.     0 0.522</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">x<span class="op">$</span>output<span class="op">$</span>analysis<span class="op">$</span>estimates</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; # A tibble: 4 x 8</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt;   est                               b     se     pval  nsnp     Q   int   Isq</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt;   &lt;chr&gt;                         &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; 1 Raw                           0.599 0.0772 2.64e-13   233  871.     0 0.731</span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#&gt; 2 Outliers removed (all)        0.710 0.0548 6.14e-29   222  396.     0 0.436</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt; 3 Outliers removed (candidates) 0.687 0.0571 5.51e-26   224  434.     0 0.482</span></a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt; 4 Outliers adjusted             0.651 0.0573 4.52e-24   233  464.     0 0.496</span></a></code></pre></div>
 </div>
 <div id="visualisation" class="section level2">
 <h2 class="hasAnchor">
@@ -385,39 +731,39 @@
 <h3 class="hasAnchor">
 <a href="#adjustment-plot" class="anchor"></a>Adjustment plot</h3>
 <p>A plot is generated showing how SNP effects have changed due to candidate trait adjustments in:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>x<span class="op">$</span>output<span class="op">$</span>analysis<span class="op">$</span>plot</span></code></pre></div>
-<p><img src="guide_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">x<span class="op">$</span>output<span class="op">$</span>analysis<span class="op">$</span>plot</a></code></pre></div>
+<p><img src="guide_files/figure-html/unnamed-chunk-7-1.png" width="700px" height="600px"></p>
 </div>
 <div id="network-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#network-plot" class="anchor"></a>Network plot</h3>
 <p>To produce a basic diagram of the connectivity of SNPs, candidate traits, exposure and outcome:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw"><a href="../reference/tryx.network.html">tryx.network</a></span>(x<span class="op">$</span>output)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="../reference/tryx.network.html">tryx.network</a></span>(x<span class="op">$</span>output)</a></code></pre></div>
 <p>This shows that some candidate traits influence the exposure only, the outcome only, or both the exposure and the outcome.</p>
 </div>
 <div id="volcano-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#volcano-plot" class="anchor"></a>Volcano plot</h3>
 <p>You can also create a volcano plot of the candidate-exposure and/or candidate-outcome associations. e.g. to show exposures and outcomes</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw"><a href="../reference/volcano_plot.html">volcano_plot</a></span>(</span>
-<span id="cb14-2"><a href="#cb14-2"></a>    <span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(x<span class="op">$</span>output<span class="op">$</span>candidate_exposure_mr, x<span class="op">$</span>output<span class="op">$</span>candidate_outcome_mr)</span>
-<span id="cb14-3"><a href="#cb14-3"></a>)</span></code></pre></div>
-<p><img src="guide_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw"><a href="../reference/volcano_plot.html">volcano_plot</a></span>(</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">    <span class="kw"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span>(x<span class="op">$</span>output<span class="op">$</span>candidate_exposure_mr, x<span class="op">$</span>output<span class="op">$</span>candidate_outcome_mr)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3">)</a></code></pre></div>
+<p><img src="guide_files/figure-html/unnamed-chunk-8-1.png" width="900px" height="500px"></p>
 <p>or e.g. just exposures</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw"><a href="../reference/volcano_plot.html">volcano_plot</a></span>(x<span class="op">$</span>output<span class="op">$</span>candidate_exposure_mr)</span></code></pre></div>
-<p><img src="guide_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1"><span class="kw"><a href="../reference/volcano_plot.html">volcano_plot</a></span>(x<span class="op">$</span>output<span class="op">$</span>candidate_exposure_mr)</a></code></pre></div>
+<p><img src="guide_files/figure-html/unnamed-chunk-9-1.png" width="900px" height="500px"></p>
 </div>
 <div id="manhattan-plot" class="section level3">
 <h3 class="hasAnchor">
 <a href="#manhattan-plot" class="anchor"></a>Manhattan plot</h3>
 <p>Similar to the volcano plot, a Manhattan plot can also be produced. This can be done for the candidate-exposure associations</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>x<span class="op">$</span><span class="kw">manhattan_plot</span>(<span class="st">"exposure"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a>x<span class="op">$</span>output<span class="op">$</span>plots<span class="op">$</span>manhattan_plot</span></code></pre></div>
-<p><img src="guide_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">x<span class="op">$</span><span class="kw">manhattan_plot</span>(<span class="st">"exposure"</span>)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">x<span class="op">$</span>output<span class="op">$</span>plots<span class="op">$</span>manhattan_plot</a></code></pre></div>
+<p><img src="guide_files/figure-html/unnamed-chunk-10-1.png" width="700px" height="600px"></p>
 <p>or the candidate-outcome associations</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>x<span class="op">$</span><span class="kw">manhattan_plot</span>(<span class="st">"outcome"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2"></a>x<span class="op">$</span>output<span class="op">$</span>plots<span class="op">$</span>manhattan_plot</span></code></pre></div>
-<p><img src="guide_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">x<span class="op">$</span><span class="kw">manhattan_plot</span>(<span class="st">"outcome"</span>)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">x<span class="op">$</span>output<span class="op">$</span>plots<span class="op">$</span>manhattan_plot</a></code></pre></div>
+<p><img src="guide_files/figure-html/unnamed-chunk-11-1.png" width="700px" height="600px"></p>
 </div>
 </div>
   </div>

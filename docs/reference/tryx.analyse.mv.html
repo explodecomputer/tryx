@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • tryx</title>
+<title>Analyse tryx results — tryx.analyse.mv • tryx</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,11 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Analyse tryx results — tryx.analyse.mv" />
+<meta property="og:description" content="This returns various heterogeneity statistics, IVW estimates for raw, 
+adjusted and outlier removed datasets, and summary of peripheral 
+traits detected etc." />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +58,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -111,102 +115,81 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Analyse tryx results</h1>
+    
+    <div class="hidden name"><code>tryx.analyse.mv.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>This returns various heterogeneity statistics, IVW estimates for raw, 
+adjusted and outlier removed datasets, and summary of peripheral 
+traits detected etc.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>tryx.analyse.mv</span>(
+  <span class='no'>tryxscan</span>,
+  <span class='kw'>lasso</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>plot</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>id_remove</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>proxies</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="Tryx.html">Tryx</a></code> </p>
-        </td>
-        <td><p>Class for MR-TRYX analysis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cochrans_q.html">cochrans_q()</a></code> </p>
-        </td>
-        <td><p>Cochran's Q statistic</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="strategy1.html">strategy1()</a></code> </p>
-        </td>
-        <td><p>MR Strategy 1</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.adjustment.html">tryx.adjustment()</a></code> </p>
-        </td>
-        <td><p>Outlier adjustment estimation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.analyse.html">tryx.analyse()</a></code> </p>
-        </td>
-        <td><p>Analyse tryx results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.analyse.mv.html">tryx.analyse.mv()</a></code> </p>
-        </td>
-        <td><p>Analyse tryx results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.network.html">tryx.network()</a></code> </p>
-        </td>
-        <td><p>Plot results from outlier_scan in a network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.scan.html">tryx.scan()</a></code> </p>
-        </td>
-        <td><p>Outlier scan</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.sig.html">tryx.sig()</a></code> </p>
-        </td>
-        <td><p>Identify putatively significant associations in the outlier scan</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.simulate.html">tryx.simulate()</a></code> </p>
-        </td>
-        <td><p>Simulate data to test tryx</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="volcano_plot.html">volcano_plot()</a></code> </p>
-        </td>
-        <td><p>Plot volcano plot of many MR analyses</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>tryxscan</th>
+      <td><p>Output from <code>tryx.scan</code></p></td>
+    </tr>
+    <tr>
+      <th>lasso</th>
+      <td><p>Whether to shrink the estimates of each trait within SNP. Default=TRUE.</p></td>
+    </tr>
+    <tr>
+      <th>plot</th>
+      <td><p>Whether to plot or not. Default is TRUE</p></td>
+    </tr>
+    <tr>
+      <th>id_remove</th>
+      <td><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></td>
+    </tr>
+    <tr>
+      <th>proxies</th>
+      <td><p>Look for proxies in the MVMR methods. Default = FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>filter_duplicate_outliers</th>
+      <td><p>Whether to only allow each putative outlier to be adjusted by a single trait (in order of largest divergence). Default is TRUE.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>List of 
+- adj_full: data frame of SNP adjustments for all candidate traits
+- adj: The results from adj_full selected to adjust the exposure-outcome model
+- Q: Heterogeneity stats
+- estimates: Adjusted and unadjested exposure-outcome effects
+- plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment
+Adjust and analyse the tryx results</p>
+<p>Similar to tryx.analyse, but when there are multiple traits associated with a single variant then we use a LASSO-based multivariable approach</p>
+<p>List of 
+- adj_full: data frame of SNP adjustments for all candidate traits
+- adj: The results from adj_full selected to adjust the exposure-outcome model
+- Q: Heterogeneity stats
+- estimates: Adjusted and unadjested exposure-outcome effects
+- plot: Radial plot showing the comparison of different methods and the changes in SNP effects ater adjustment</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
+
   </div>
 </div>
 

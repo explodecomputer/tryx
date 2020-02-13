@@ -56,6 +56,9 @@
 <li>
       <a href="articles/guide.html">Guide to using MR-TRYX</a>
     </li>
+    <li>
+      <a href="articles/test_mrtryx.html">Test file for MR-TRYX</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -71,6 +74,8 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
+
+<p><em>Note: Apologies if the scan function times out sometimes - there are changes being made to the underlying database which will be resolved soon. We will also be releasing a major update to this package in the next few days that will make it more resilient to timeouts</em></p>
 <div id="treasure-your-exceptions-tryx" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#treasure-your-exceptions-tryx" class="anchor"></a>Treasure your exceptions! (TRYX)</h1></div>
@@ -79,6 +84,8 @@
 <!-- badges: end -->
 <p><strong>Major update:</strong></p>
 <p>This package has been under major development and the way in which it is implemented has changed quite substantially. See below for how to revert to the previous version if necessary</p>
+<hr>
+<p><strong>Full documentation including a vignette is available here:</strong> <a href="https://explodecomputer.github.io/tryx/" class="uri">https://explodecomputer.github.io/tryx/</a></p>
 <hr>
 <p>This package will perform MR-TRYX analysis, which entails the following.</p>
 <p>In MR analysis a major assumption is that the SNP influences the outcome only through the exposure. If the SNP influences the outcome through some other (candidate) traits, in addition to influencing through the exposure, then the MR estimate can be biased.</p>
@@ -90,7 +97,6 @@
 <p>This package uses the MR-Base infrastructure to search for alternative pathways through which instruments might influence the exposure.</p>
 <hr>
 <p>The package name TRYX (pronounced ‘tricks’) is taken from the phrase ‘TReasure Your Exceptions’, a quote from William Bateson (1908).</p>
-<hr>
 <div id="requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#requirements" class="anchor"></a>Requirements</h2>
@@ -99,32 +105,33 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<p>A beta development version can bbe installed directly from this repository.</p>
+<p>A beta development version can be installed directly from this repository.</p>
 <p>First install the <code>TwoSampleMR</code> and <code>RadialMR</code> R packages:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"MRCIEU/TwoSampleMR"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"WSpiller/RadialMR"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"MRCIEU/TwoSampleMR"</span>)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"WSpiller/RadialMR"</span>)</a></code></pre></div>
 <p>Next install the <code>tryx</code> package:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/tryx"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/tryx"</span>)</a></code></pre></div>
 <p>You may also want to install some plotting packages</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ggplot2"</span>, <span class="st">"ggrepel"</span>, <span class="st">"igraph"</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"ggplot2"</span>, <span class="st">"ggrepel"</span>, <span class="st">"igraph"</span>))</a></code></pre></div>
 <p>and a package for simulating genotype-phenotype maps</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/simulateGP"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/simulateGP"</span>)</a></code></pre></div>
 <p>It should not take more than a few minutes to install all of these packages.</p>
 <div id="installing-previous-versions" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installing-previous-versions" class="anchor"></a>Installing previous versions</h3>
 <p>You can go back to an earlier version using:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/tryx@0.1.1"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"explodecomputer/tryx@0.1.1"</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
 <p>If you using MR-TRYX R package:</p>
-<p>[Cho Y, Haycock P, Sanderson E, Gaunt T, Zheng J, Morris A, Davey Smith G, Hemani G.  <strong>MR-TRYX: A Mendelian randomization framework that exploits horizontal pleiotropy to infer novel causal pathways.</strong> <br> Nature communications [Accepted]. Current version is available at (<a href="https://www.biorxiv.org/content/10.1101/476085v3" class="uri">https://www.biorxiv.org/content/10.1101/476085v3</a>)</p>
+<p><a href="https://www.biorxiv.org/content/10.1101/476085v3">Cho Y, Haycock P, Sanderson E, Gaunt T, Zheng J, Morris A, Davey Smith G, Hemani G.  <strong>MR-TRYX: A Mendelian randomization framework that exploits horizontal pleiotropy to infer novel causal pathways.</strong> <br> Nature communications [Accepted]. Current version is available at on BioRxiv.</a></p>
 <p>For the IEU GWAS database, MR-Base or the TwoSamleMR R package: <a href="https://elifesciences.org/articles/34408">Hemani G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess S, Bowden J, Langdon R, Tan VY, Yarmolinsky J, Shihab HA, Timpson NJ, Evans DM, Relton C, Martin RM, Davey Smith G, Gaunt TR, Haycock PC, The MR-Base Collaboration. <strong>The MR-Base platform supports systematic causal inference across the human phenome.</strong> <br> eLife 2018;7:e34408. doi: 10.7554/eLife.34408</a></p>
 </div>
 </div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

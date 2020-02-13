@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tryx</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/guide.html">Test file for MR-TRYX</a>
+      <a href="../articles/guide.html">Guide to using MR-TRYX</a>
     </li>
     <li>
       <a href="../articles/test_mrtryx.html">Test file for MR-TRYX</a>
@@ -87,47 +87,47 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(knitr)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">echo=</span><span class="ot">TRUE</span>, <span class="dt">message=</span><span class="ot">FALSE</span>, <span class="dt">warning=</span><span class="ot">FALSE</span>, <span class="dt">dev=</span><span class="st">"png"</span>, <span class="dt">cache=</span><span class="ot">TRUE</span>, <span class="dt">eval=</span><span class="ot">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(knitr)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">knitr<span class="op">::</span>opts_chunk<span class="op">$</span><span class="kw">set</span>(<span class="dt">echo=</span><span class="ot">TRUE</span>, <span class="dt">message=</span><span class="ot">FALSE</span>, <span class="dt">warning=</span><span class="ot">FALSE</span>, <span class="dt">dev=</span><span class="st">"png"</span>, <span class="dt">cache=</span><span class="ot">TRUE</span>, <span class="dt">eval=</span><span class="ot">FALSE</span>)</a></code></pre></div>
 <p>Test commands for each function</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(TwoSampleMR)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(MRInstruments)</span>
-<span id="cb2-3"><a href="#cb2-3"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(RadialMR)</span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tryx)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(TwoSampleMR)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(MRInstruments)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(RadialMR)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(tryx)</a></code></pre></div>
 <p>Data preparation</p>
 <p>Example: systolic blood pressure and coronary artery disease</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>ao &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/available_outcomes.html">available_outcomes</a></span>()</span>
-<span id="cb3-2"><a href="#cb3-2"></a>bmi &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_instruments.html">extract_instruments</a></span>(<span class="dt">outcomes =</span> <span class="dv">2</span>)</span>
-<span id="cb3-3"><a href="#cb3-3"></a>sbp &lt;-<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_outcome_data.html">extract_outcome_data</a></span>(<span class="dt">snps=</span>bmi<span class="op">$</span>SNP, <span class="dt">outcomes =</span> <span class="st">"UKB-a:360"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4"></a>dat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/harmonise_data.html">harmonise_data</a></span>(bmi, sbp)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">ao &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/available_outcomes.html">available_outcomes</a></span>()</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">bmi &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_instruments.html">extract_instruments</a></span>(<span class="dt">outcomes =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">sbp &lt;-<span class="st">  </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_outcome_data.html">extract_outcome_data</a></span>(<span class="dt">snps=</span>bmi<span class="op">$</span>SNP, <span class="dt">outcomes =</span> <span class="st">"UKB-a:360"</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">dat &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/TwoSampleMR/man/harmonise_data.html">harmonise_data</a></span>(bmi, sbp)</a></code></pre></div>
 <p>Scan</p>
 <ol style="list-style-type: lower-alpha">
 <li>Test “tryx.scan”</li>
 </ol>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co">#scan_bmi &lt;- tryx.scan(dat)</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="st">"~/tryx/tests/test_mrtryx.RData"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">scan_bmi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tryx.scan.html">tryx.scan</a></span>(dat)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/load.html">load</a></span>(<span class="st">"~/tryx/tests/test_mrtryx.RData"</span>)</a></code></pre></div>
 <ol start="2" style="list-style-type: lower-alpha">
 <li>Test “tryx.sig”"</li>
 </ol>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>scan_bmi &lt;-<span class="st"> </span><span class="kw">tryx.sig</span>(scan_bmi)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">scan_bmi &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tryx.sig.html">tryx.sig</a></span>(scan_bmi)</a></code></pre></div>
 <ol start="3" style="list-style-type: lower-alpha">
 <li>Test “tryx.adjustment”</li>
 </ol>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>id_remove &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">72</span>, <span class="dv">89</span>, <span class="dv">90</span>, <span class="st">"UKB-a:35"</span>, <span class="st">"UKB-a:359"</span>, <span class="st">"UKB-a:61"</span>, <span class="dv">1096</span>, <span class="dv">85</span>, <span class="dv">91</span>, <span class="dv">93</span>, <span class="dv">999</span>)</span>
-<span id="cb6-2"><a href="#cb6-2"></a></span>
-<span id="cb6-3"><a href="#cb6-3"></a>ad &lt;-<span class="st"> </span><span class="kw">tryx.adjustment</span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">id_remove &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="dv">2</span>, <span class="dv">72</span>, <span class="dv">89</span>, <span class="dv">90</span>, <span class="st">"UKB-a:35"</span>, <span class="st">"UKB-a:359"</span>, <span class="st">"UKB-a:61"</span>, <span class="dv">1096</span>, <span class="dv">85</span>, <span class="dv">91</span>, <span class="dv">93</span>, <span class="dv">999</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">ad &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tryx.adjustment.html">tryx.adjustment</a></span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</a></code></pre></div>
 <ol start="4" style="list-style-type: lower-alpha">
 <li>Test “tryx.adjustment.mv”</li>
 </ol>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>ad.mv &lt;-<span class="st"> </span><span class="kw">tryx.adjustment.mv</span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">ad.mv &lt;-<span class="st"> </span><span class="kw">tryx.adjustment.mv</span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</a></code></pre></div>
 <ol start="5" style="list-style-type: lower-alpha">
 <li>Test “tryx.analyse”</li>
 </ol>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>an &lt;-<span class="st"> </span><span class="kw">tryx.analyse</span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">an &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tryx.analyse.html">tryx.analyse</a></span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</a></code></pre></div>
 <ol start="6" style="list-style-type: lower-alpha">
 <li>Test “tryx.analyse.mv”</li>
 </ol>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>an.mv &lt;-<span class="st"> </span><span class="kw">tryx.analyse.mv</span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">an.mv &lt;-<span class="st"> </span><span class="kw"><a href="../reference/tryx.analyse.mv.html">tryx.analyse.mv</a></span>(scan_bmi, <span class="dt">id_remove =</span> id_remove)</a></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

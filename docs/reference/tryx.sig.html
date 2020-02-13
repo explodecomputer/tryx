@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • tryx</title>
+<title>Identify putatively significant associations in the outlier scan — tryx.sig • tryx</title>
 
 
 <!-- jquery -->
@@ -35,7 +35,9 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Identify putatively significant associations in the outlier scan — tryx.sig" />
+<meta property="og:description" content="Identify putatively significant associations in the outlier scan" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -54,7 +56,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -111,102 +113,44 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Identify putatively significant associations in the outlier scan</h1>
+    
+    <div class="hidden name"><code>tryx.sig.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Identify putatively significant associations in the outlier scan</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>tryx.sig</span>(<span class='no'>tryxscan</span>, <span class='kw'>mr_threshold_method</span> <span class='kw'>=</span> <span class='st'>"fdr"</span>, <span class='kw'>mr_threshold</span> <span class='kw'>=</span> <span class='fl'>0.05</span>)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="Tryx.html">Tryx</a></code> </p>
-        </td>
-        <td><p>Class for MR-TRYX analysis</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cochrans_q.html">cochrans_q()</a></code> </p>
-        </td>
-        <td><p>Cochran's Q statistic</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="strategy1.html">strategy1()</a></code> </p>
-        </td>
-        <td><p>MR Strategy 1</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.adjustment.html">tryx.adjustment()</a></code> </p>
-        </td>
-        <td><p>Outlier adjustment estimation</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.analyse.html">tryx.analyse()</a></code> </p>
-        </td>
-        <td><p>Analyse tryx results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.analyse.mv.html">tryx.analyse.mv()</a></code> </p>
-        </td>
-        <td><p>Analyse tryx results</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.network.html">tryx.network()</a></code> </p>
-        </td>
-        <td><p>Plot results from outlier_scan in a network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.scan.html">tryx.scan()</a></code> </p>
-        </td>
-        <td><p>Outlier scan</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.sig.html">tryx.sig()</a></code> </p>
-        </td>
-        <td><p>Identify putatively significant associations in the outlier scan</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="tryx.simulate.html">tryx.simulate()</a></code> </p>
-        </td>
-        <td><p>Simulate data to test tryx</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="volcano_plot.html">volcano_plot()</a></code> </p>
-        </td>
-        <td><p>Plot volcano plot of many MR analyses</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>mr_threshold_method</th>
+      <td><p>This is the argument to be passed to <code>p.adjust</code>. Default is "fdr". If no p-value adjustment is to be applied then specify "unadjusted"</p></td>
+    </tr>
+    <tr>
+      <th>mr_threshold</th>
+      <td><p>Threshold to declare significance</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Same as outlier_scan but the candidate_exposure_mr and candidate_outcome_mr objects have an extra pval_adj and sig column each</p>
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+      <li><a href="#arguments">Arguments</a></li>
+      <li><a href="#value">Value</a></li>
     </ul>
+
   </div>
 </div>
 

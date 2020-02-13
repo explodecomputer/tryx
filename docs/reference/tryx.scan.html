@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot results from outlier_scan in a network — tryx.network • tryx</title>
+<title>Outlier scan — tryx.scan • tryx</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,11 @@
 
 
 
-<meta property="og:title" content="Plot results from outlier_scan in a network — tryx.network" />
-<meta property="og:description" content="Creates a simple network depicting the connections between outlier instruments, the original exposure and outcome traits, and the detected candidate associations" />
+<meta property="og:title" content="Outlier scan — tryx.scan" />
+<meta property="og:description" content="A simple wrapper function.
+Using a summary set, find outliers in the MR analysis between the pair of trais.
+Find other 'candidate traits' associated with those outliers.
+Perform MR of each of those candidate traits with the original exposure and outcome" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -115,29 +118,91 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot results from outlier_scan in a network</h1>
+    <h1>Outlier scan</h1>
     
-    <div class="hidden name"><code>tryx.network.Rd</code></div>
+    <div class="hidden name"><code>tryx.scan.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Creates a simple network depicting the connections between outlier instruments, the original exposure and outcome traits, and the detected candidate associations</p>
+    <p>A simple wrapper function.
+Using a summary set, find outliers in the MR analysis between the pair of trais.
+Find other 'candidate traits' associated with those outliers.
+Perform MR of each of those candidate traits with the original exposure and outcome</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tryx.network</span>(<span class='no'>tryxscan</span>)</pre>
+    <pre class="usage"><span class='fu'>tryx.scan</span>(
+  <span class='no'>dat</span>,
+  <span class='kw'>outliers</span> <span class='kw'>=</span> <span class='st'>"RadialMR"</span>,
+  <span class='kw'>outlier_correction</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>outlier_threshold</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>outlier_correction</span> <span class='kw'>==</span> <span class='st'>"none"</span>, <span class='fl'>0.05</span>/<span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='no'>dat</span>), <span class='fl'>0.05</span>),
+  <span class='kw'>use_proxies</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>search_correction</span> <span class='kw'>=</span> <span class='st'>"none"</span>,
+  <span class='kw'>search_threshold</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='no'>search_correction</span> <span class='kw'>==</span> <span class='st'>"none"</span>, <span class='fl'>5e-08</span>, <span class='fl'>0.05</span>),
+  <span class='kw'>id_list</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
+  <span class='kw'>include_outliers</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>mr_method</span> <span class='kw'>=</span> <span class='st'>"mr_ivw"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>tryxscan</th>
-      <td><p>Output from outlier_scan function</p></td>
+      <th>dat</th>
+      <td><p>Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.</p></td>
+    </tr>
+    <tr>
+      <th>outliers</th>
+      <td><p>Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.</p></td>
+    </tr>
+    <tr>
+      <th>outlier_correction</th>
+      <td><p>Defualt = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").</p></td>
+    </tr>
+    <tr>
+      <th>outlier_threshold</th>
+      <td><p>If outlier_correction = "none" then the p-value threshold for detecting outliers is by default 0.05.</p></td>
+    </tr>
+    <tr>
+      <th>use_proxies</th>
+      <td><p>Whether to use proxies when looking up associations. FALSE by default for speed.</p></td>
+    </tr>
+    <tr>
+      <th>search_correction</th>
+      <td><p>Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none").</p></td>
+    </tr>
+    <tr>
+      <th>search_threshold</th>
+      <td><p>If search_correction = "none" then the p-value threshold for detecting an association between an outlier and a candidate trait is by default 5e-8. Otherwise it is 0.05.</p></td>
+    </tr>
+    <tr>
+      <th>id_list</th>
+      <td><p>The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().</p></td>
+    </tr>
+    <tr>
+      <th>include_outliers</th>
+      <td><p>When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.</p></td>
+    </tr>
+    <tr>
+      <th>mr_method</th>
+      <td><p>Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Prints plot, and returns dataframe of the connections</p>
+    <p>List
+dat  Cleaned dat input
+radialmr  Results from RadialMR analysis
+outliers  List of outliers used
+id_list  List of GWAS IDs used
+search  Result from search of outliers against GWAS IDs
+candidate_instruments  Instruments for candidate traits
+candidate_outcome  Extracted instrument SNPs from outcome
+candidate_outcome_dat  Harmonised candidate - outcome dataset
+candidate_outcome_mr  MR analysis of candidates against outcome
+candidate_exposure   Extracted instrument SNPs from exposure
+candidate_exposure_dat  Harmonised candidate - exposure dataset
+candidate_exposure_mr  MR analysis of candidates against exposure</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
