@@ -142,14 +142,18 @@ x$analyse.mv()
 
 NOTE: it's a good idea to check that there are no traits amongst the candidates that are identical or equivalent to the outcome: 
 
-```r
-id_remove = c("ebi-a-GCST005195", "ebi-a-GCST005840", "ebi-a-GCST005843", "ieu-a-1110", "ieu-a-798", "ukb-b-1061", 
-"ukb-b-11590", "ukb-b-11895", "ukb-b-12014", "ukb-b-12465", "ukb-b-12493", "ukb-b-12646", "ukb-b-13352", "ukb-b-14057", 
-"ukb-b-14177", "ukb-b-14371", "ukb-b-14395", "ukb-b-15169", "ukb-b-15491", "ukb-b-15686", "ukb-b-15748", "ukb-b-15829", 
-"ukb-b-16606", "ukb-b-1668", "ukb-b-17360", "ukb-b-18009", "ukb-b-18018", "ukb-b-18167", "ukb-b-18408", "ukb-b-18799", 
-"ukb-b-20300", "ukb-b-20379", "ukb-b-3656", "ukb-b-4063", "ukb-b-7137", "ukb-b-7436", "ukb-b-7869", "ukb-b-7992", 
-"ukb-b-8468", "ukb-b-8650", "ukb-b-8746", "ukb-b-8755", "ukb-b-9207", "ukb-b-10454", "ukb-b-11632", "ukb-b-11740", 
-"ukb-b-11971", "ukb-b-16866", "ukb-b-19456", "ukb-b-8778", "ukb-b-12019")
+```{r}
+id_remove = c("ieu-a-1110", "ieu-a-798", "ukb-b-1061", "ukb-b-10454", "ukb-b-1061", "ukb-b-11064",
+              "ukb-b-11590", "ukb-b-11632", "ukb-b-11895", "ukb-b-11971", "ukb-b-12014", "ukb-b-12019", 
+              "ukb-b-12465", "ukb-b-12493", "ukb-b-13352", "ukb-b-13506", "ukb-b-12477", "ukb-b-12493",
+              "ukb-b-12646", "ukb-b-13352", "ukb-b-13506", "ukb-b-14057",	"ukb-b-14177", "ukb-b-14371",
+              "ukb-b-14395", "ukb-b-15169",	"ukb-b-15491", "ukb-b-15686",	"ukb-b-15748", "ukb-b-15829",
+              "ukb-b-16376", "ukb-b-16606",	"ukb-b-1668",	"ukb-b-17360", "ukb-b-18009",	"ukb-b-18018",
+              "ukb-b-18167", "ukb-b-18408",	"ukb-b-18799", "ukb-b-20300",	"ukb-b-20379", "ukb-b-3656",
+              "ukb-b-4063",	"ukb-b-7137", "ukb-b-7436",	"ukb-b-7869",	"ukb-b-7992",	"ukb-b-8468",
+              "ukb-b-8650",	"ukb-b-8746",	"ukb-b-9207",	"ieu-a-1110",	"ukb-b-1061",	"ukb-b-11971",
+              "ukb-b-12014", "ukb-b-12019", "ukb-b-19456", "ukb-b-8778", "ukb-b-10454",	"ukb-b-11632",
+              "ukb-b-11895")
 
 x$analyse.mv(id_remove = id_remove)
 ```
@@ -157,7 +161,7 @@ x$analyse.mv(id_remove = id_remove)
 The adjusted effect estimates:
 
 ```{r}
-x$output$analysis$estimates
+x$output$analyse.mv$estimates
 ```
 
 
@@ -171,7 +175,7 @@ A plot is generated showing how SNP effects have changed due to candidate trait 
 
 
 ```{r, fig.width = 6, fig.height = 5, out.width = "700px", out.height = "600px", dpi=300}
-x$output$analysis$plot
+x$output$analyse.mv$plot
 ```
 
 
