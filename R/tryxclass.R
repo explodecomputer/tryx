@@ -114,6 +114,7 @@ Tryx <- R6::R6Class("Tryx", list(
       ao <- suppressMessages(TwoSampleMR::available_outcomes())
       ids <- subset(ao) %>% 
              arrange(desc(sample_size)) %>%
+             filter(nsnp > 100000) %>%
              filter(!duplicated(trait), mr == 1) %>%
              filter(!grepl("ukb-a", id)) %>%
              filter(!grepl("ebi", id)) %>%
