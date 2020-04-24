@@ -112,13 +112,14 @@ Tryx <- R6::R6Class("Tryx", list(
     if(is.null(id_list))
     {
       ao <- suppressMessages(TwoSampleMR::available_outcomes())
-      ids <- subset(ao) %>% 
-             arrange(desc(sample_size)) %>%
-             filter(!duplicated(trait), mr == 1) %>%
-             filter(!grepl("ukb-a", id)) %>%
-             filter(!grepl("ebi", id)) %>%
-             filter(!grepl("ubm", id)) %>%
-             filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
+
+        ids <- subset(ao) %>% 
+        arrange(desc(sample_size)) %>%
+        filter(nsnp > 100000) %>%
+        filter(!duplicated(trait), mr == 1) %>%
+        filter(grepl("ukb-b|ieu-a|ebi-a", id)) %>%
+        filter(! id %in% c(dat$id.exposure[1], dat$id.outcome[1]))
+      
       id_list <- ids$id
       message("Using default list of ", nrow(ids), " traits")
     }
@@ -634,7 +635,7 @@ Tryx <- R6::R6Class("Tryx", list(
       {
         message("Only one candidate trait for SNP ", snplist[i], " so performing standard MVMR instead of LASSO")
       }
-      mvexp <- mv_extract_exposures(c(id.exposure, unique(temp$id.outcome)), find_proxies=proxies)
+      mvexp <- suppressMessages(mv_extract_exposures(c(id.exposure, unique(temp$id.outcome)), find_proxies=proxies))
       mvout <- suppressMessages(extract_outcome_data(mvexp$SNP, id.outcome))
       mvdat <- suppressMessages(mv_harmonise_data(mvexp, mvout))
       if(lasso & length(candidates) > 1)
