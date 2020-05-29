@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -42,7 +46,6 @@ y = outcome
 u1 = confounder of x and y
 u2 = mediator of horizontal pleiotropy from gx to y. One for each gx
 u3 = mediator between x and y" />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -60,7 +63,7 @@ u3 = mediator between x and y" />
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -135,30 +138,30 @@ u3 = mediator between x and y</p>
     </div>
 
     <pre class="usage"><span class='fu'>tryx.simulate</span>(
-  <span class='kw'>nid</span> <span class='kw'>=</span> <span class='fl'>10000</span>,
-  <span class='kw'>ngx</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>ngu1</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>ngu2</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>nu2</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>ngu3</span> <span class='kw'>=</span> <span class='fl'>30</span>,
-  <span class='kw'>vgx</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>vgu1</span> <span class='kw'>=</span> <span class='fl'>0.6</span>,
-  <span class='kw'>vgu2</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>vgu3</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>bxy</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>bu1x</span> <span class='kw'>=</span> <span class='fl'>0.6</span>,
-  <span class='kw'>bu1y</span> <span class='kw'>=</span> <span class='fl'>0.4</span>,
-  <span class='kw'>bxu3</span> <span class='kw'>=</span> <span class='fl'>0.3</span>,
-  <span class='kw'>bu3y</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>vgxu2</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>vu2y</span> <span class='kw'>=</span> <span class='fl'>0.2</span>,
-  <span class='kw'>ngxu3</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>vgxu3</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>mininum_instruments</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>instrument_threshold</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>,
-  <span class='kw'>outlier_threshold</span> <span class='kw'>=</span> <span class='st'>"bonferroni"</span>,
-  <span class='kw'>outliers_known</span> <span class='kw'>=</span> <span class='st'>"detected"</span>,
-  <span class='kw'>directional_bias</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  nid = <span class='fl'>10000</span>,
+  ngx = <span class='fl'>30</span>,
+  ngu1 = <span class='fl'>30</span>,
+  ngu2 = <span class='fl'>30</span>,
+  nu2 = <span class='fl'>2</span>,
+  ngu3 = <span class='fl'>30</span>,
+  vgx = <span class='fl'>0.2</span>,
+  vgu1 = <span class='fl'>0.6</span>,
+  vgu2 = <span class='fl'>0.2</span>,
+  vgu3 = <span class='fl'>0.2</span>,
+  bxy = <span class='fl'>0</span>,
+  bu1x = <span class='fl'>0.6</span>,
+  bu1y = <span class='fl'>0.4</span>,
+  bxu3 = <span class='fl'>0.3</span>,
+  bu3y = <span class='fl'>0</span>,
+  vgxu2 = <span class='fl'>0.2</span>,
+  vu2y = <span class='fl'>0.2</span>,
+  ngxu3 = <span class='fl'>0</span>,
+  vgxu3 = <span class='fl'>0</span>,
+  mininum_instruments = <span class='fl'>10</span>,
+  instrument_threshold = <span class='st'>"bonferroni"</span>,
+  outlier_threshold = <span class='st'>"bonferroni"</span>,
+  outliers_known = <span class='st'>"detected"</span>,
+  directional_bias = <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -267,13 +270,10 @@ u3 = mediator between x and y</p>
     <p>list for tryx.analyse</p>
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -284,7 +284,7 @@ u3 = mediator between x and y</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>

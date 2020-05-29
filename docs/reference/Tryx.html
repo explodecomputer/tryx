@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -40,7 +44,6 @@
 Using a summary set, find outliers in the MR analysis between the pair of trais.
 Find other 'candidate traits' associated with those outliers.
 Perform MR of each of those candidate traits with the original exposure and outcome." />
-<meta name="twitter:card" content="summary" />
 
 
 
@@ -58,7 +61,7 @@ Perform MR of each of those candidate traits with the original exposure and outc
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -165,10 +168,10 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-new"></a></p><h3>Method <code>new()</code></h3>
 <p>Create a new dataset and initialise an R interface</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$new(dat)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>new</span>(<span class='kw'>dat</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Dataset from TwoSampleMR::harmonise_data</p></dd>
 
 </dl><p></div></p>
@@ -176,20 +179,20 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <a id="method-print"></a></p><h3>Method <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code></h3>
 
 <h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$print(...)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='kw'>...</span>)</pre><p></div></p>
 
 <p><hr>
 <a id="method-get_outliers"></a></p><h3>Method <code>get_outliers()</code></h3>
 <p>Detect outliers in exposure-outcome dataset.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$get_outliers(
-  dat = self$output$dat,
-  outliers = "RadialMR",
-  outlier_correction = "none",
-  outlier_threshold = ifelse(outlier_correction == "none", 0.05/nrow(dat), 0.05)
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>get_outliers</span>(
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  outliers = <span class='st'>"RadialMR"</span>,
+  outlier_correction = <span class='st'>"none"</span>,
+  outlier_threshold = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>outlier_correction</span> <span class='op'>==</span> <span class='st'>"none"</span>, <span class='fl'>0.05</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='kw'>dat</span>), <span class='fl'>0.05</span>)
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.</p></dd>
 
 <dt><code>outliers</code></dt><dd><p>Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.</p></dd>
@@ -202,25 +205,25 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-set_candidate_traits"></a></p><h3>Method <code>set_candidate_traits()</code></h3>
 <p>Set a list of GWAS IDs used.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$set_candidate_traits(id_list = NULL)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>set_candidate_traits</span>(id_list = <span class='kw'>NULL</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>id_list</code></dt><dd><p>The list of trait IDs to search through for candidate associations. The default is the high priority traits in available_outcomes().</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-scan"></a></p><h3>Method <code><a href='https://rdrr.io/r/base/scan.html'>scan()</a></code></h3>
 <p>Search for candidate traits associated with outliers.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$scan(
-  dat = self$output$dat,
-  search_correction = "none",
-  search_threshold = ifelse(search_correction == "none", 5e-08, 0.05),
-  use_proxies = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/base/scan.html'>scan</a></span>(
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  search_correction = <span class='st'>"none"</span>,
+  search_threshold = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>search_correction</span> <span class='op'>==</span> <span class='st'>"none"</span>, <span class='fl'>5e-08</span>, <span class='fl'>0.05</span>),
+  use_proxies = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 <dt><code>search_correction</code></dt><dd><p>Default = "none", but can select from ("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none.</p></dd>
@@ -233,13 +236,13 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-candidate_instruments"></a></p><h3>Method <code>candidate_instruments()</code></h3>
 <p>Obtain instruments for the candidate traits.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$candidate_instruments(
-  candidate_instruments = NULL,
-  include_outliers = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>candidate_instruments</span>(
+  candidate_instruments = <span class='kw'>NULL</span>,
+  include_outliers = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>candidate_instruments</code></dt><dd><p>Instruments for candidate traits.</p></dd>
 
 <dt><code>include_outliers</code></dt><dd><p>When performing MR of candidate traits against exposures or outcomes, whether to include the original outlier SNP. Default is FALSE.</p></dd>
@@ -248,14 +251,14 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-outcome_instruments"></a></p><h3>Method <code>outcome_instruments()</code></h3>
 <p>Extract instrument for candidate trait instruments for the original outcome.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$outcome_instruments(
-  candidate_outcome = NULL,
-  dat = self$output$dat,
-  use_proxies = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>outcome_instruments</span>(
+  candidate_outcome = <span class='kw'>NULL</span>,
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  use_proxies = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>candidate_outcome</code></dt><dd><p>Extracted instrument SNPs from outcome.</p></dd>
 
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
@@ -266,14 +269,14 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-exposure_instruments"></a></p><h3>Method <code>exposure_instruments()</code></h3>
 <p>Extract instrument for candidate trait instruments for the original exposure.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$exposure_instruments(
-  candidate_exposure = NULL,
-  dat = self$output$dat,
-  use_proxies = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>exposure_instruments</span>(
+  candidate_exposure = <span class='kw'>NULL</span>,
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  use_proxies = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>candidate_exposure</code></dt><dd><p>Extracted instrument SNPs from exposure.</p></dd>
 
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
@@ -284,15 +287,15 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-exposure_candidate_instruments"></a></p><h3>Method <code>exposure_candidate_instruments()</code></h3>
 <p>Extract instrument for the original exposure for the candidate traits.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$exposure_candidate_instruments(
-  exposure_candidate = NULL,
-  dat = self$output$dat,
-  use_proxies = FALSE,
-  include_outliers = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>exposure_candidate_instruments</span>(
+  exposure_candidate = <span class='kw'>NULL</span>,
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  use_proxies = <span class='fl'>FALSE</span>,
+  include_outliers = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>exposure_candidate</code></dt><dd><p>Extracted instrument SNPs from exposure.</p></dd>
 
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
@@ -305,18 +308,18 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-extractions"></a></p><h3>Method <code>extractions()</code></h3>
 <p>Extract instruments for MR analyses.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$extractions(
-  dat = self$output$dat,
-  candidate_instruments = NULL,
-  candidate_outcome = NULL,
-  candidate_exposure = NULL,
-  exposure_candidate = NULL,
-  include_outliers = FALSE,
-  use_proxies = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>extractions</span>(
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  candidate_instruments = <span class='kw'>NULL</span>,
+  candidate_outcome = <span class='kw'>NULL</span>,
+  candidate_exposure = <span class='kw'>NULL</span>,
+  exposure_candidate = <span class='kw'>NULL</span>,
+  include_outliers = <span class='fl'>FALSE</span>,
+  use_proxies = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 <dt><code>candidate_instruments</code></dt><dd><p>Instruments for candidate traits.</p></dd>
@@ -335,50 +338,50 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-candidate_outcome_dat"></a></p><h3>Method <code>candidate_outcome_dat()</code></h3>
 <p>Make a dataset for the candidate traits and the original outcome.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$candidate_outcome_dat(dat = self$output$dat)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>candidate_outcome_dat</span>(dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-candidate_exposure_dat"></a></p><h3>Method <code>candidate_exposure_dat()</code></h3>
 <p>Make a dataset for the candidate traits and the original exposure.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$candidate_exposure_dat(dat = self$output$dat)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>candidate_exposure_dat</span>(dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-exposure_candidate_dat"></a></p><h3>Method <code>exposure_candidate_dat()</code></h3>
 <p>Make a dataset for the original exposure and the candidate traits.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$exposure_candidate_dat(dat = self$output$dat)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>exposure_candidate_dat</span>(dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-harmonise"></a></p><h3>Method <code>harmonise()</code></h3>
 <p>Harmonised exposure - outcome dataset.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$harmonise(dat = self$output$dat)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>harmonise</span>(dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 </dl><p></div></p>
 <p><hr>
 <a id="method-mr"></a></p><h3>Method <code>mr()</code></h3>
 <p>Perform MR anlayses of 1) candidate traits-outcome 2) candidate traits-exposure 3) exposure-candidate traits.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$mr(dat = self$output$dat, mr_method = "mr_ivw")</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>mr</span>(dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>, mr_method = <span class='st'>"mr_ivw"</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from TwoSampleMR::harmonise_data.</p></dd>
 
 <dt><code>mr_method</code></dt><dd><p>Method to use for candidate trait - exposure/outcome analysis. Default is mr_ivw. Can also provide basic MR methods e.g. mr_weighted_mode, mr_weighted_median etc. Also possible to use "strategy1" which performs IVW in the first instance, but then weighted mode for associations with high heterogeneity.</p></dd>
@@ -387,20 +390,20 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-mrtryx"></a></p><h3>Method <code>mrtryx()</code></h3>
 <p>All-in-one: 1) Detect outlier 2) Search candidate traits 3) Perform MR of candidate traits and the outcome / exposure.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$mrtryx(
-  dat = self$output$dat,
-  outliers = "RadialMR",
-  outlier_correction = "none",
-  outlier_threshold = ifelse(outlier_correction == "none", 0.05/nrow(dat), 0.05),
-  use_proxies = FALSE,
-  search_correction = "none",
-  search_threshold = ifelse(search_correction == "none", 5e-08, 0.05),
-  include_outliers = FALSE,
-  mr_method = "mr_ivw"
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>mrtryx</span>(
+  dat = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span><span class='op'>$</span><span class='kw'>dat</span>,
+  outliers = <span class='st'>"RadialMR"</span>,
+  outlier_correction = <span class='st'>"none"</span>,
+  outlier_threshold = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>outlier_correction</span> <span class='op'>==</span> <span class='st'>"none"</span>, <span class='fl'>0.05</span><span class='op'>/</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span>(<span class='kw'>dat</span>), <span class='fl'>0.05</span>),
+  use_proxies = <span class='fl'>FALSE</span>,
+  search_correction = <span class='st'>"none"</span>,
+  search_threshold = <span class='fu'><a href='https://rdrr.io/r/base/ifelse.html'>ifelse</a></span>(<span class='kw'>search_correction</span> <span class='op'>==</span> <span class='st'>"none"</span>, <span class='fl'>5e-08</span>, <span class='fl'>0.05</span>),
+  include_outliers = <span class='fl'>FALSE</span>,
+  mr_method = <span class='st'>"mr_ivw"</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>dat</code></dt><dd><p>Output from harmonise_data. Note - only the first id.exposure - id.outcome pair will be used.</p></dd>
 
 <dt><code>outliers</code></dt><dd><p>Default is to use the RadialMR package to identify IVW outliers. Alternatively can providen an array of SNP names that are present in dat$SNP to use as outliers.</p></dd>
@@ -423,10 +426,10 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-tryx.sig"></a></p><h3>Method <code><a href='tryx.sig.html'>tryx.sig()</a></code></h3>
 <p>Identify putatively significant associations in the outlier scan.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$tryx.sig(mr_threshold_method = "fdr", mr_threshold = 0.05)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'><a href='tryx.sig.html'>tryx.sig</a></span>(mr_threshold_method = <span class='st'>"fdr"</span>, mr_threshold = <span class='fl'>0.05</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>mr_threshold_method</code></dt><dd><p>This is the argument to be passed to <code>p.adjust</code>. Default is "fdr". If no p-value adjustment is to be applied then specify "unadjusted".</p></dd>
 
 <dt><code>mr_threshold</code></dt><dd><p>Threshold to declare significance</p></dd>
@@ -435,10 +438,10 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-adjustment"></a></p><h3>Method <code>adjustment()</code></h3>
 <p>Outlier adjustment estimation - How much of the heterogeneity due to the outlier can be explained by alternative pathways?</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$adjustment(tryxscan = self$output, id_remove = NULL)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>adjustment</span>(tryxscan = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span>, id_remove = <span class='kw'>NULL</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>tryxscan</code></dt><dd><p>Output from <code>x$mrtryx()</code></p></dd>
 
 <dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
@@ -449,15 +452,15 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-adjustment.mv"></a></p><h3>Method <code>adjustment.mv()</code></h3>
 <p>Similar to adjusment, but when there are multiple traits associated with a single variant.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$adjustment.mv(
-  tryxscan = self$output,
-  lasso = TRUE,
-  id_remove = NULL,
-  proxies = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>adjustment.mv</span>(
+  tryxscan = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span>,
+  lasso = <span class='fl'>TRUE</span>,
+  id_remove = <span class='kw'>NULL</span>,
+  proxies = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code></p></dd>
 
 <dt><code>lasso</code></dt><dd><p>Whether to shrink the estimates of each trait within SNP. Default=TRUE.</p></dd>
@@ -472,15 +475,15 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-analyse"></a></p><h3>Method <code>analyse()</code></h3>
 <p>This returns various heterogeneity statistics, IVW estimates for raw, adjusted and outlier removed datasets, and summary of peripheral traits detected etc.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$analyse(
-  tryxscan = self$output,
-  plot = TRUE,
-  id_remove = NULL,
-  filter_duplicate_outliers = TRUE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>analyse</span>(
+  tryxscan = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span>,
+  plot = <span class='fl'>TRUE</span>,
+  id_remove = <span class='kw'>NULL</span>,
+  filter_duplicate_outliers = <span class='fl'>TRUE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code>.</p></dd>
 
 <dt><code>plot</code></dt><dd><p>Whether to plot or not. Default is TRUE.</p></dd>
@@ -493,16 +496,16 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-analyse.mv"></a></p><h3>Method <code>analyse.mv()</code></h3>
 <p>Similar to analyse, but when there are multiple traits associated with a single variant.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$analyse.mv(
-  tryxscan = self$output,
-  lasso = TRUE,
-  plot = TRUE,
-  id_remove = NULL,
-  proxies = FALSE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>analyse.mv</span>(
+  tryxscan = <span class='kw'>self</span><span class='op'>$</span><span class='kw'>output</span>,
+  lasso = <span class='fl'>TRUE</span>,
+  plot = <span class='fl'>TRUE</span>,
+  id_remove = <span class='kw'>NULL</span>,
+  proxies = <span class='fl'>FALSE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>tryxscan</code></dt><dd><p>Output from <code>x$scan()</code></p></dd>
 
 <dt><code>lasso</code></dt><dd><p>Whether to shrink the estimates of each trait within SNP. Default=TRUE.</p></dd>
@@ -515,15 +518,15 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-manhattan_plot"></a></p><h3>Method <code>manhattan_plot()</code></h3>
 <p>Draw a Manhattan style plot for candidate traits-outcome/exposure associations.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$manhattan_plot(
-  what = "outcome",
-  id_remove = NULL,
-  y_scale = NULL,
-  label = TRUE
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>manhattan_plot</span>(
+  what = <span class='st'>"outcome"</span>,
+  id_remove = <span class='kw'>NULL</span>,
+  y_scale = <span class='kw'>NULL</span>,
+  label = <span class='fl'>TRUE</span>
 )</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>what</code></dt><dd><p>Analyse candidate-exposure ('exposure') or candidate-outcome ('outcome') associations</p></dd>
 
 <dt><code>id_remove</code></dt><dd><p>List of IDs to exclude from the adjustment analysis. It is possible that in the outlier search a candidate trait will come up which is essentially just a surrogate for the outcome trait (e.g. if you are analysing coronary heart disease as the outcome then a variable related to heart disease medication might come up as a candidate trait). Adjusting for a trait which is essentially the same as the outcome will erroneously nullify the result, so visually inspect the candidate trait list and remove those that are inappropriate.</p></dd>
@@ -536,10 +539,10 @@ Perform MR of each of those candidate traits with the original exposure and outc
 <p><hr>
 <a id="method-clone"></a></p><h3>Method <code>clone()</code></h3>
 <p>The objects of this class are cloneable with this method.</p><h3>Usage</h3>
-<p><div class="r"></p><pre>Tryx$clone(deep = FALSE)</pre><p></div></p>
+<p><div class="r"></p><pre><span class='kw'>Tryx</span><span class='op'>$</span><span class='fu'>clone</span>(deep = <span class='fl'>FALSE</span>)</pre><p></div></p>
 
 <h3>Arguments</h3>
-<p><div class="arguments"></p><dl class='dl-horizontal'>
+<p><div class="arguments"></p><dl>
 <dt><code>deep</code></dt><dd><p>Whether to make a deep clone.</p></dd>
 
 </dl><p></div></p>
@@ -547,12 +550,10 @@ Perform MR of each of those candidate traits with the original exposure and outc
 
 
   </div>
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#methods">Methods</a></li>
-    </ul>
-
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -563,7 +564,7 @@ Perform MR of each of those candidate traits with the original exposure and outc
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
 </div>
 
       </footer>
