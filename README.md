@@ -68,25 +68,27 @@ repository.
 First install the `TwoSampleMR` and `RadialMR` R packages:
 
 ```r
-    devtools::install_github("MRCIEU/TwoSampleMR")
-    devtools::install_github("WSpiller/RadialMR")
+        devtools::install_github("MRCIEU/TwoSampleMR")
+        devtools::install_github("WSpiller/RadialMR")
 ```
 
 Next install the `tryx` package:
 
 ```r
-    devtools::install_github("explodecomputer/tryx")
+        devtools::install_github("explodecomputer/tryx")
 ```
 
 You may also want to install some plotting packages
 
 ```r
-    install.packages(c("ggplot2", "ggrepel", "igraph"))
+        install.packages(c("ggplot2", "ggrepel", "igraph"))
 ```
 
 and a package for simulating genotype-phenotype maps
 
+```r
     devtools::install_github("explodecomputer/simulateGP")
+```
 
 It should not take more than a few minutes to install all of these
 packages.
@@ -96,7 +98,7 @@ packages.
 You can go back to an earlier version using:
 
 ```r
-    devtools::install_github("explodecomputer/tryx@0.1.1")
+        devtools::install_github("explodecomputer/tryx@0.1.1")
 ```
 
 Citation
@@ -107,8 +109,7 @@ If you using MR-TRYX R package:
 [Cho Y, Haycock P, Sanderson E, Gaunt T, Zheng J, Morris A, Davey Smith
 G, Hemani G. </br> **MR-TRYX: A Mendelian randomization framework that
 exploits horizontal pleiotropy to infer novel causal pathways.** <br/>
-Nature communications \[Accepted\]. Current version is available at on
-BioRxiv.](https://www.biorxiv.org/content/10.1101/476085v3)
+Nature communications.](https://www.nature.com/articles/s41467-020-14452-4)
 
 For the IEU GWAS database, MR-Base or the TwoSamleMR R package: [Hemani
 G, Zheng J, Elsworth B, Wade KH, Baird D, Haberland V, Laurin C, Burgess
