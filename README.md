@@ -67,16 +67,22 @@ repository.
 
 First install the `TwoSampleMR` and `RadialMR` R packages:
 
+```r
     devtools::install_github("MRCIEU/TwoSampleMR")
     devtools::install_github("WSpiller/RadialMR")
+```
 
 Next install the `tryx` package:
 
+```r
     devtools::install_github("explodecomputer/tryx")
+```
 
 You may also want to install some plotting packages
 
+```r
     install.packages(c("ggplot2", "ggrepel", "igraph"))
+```
 
 and a package for simulating genotype-phenotype maps
 
@@ -89,7 +95,9 @@ packages.
 
 You can go back to an earlier version using:
 
+```r
     devtools::install_github("explodecomputer/tryx@0.1.1")
+```
 
 Citation
 --------
